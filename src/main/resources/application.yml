@@ -1,0 +1,7 @@
+spring:
+  application:
+    name:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/bridee}
+    username: ${MYSQL_USERNAME:bridee}
+    password: ${MYSQL_PASSWORD:bridee}
