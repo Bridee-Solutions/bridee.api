@@ -5,3 +5,19 @@ spring:
     url: ${MYSQL_URL:jdbc:mysql://localhost:3307/bridee}
     username: ${MYSQL_USERNAME:bridee}
     password: ${MYSQL_PASSWORD:bridee}
+
+mail:
+  transport:
+    protocol: smtp
+  smtp:
+    auth: true
+    starttls.enabled: true
+    debug: debug
+
+
+services:
+  bridee:
+    email:
+      host: ${BRIDEE_EMAIL_HOST:smtp.gmail.com}
+      user: ${BRIDEE_EMAIL_USERNAME:""}
+      password: ${BRIDEE_EMAIL_PASSWORD:""}

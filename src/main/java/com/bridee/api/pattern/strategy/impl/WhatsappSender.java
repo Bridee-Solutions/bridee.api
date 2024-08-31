@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class WhatsappSender implements MessageStrategy {
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(String to, String from, String message) {
 
     }
 }
