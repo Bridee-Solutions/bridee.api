@@ -43,6 +43,11 @@ public class EmailSender implements MessageStrategy {
 
         javaMailSender.setUsername(emailProperties.getUser());
         javaMailSender.setPassword(emailProperties.getPassword());
+        Properties javaMailProperties = javaMailSender.getJavaMailProperties();
+        javaMailProperties.put("mail.transport.protocol", "smtp");
+        javaMailProperties.put("mail.smtp.auth", "true");
+        javaMailProperties.put("mail.smtp.starttls.enable", "true");
+        javaMailProperties.put("mail.debug", "debug");
         return javaMailSender;
     }
 }

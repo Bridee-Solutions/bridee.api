@@ -6,15 +6,6 @@ spring:
     username: ${MYSQL_USERNAME:bridee}
     password: ${MYSQL_PASSWORD:bridee}
 
-mail:
-  transport:
-    protocol: smtp
-  smtp:
-    auth: true
-    starttls.enabled: true
-    debug: debug
-
-
 services:
   bridee:
     email:
