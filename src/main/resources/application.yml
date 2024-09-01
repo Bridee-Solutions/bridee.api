@@ -9,6 +9,7 @@ spring:
 services:
   bridee:
     email:
+      inviteUrl: ${BRIDEE_INVITE_URL:http://localhost:8080}
       host: ${BRIDEE_EMAIL_HOST:smtp.gmail.com}
       user: ${BRIDEE_EMAIL_USERNAME:""}
       password: ${BRIDEE_EMAIL_PASSWORD:""}

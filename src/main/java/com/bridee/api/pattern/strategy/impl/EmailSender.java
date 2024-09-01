@@ -2,15 +2,32 @@ package com.bridee.api.pattern.strategy.impl;
 
 import com.bridee.api.pattern.strategy.MessageStrategy;
 import com.bridee.api.utils.EmailProperties;
+import com.bridee.api.utils.QRCodeUtils;
+import com.google.zxing.WriterException;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.BodyPart;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.flywaydb.core.internal.util.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 @Configuration
@@ -19,12 +36,22 @@ public class EmailSender implements MessageStrategy {
 
     private static final Integer GMAIL_SMTP_PORT = 587;
     private final EmailProperties emailProperties;
+//    @Value("${services.bridee.email.inviteUrl}")
+//    @Autowired
+//    private String inviteUrl;
 
     @Override
-    public void sendMessage(String to, String subject, String message) {
+    public void sendMessage(String to, String subject, String message){
         MimeMessage mimeMessage = javaMailSender().createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+//        byte[] imageBytes = QRCodeUtils.gerarQRCode(inviteUrl,"", "UTF-8", 200, 200);
+        MimeMessageHelper mimeMessageHelper = null;
+        try {
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
         try{
+//            mimeMessageHelper.addAttachment("qr.png", Files.write(Path.of("invite.png"),imageBytes).toFile());
             mimeMessageHelper.setTo(to);
             mimeMessageHelper.setFrom(emailProperties.getHost());
             mimeMessageHelper.setSubject(subject);
