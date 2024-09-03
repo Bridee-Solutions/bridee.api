@@ -2,10 +2,11 @@ package com.bridee.api.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,6 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table
@@ -23,17 +23,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class Fornecedor {
+public class Servico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
-    private String cnpj;
-    private String email;
-    private String midiaSocial;
-    private Integer nota;
+    private String preco;
+    @OneToOne
+    @JoinColumn(name = "categoria_id")
+    private CategoriaServico categoria;
     @CreatedBy
     @Column(updatable = false)
     private String createdBy;
@@ -46,5 +45,9 @@ public class Fornecedor {
     @LastModifiedDate
     @Column(insertable = false)
     private String updatedAt;
+    @OneToOne
+    @JoinColumn(name = "fornecedor_id")
+    private Fornecedor fornecedor;
+
 
 }
