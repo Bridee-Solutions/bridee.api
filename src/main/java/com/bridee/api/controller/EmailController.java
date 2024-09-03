@@ -1,6 +1,6 @@
 package com.bridee.api.controller;
 
-import com.bridee.api.dto.EmailDto;
+import com.bridee.api.dto.request.EmailDto;
 import com.bridee.api.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
