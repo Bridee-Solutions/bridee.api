@@ -1,4 +1,4 @@
-package com.bridee.api.dto;
+package com.bridee.api.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
