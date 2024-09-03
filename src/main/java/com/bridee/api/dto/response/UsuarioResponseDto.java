@@ -9,7 +9,6 @@ public class UsuarioResponseDto {
     private int id;
     private String nome;
     private String email;
-    private String senha;
     private String telefone;
     private String estadoCivil;
     private LocalDateTime createdAt;
