@@ -26,5 +26,5 @@ public class Mesa {
     
     @ManyToOne
     @JoinColumn
-    private Evento eventoId;
+    private Evento evento;
 }

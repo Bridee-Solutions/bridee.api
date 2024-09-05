@@ -27,5 +27,5 @@ public class Convidado {
     
     @ManyToOne
     @JoinColumn
-    private Mesa mesaId;
+    private Mesa mesa;
 }

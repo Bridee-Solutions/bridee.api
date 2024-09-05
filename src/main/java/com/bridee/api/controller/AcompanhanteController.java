@@ -1,6 +1,6 @@
 package com.bridee.api.controller;
 
-import com.bridee.api.model.Acompanhante;
+import com.bridee.api.entity.Acompanhante;
 import com.bridee.api.service.AcompanhanteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,6 @@ public class AcompanhanteController {
             Acompanhante existingAcompanhante = existingAcompanhanteOpt.get();
 
             existingAcompanhante.setNome(acompanhanteDetails.getNome());
-            existingAcompanhante.setIdade(acompanhanteDetails.getIdade());
             existingAcompanhante.setStatus(acompanhanteDetails.getStatus());
 
             Acompanhante updatedAcompanhante = service.save(existingAcompanhante);

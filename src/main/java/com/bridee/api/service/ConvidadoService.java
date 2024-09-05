@@ -1,7 +1,6 @@
 package com.bridee.api.service;
 
-import com.bridee.api.mapper.ConvidadoMapper;
-import com.bridee.api.model.Convidado;
+import com.bridee.api.entity.Convidado;
 import com.bridee.api.repository.ConvidadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,18 +15,18 @@ public class ConvidadoService {
     private ConvidadoRepository repository;
 
     @Autowired
-    private ConvidadoMapper mapper;
+//    private ConvidadoMapper mapper;
 
     public List<Convidado> findAll() {
-        return mapper.toDomain(repository.findAll());
+        return repository.findAll();
     }
 
     public Optional<Convidado> findById(Integer id) {
-        return repository.findById(id).map(mapper::toDomain);
+        return repository.findById(id);
     }
 
     public Convidado save(Convidado guest) {
-        return mapper.toDomain(repository.save(mapper.toEntity(guest)));
+        return repository.save(guest);
     }
 
     public void deleteById(Integer id) {

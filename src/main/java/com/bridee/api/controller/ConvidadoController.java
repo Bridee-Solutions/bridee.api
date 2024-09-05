@@ -1,6 +1,6 @@
 package com.bridee.api.controller;
 
-import com.bridee.api.model.Convidado;
+import com.bridee.api.entity.Convidado;
 import com.bridee.api.service.ConvidadoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
