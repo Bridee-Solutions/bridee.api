@@ -12,7 +12,6 @@ import com.bridee.api.utils.UriUtils;
 import com.bridee.api.dto.request.UsuarioRequestDto;
 import com.bridee.api.dto.response.UsuarioResponseDto;
 import com.bridee.api.entity.Usuario;
-import com.bridee.api.service.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.bridee.api.dto.request.UsuarioRequestDto;
 import com.bridee.api.dto.response.UsuarioResponseDto;
 import com.bridee.api.entity.Usuario;
-import com.bridee.api.mapper.UsuarioRequestMapper;
-import com.bridee.api.mapper.UsuarioResponseMapper;
 import com.bridee.api.repository.UsuarioRepository;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
