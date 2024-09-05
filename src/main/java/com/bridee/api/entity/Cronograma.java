@@ -20,8 +20,9 @@ public class Cronograma {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
     @ManyToOne
     @JoinColumn
-    private Integer eventoId;
+    private Evento evento;
     
 }

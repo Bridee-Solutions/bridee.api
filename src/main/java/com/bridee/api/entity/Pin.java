@@ -23,9 +23,9 @@ public class Pin {
     
     @ManyToOne
     @JoinColumn
-    private Integer casalId;
+    private Casal casal;
     
     @ManyToOne
     @JoinColumn
-    private Integer imagemId;
+    private Imagem imagem;
 }

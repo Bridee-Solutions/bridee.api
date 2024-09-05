@@ -23,9 +23,9 @@ public class CasalAssessor {
     
     @ManyToOne
     @JoinColumn
-    private Integer assessorId;
+    private Assessor assessor;
     
     @ManyToOne
     @JoinColumn
-    private Integer casalId;
+    private Casal casal;
 }

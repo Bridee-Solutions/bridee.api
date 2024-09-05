@@ -26,5 +26,5 @@ public class Assessor extends Usuario{
     
     @OneToOne
     @JoinColumn
-    private Integer usuarioId;
+    private Usuario usuario;
 }

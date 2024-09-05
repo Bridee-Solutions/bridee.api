@@ -1,6 +1,7 @@
 package com.bridee.api.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,7 +33,7 @@ public class Evento {
     
     @OneToOne
     @JoinColumn
-    private Integer tipoEvento;
+    private TipoEvento tipoEvento;
     
     private LocalDate dataInicio;
     
@@ -40,11 +41,11 @@ public class Evento {
     
     @ManyToOne
     @JoinColumn
-    private Integer casalId;
+    private Casal casal;
     
     @ManyToOne
     @JoinColumn
-    private Integer assessorId;
+    private Assessor assessor;
     
     @CreatedBy
     @Column(updatable = false)
@@ -56,9 +57,9 @@ public class Evento {
     
     @CreatedDate
     @Column(updatable = false)
-    private String createdAt;
+    private LocalDateTime createdAt;
     
     @LastModifiedDate
     @Column(insertable = false)
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 }

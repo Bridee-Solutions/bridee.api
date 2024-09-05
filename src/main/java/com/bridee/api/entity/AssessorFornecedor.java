@@ -5,7 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +21,11 @@ public class AssessorFornecedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @OneToMany
+    @ManyToOne
     @JoinColumn
-    private Integer assessorId;
+    private Assessor assessor;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn
-    private Integer fornecedorId;
+    private Fornecedor fornecedor;
 }

@@ -16,19 +16,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Token {
+public class Acompanhante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String tipo;
-    private String token;
-    private Boolean expired;
-    
-    @ManyToOne
-    @JoinColumn
-    private Aplicacao aplicacao;
+    private String nome;
+    private Boolean menorIdade;
+    private String status;
 
     @ManyToOne
     @JoinColumn
-    private Usuario usuario;
+    private Convidado convidado;
 }

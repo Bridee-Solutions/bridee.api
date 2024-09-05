@@ -11,7 +11,6 @@ import com.bridee.api.utils.UriUtils;
 
 import com.bridee.api.dto.request.UsuarioRequestDto;
 import com.bridee.api.dto.response.UsuarioResponseDto;
-import com.bridee.api.entity.Usuario;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,14 +25,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UsuarioController {
+
+    // @PostMapping("/login")
+    // public ResponseEntity<UsuarioResponseDto> login(@RequestBody String email, @RequestBody String senha) {
+        
+    // }
     
-//    private final UsuarioService usuarioService;
-//
-//    // @PostMapping("/login")
-//    // public ResponseEntity<UsuarioResponseDto> login(@RequestBody String email, @RequestBody String senha) {
-//
-//    // }
-//
 //    @PostMapping("/register")
 //    public ResponseEntity<UsuarioResponseDto> register(@RequestBody UsuarioRequestDto user) {
 //        UsuarioResponseDto userResponseDto = this.usuarioService.resgister(user);

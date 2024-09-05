@@ -1,5 +1,7 @@
 package com.bridee.api.entity;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,7 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +31,9 @@ public class Servico {
     private String nome;
     private Double preco;
     
-    @OneToMany
+    @ManyToOne
     @JoinColumn
-    private Integer categoria;
+    private CategoriaServico categoria;
     
     @CreatedBy
     @Column(updatable = false)
@@ -43,9 +45,9 @@ public class Servico {
     
     @CreatedDate
     @Column(updatable = false)
-    private String createdAt;
+    private LocalDateTime createdAt;
     
     @LastModifiedDate
     @Column(insertable = false)
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 }
