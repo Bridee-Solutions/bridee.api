@@ -1,7 +1,7 @@
 alter table usuario drop column created_by;
 alter table usuario drop column updated_by;
 alter table usuario add telefone char(13);
-alter table usuario add column estado_civil;
+alter table usuario add column estado_civil varchar(45);
 
 alter table casal drop column  telefone1;
 alter table casal drop column email;
@@ -21,7 +21,7 @@ create table assessor_fornecedor (
     CONSTRAINT fkAssessorFornecedor FOREIGN KEY (fk_assessor) REFERENCES assessor (id)
 );
 
-rename table convidado_evento to convite
+rename table convidado_evento to convite;
 alter table acompanhante add column status varchar(45);
 alter table convite add column acompanhante_id int;
 alter table convite add constraint fkConviteAcompanhante FOREIGN KEY (acompanhante_id) REFERENCES acompanhante (id);

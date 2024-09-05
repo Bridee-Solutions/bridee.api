@@ -1,8 +1,7 @@
-package com.bridee.api.services;
+package com.bridee.api.service;
 
 import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.bridee.api.dto.request.UsuarioRequestDto;
@@ -31,7 +30,7 @@ public class UsuarioService {
         return responseMapper.toDomain(this.repository.save(user));
     }
 
-    public UsuarioResponseDto put(UsuarioRequestDto userRequestDto, Integer id){
+    public UsuarioResponseDto update(UsuarioRequestDto userRequestDto, Integer id){
         if (!this.repository.existsById(id)) throw new ResourceNotFoundException();
 
         userRequestDto.setId(id);

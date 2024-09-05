@@ -14,18 +14,14 @@ import lombok.Setter;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-public class Casal extends Usuario {
+@Setter
+public class ItemOrcamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome_parceiro;
-    private String telefone_parceiro;
-    private String endereco;
-    private String cep;
-    private String estadoCivil;
+    
     @OneToOne
     @JoinColumn
-    private Integer usuarioId;
+    private Integer tipoId;
 }
