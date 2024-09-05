@@ -26,9 +26,9 @@ public class Token {
     
     @ManyToOne
     @JoinColumn
-    private Integer aplicacaoId;
+    private Aplicacao aplicacao;
 
     @ManyToOne
     @JoinColumn
-    private Integer usuarioId;
+    private Usuario usuario;
 }

@@ -20,8 +20,5 @@ public class ItemOrcamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-    @OneToOne
-    @JoinColumn
-    private Integer tipoId;
+    private String tipo;
 }

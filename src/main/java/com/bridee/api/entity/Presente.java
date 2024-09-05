@@ -26,5 +26,5 @@ public class Presente {
 
     @ManyToOne
     @JoinColumn
-    private Integer casalId;
+    private Casal casal;
 }

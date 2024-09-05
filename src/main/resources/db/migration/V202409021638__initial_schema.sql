@@ -30,3 +30,9 @@ alter table convite add constraint fkConviteAcompanhante FOREIGN KEY (acompanhan
 alter table fornecedor drop column premium;
 alter table assessor add column premium boolean;
 
+alter table item_orcamento drop constraint tipo;
+drop table tipo_orcamento;
+
+alter table item_orcamento drop column fk_tipo;
+alter table item_orcamento add column tipo varchar(45);
+

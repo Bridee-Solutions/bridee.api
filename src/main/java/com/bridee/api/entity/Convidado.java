@@ -24,7 +24,8 @@ public class Convidado {
     private String categoria;
     private String telefone;
     private String status;
+    
     @ManyToOne
     @JoinColumn
-    private Integer mesaId;
+    private Mesa mesaId;
 }
