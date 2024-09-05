@@ -2,9 +2,9 @@ services:
   database:
     image: 'mysql:8.4'
     environment:
-      - 'MYSQL_DATABASE=bridee'
-      - 'MYSQL_ROOT_PASSWORD=bridee'
-      - 'MYSQL_USER=bridee'
-      - 'MYSQL_PASSWORD=bridee'
+      - 'MYSQL_DATABASE=root'
+      - 'MYSQL_ROOT_PASSWORD=root'
+      - 'MYSQL_USER=root'
+      - 'MYSQL_PASSWORD=root  '
     ports:
       - '3307:3306'

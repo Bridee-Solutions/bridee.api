@@ -1,0 +1,36 @@
+package com.bridee.api.service;
+
+import com.bridee.api.mapper.AcompanhanteMapper;
+import com.bridee.api.model.Acompanhante;
+import com.bridee.api.repository.AcompanhanteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class AcompanhanteService {
+
+    @Autowired
+    private AcompanhanteRepository repository;
+
+    @Autowired
+    private AcompanhanteMapper mapper;
+
+    public List<Acompanhante> findAll() {
+        return mapper.toDomain(repository.findAll());
+    }
+
+    public Optional<Acompanhante> findById(Integer id) {
+        return repository.findById(id).map(mapper::toDomain);
+    }
+
+    public Acompanhante save(Acompanhante companion) {
+        return mapper.toDomain(repository.save(mapper.toEntity(companion)));
+    }
+
+    public void deleteById(Integer id) {
+        repository.deleteById(id);
+    }
+}
