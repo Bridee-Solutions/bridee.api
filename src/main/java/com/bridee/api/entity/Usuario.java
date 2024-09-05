@@ -20,7 +20,7 @@ public abstract class Usuario  {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String nome;
     private String email;
     private String senha;
