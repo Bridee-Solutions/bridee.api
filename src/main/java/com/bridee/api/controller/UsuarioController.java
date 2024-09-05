@@ -28,28 +28,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class UsuarioController {
     
-    private final UsuarioService usuarioService;
- 
-    // @PostMapping("/login")
-    // public ResponseEntity<UsuarioResponseDto> login(@RequestBody String email, @RequestBody String senha) {
-        
-    // }
-    
-    @PostMapping("/register")
-    public ResponseEntity<UsuarioResponseDto> register(@RequestBody UsuarioRequestDto user) {
-        UsuarioResponseDto userResponseDto = this.usuarioService.resgister(user);
-        
-        return ResponseEntity.created(UriUtils.uriBuilder(userResponseDto)).body(userResponseDto);
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDto> updateUser(@RequestBody UsuarioRequestDto user, @PathVariable Integer id) {
-        return ResponseEntity.ok(this.usuarioService.update(user, id));
-    }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        this.deleteUser(id);
-        return ResponseEntity.notFound().build();
-    }
+//    private final UsuarioService usuarioService;
+//
+//    // @PostMapping("/login")
+//    // public ResponseEntity<UsuarioResponseDto> login(@RequestBody String email, @RequestBody String senha) {
+//
+//    // }
+//
+//    @PostMapping("/register")
+//    public ResponseEntity<UsuarioResponseDto> register(@RequestBody UsuarioRequestDto user) {
+//        UsuarioResponseDto userResponseDto = this.usuarioService.resgister(user);
+//
+//        return ResponseEntity.created(UriUtils.uriBuilder(userResponseDto)).body(userResponseDto);
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<UsuarioResponseDto> updateUser(@RequestBody UsuarioRequestDto user, @PathVariable Integer id) {
+//        return ResponseEntity.ok(this.usuarioService.update(user, id));
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+//        this.deleteUser(id);
+//        return ResponseEntity.notFound().build();
+//    }
 }
