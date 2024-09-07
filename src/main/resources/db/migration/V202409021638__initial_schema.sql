@@ -36,3 +36,4 @@ drop table tipo_orcamento;
 alter table item_orcamento drop column tipo_id;
 alter table item_orcamento add column tipo varchar(45);
 
+alter table assessor add column preco Decimal(5,2);

@@ -20,8 +20,8 @@ public class Casal extends Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome_parceiro;
-    private String telefone_parceiro;
+    private String nomeParceiro;
+    private String telefoneParceiro;
     private String endereco;
     private String cep;
     private String estadoCivil;

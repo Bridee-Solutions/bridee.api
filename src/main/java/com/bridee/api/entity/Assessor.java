@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class Assessor extends Usuario{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String cnpj;
-    private Double preco_assessoria;
+    private BigDecimal preco;
     private Boolean premium;
     
     @OneToOne

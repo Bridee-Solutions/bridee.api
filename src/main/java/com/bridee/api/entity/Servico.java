@@ -30,6 +30,7 @@ public class Servico {
     private Integer id;
     private String nome;
     private Double preco;
+    private Integer nota;
     
     @ManyToOne
     @JoinColumn
