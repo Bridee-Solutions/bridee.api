@@ -13,3 +13,8 @@ services:
       host: ${BRIDEE_EMAIL_HOST:smtp.gmail.com}
       user: ${BRIDEE_EMAIL_USERNAME:""}
       password: ${BRIDEE_EMAIL_PASSWORD:""}
+    whatsapp:
+      inviteUrl: ${BRIDEE_INVITE_URL:http://localhost:8080}
+      url: ${WHATSAPP_API_URL:https://app.whatsgw.com.br/api/WhatsGw/Send}
+      apiKey: ${WHATSAPP_API_KEY:6c28732c-85a2-4286-9d2e-41dc4658e31d}
+      phoneSender: ${BRIDEE_PHONE_NUMBER:5573988110632}
