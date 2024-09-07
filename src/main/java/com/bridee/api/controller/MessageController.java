@@ -1,8 +1,7 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.EmailDto;
-import com.bridee.api.dto.request.WhatsappRequestDto;
-import com.bridee.api.dto.response.WhatsappResponseDto;
+import com.bridee.api.client.dto.request.WhatsappRequestDto;
 import com.bridee.api.pattern.strategy.impl.WhatsappSender;
 import com.bridee.api.service.EmailService;
 import com.bridee.api.utils.QRCodeUtils;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Base64;
 
 @RestController

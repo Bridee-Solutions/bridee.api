@@ -26,4 +26,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponseDto);
     }
 
+    @ExceptionHandler(ImagesNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> imagesDoesNotExists(ImagesNotFoundException e, HttpServletResponse response){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorResponseDto.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDto);
+    }
+
 }

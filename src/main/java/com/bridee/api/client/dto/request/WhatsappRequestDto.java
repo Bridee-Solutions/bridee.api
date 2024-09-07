@@ -1,4 +1,4 @@
-package com.bridee.api.dto.request;
+package com.bridee.api.client.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

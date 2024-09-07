@@ -15,6 +15,9 @@ services:
       password: ${BRIDEE_EMAIL_PASSWORD:""}
     whatsapp:
       inviteUrl: ${BRIDEE_INVITE_URL:http://localhost:8080}
-      url: ${WHATSAPP_API_URL:https://app.whatsgw.com.br/api/WhatsGw/Send}
+      url: ${WHATSAPP_API_URL:https://app.whatsgw.com.br/api/WhatsGw}
       apiKey: ${WHATSAPP_API_KEY:6c28732c-85a2-4286-9d2e-41dc4658e31d}
       phoneSender: ${BRIDEE_PHONE_NUMBER:5573988110632}
+    pexels:
+      url: ${PEXELS_URL:https://api.pexels.com}
+      apiKey: ${PEXELS_API_KEY:0SuVakENYYmZjAdLk2M3ltPqPPcgS8SHHgHakSYOqUQSVoCh9C1f2nQo}

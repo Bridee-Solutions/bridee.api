@@ -1,4 +1,4 @@
-package com.bridee.api.client;
+package com.bridee.api.client.enums;
 
 import lombok.Getter;
 
