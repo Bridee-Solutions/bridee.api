@@ -5,16 +5,22 @@ import com.bridee.api.service.AcompanhanteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/acompanhante")
+@RequestMapping("/acompanhantes")
 public class AcompanhanteController {
 
     private final AcompanhanteService service;
 
     public AcompanhanteController(AcompanhanteService service) {
         this.service = service;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Acompanhante>> findAll(){
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")

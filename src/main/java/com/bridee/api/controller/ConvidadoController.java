@@ -2,19 +2,23 @@ package com.bridee.api.controller;
 
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.service.ConvidadoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/convidados")
+@RequiredArgsConstructor
 public class ConvidadoController {
 
     private final ConvidadoService service;
 
-    public ConvidadoController(ConvidadoService service) {
-        this.service = service;
+    @GetMapping
+    public ResponseEntity<List<Convidado>> findAll(){
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")

@@ -15,10 +15,10 @@ alter table casal add column nome_parceiro varchar(45);
 
 create table assessor_fornecedor (
     id int primary key auto_increment,
-    fk_fornecedor int,
-    fk_assessor int,
-    CONSTRAINT fkFornecedorAssessor FOREIGN KEY (fk_fornecedor) REFERENCES fornecedor (id),
-    CONSTRAINT fkAssessorFornecedor FOREIGN KEY (fk_assessor) REFERENCES assessor (id)
+    fornecedor_id int,
+    assessor_id int,
+    CONSTRAINT fkFornecedorAssessor FOREIGN KEY (fornecedor_id) REFERENCES fornecedor (id),
+    CONSTRAINT fkAssessorFornecedor FOREIGN KEY (assessor_id) REFERENCES assessor (id)
 );
 
 rename table convidado_evento to convite;
@@ -33,6 +33,6 @@ alter table assessor add column premium boolean;
 alter table item_orcamento drop constraint tipo;
 drop table tipo_orcamento;
 
-alter table item_orcamento drop column fk_tipo;
+alter table item_orcamento drop column tipo_id;
 alter table item_orcamento add column tipo varchar(45);
 
