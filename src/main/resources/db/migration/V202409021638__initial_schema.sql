@@ -37,3 +37,6 @@ alter table item_orcamento drop column tipo_id;
 alter table item_orcamento add column tipo varchar(45);
 
 alter table assessor add column preco Decimal(5,2);
+alter table acompanhante add column telefone char(13);
+alter table acompanhante add column pin varchar(40);
+alter table convidado add column pin varchar(40);

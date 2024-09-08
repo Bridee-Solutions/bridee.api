@@ -23,6 +23,8 @@ public class Acompanhante {
     private String nome;
     private Boolean menorIdade;
     private String status;
+    private String telefone;
+    private String pin;
 
     @ManyToOne
     @JoinColumn
