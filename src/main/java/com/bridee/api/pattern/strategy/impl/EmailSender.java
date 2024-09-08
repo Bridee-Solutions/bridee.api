@@ -37,14 +37,10 @@ public class EmailSender implements MessageStrategy<String, EmailDto> {
 
     private static final Integer GMAIL_SMTP_PORT = 587;
     private final EmailProperties emailProperties;
-//    @Value("${services.bridee.email.inviteUrl}")
-//    @Autowired
-//    private String inviteUrl;
 
     @Override
     public String sendMessage(EmailDto email){
         MimeMessage mimeMessage = javaMailSender().createMimeMessage();
-//        byte[] imageBytes = QRCodeUtils.gerarQRCode(inviteUrl,"", "UTF-8", 200, 200);
         MimeMessageHelper mimeMessageHelper = null;
         try {
             mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -52,7 +48,6 @@ public class EmailSender implements MessageStrategy<String, EmailDto> {
             throw new RuntimeException(e);
         }
         try{
-//            mimeMessageHelper.addAttachment("qr.png", Files.write(Path.of("invite.png"),imageBytes).toFile());
             mimeMessageHelper.setTo(email.getTo());
             mimeMessageHelper.setFrom(emailProperties.getHost());
             mimeMessageHelper.setSubject(email.getSubject());

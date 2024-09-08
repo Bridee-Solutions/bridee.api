@@ -1,6 +1,7 @@
 package com.bridee.api.service;
 
 import com.bridee.api.entity.Convidado;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.ConvidadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,15 @@ public class ConvidadoService {
     @Autowired
     private ConvidadoRepository repository;
 
-    @Autowired
+//    @Autowired
 //    private ConvidadoMapper mapper;
 
     public List<Convidado> findAll() {
         return repository.findAll();
     }
 
-    public Optional<Convidado> findById(Integer id) {
-        return repository.findById(id);
+    public Convidado findById(Integer id) {
+        return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
     public Convidado save(Convidado guest) {

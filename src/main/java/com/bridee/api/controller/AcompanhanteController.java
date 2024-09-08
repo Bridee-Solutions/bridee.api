@@ -30,6 +30,11 @@ public class AcompanhanteController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PostMapping
+    public ResponseEntity<Acompanhante> save(@RequestBody Acompanhante acompanhante){
+        return ResponseEntity.ok(service.save(acompanhante));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Acompanhante> update(@PathVariable Integer id, @RequestBody Acompanhante acompanhanteDetails) {
         Optional<Acompanhante> existingAcompanhanteOpt = service.findById(id);

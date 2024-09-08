@@ -25,8 +25,5 @@ public class Casal extends Usuario {
     private String endereco;
     private String cep;
     private String estadoCivil;
-    
-    @OneToOne
-    @JoinColumn
-    private Usuario usuario;
+
 }

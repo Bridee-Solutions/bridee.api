@@ -264,7 +264,7 @@ create table
     convidado (
         id int primary key auto_increment,
         nome varchar(45),
-        categoria time,
+        categoria varchar(45),
         telefone char(13),
         status varchar(45),
         mesa_id int,

@@ -25,8 +25,5 @@ public class Assessor extends Usuario{
     private String cnpj;
     private BigDecimal preco;
     private Boolean premium;
-    
-    @OneToOne
-    @JoinColumn
-    private Usuario usuario;
+
 }
