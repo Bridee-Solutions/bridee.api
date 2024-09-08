@@ -1,5 +1,7 @@
 package com.bridee.api.client.dto.request;
 
+import com.bridee.api.client.enums.WhatsappClientType;
+import com.bridee.api.client.enums.WhatsappMessageType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -26,5 +28,7 @@ public class WhatsappRequestDto {
     private String messageCaption;
     @JsonProperty("message_body")
     private String messageBody;
+    @JsonProperty("client_type")
+    private WhatsappClientType whatsappClientType;
 
 }

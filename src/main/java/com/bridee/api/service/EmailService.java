@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.dto.request.EmailDto;
 import com.bridee.api.pattern.strategy.impl.EmailSender;
 import com.google.zxing.WriterException;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class EmailService {
 
     private final EmailSender emailSender;
 
-    public void sendEmail(String to, String subject, String message){
-            emailSender.sendMessage(to, subject, message);
+    public String sendEmail(EmailDto emailDto){
+            return emailSender.sendMessage(emailDto);
     }
 }

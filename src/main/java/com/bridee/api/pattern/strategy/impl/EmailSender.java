@@ -1,5 +1,6 @@
 package com.bridee.api.pattern.strategy.impl;
 
+import com.bridee.api.dto.request.EmailDto;
 import com.bridee.api.pattern.strategy.MessageStrategy;
 import com.bridee.api.utils.EmailProperties;
 import com.bridee.api.utils.QRCodeUtils;
@@ -32,7 +33,7 @@ import java.util.Properties;
 
 @Configuration
 @RequiredArgsConstructor
-public class EmailSender implements MessageStrategy {
+public class EmailSender implements MessageStrategy<String, EmailDto> {
 
     private static final Integer GMAIL_SMTP_PORT = 587;
     private final EmailProperties emailProperties;
@@ -41,7 +42,7 @@ public class EmailSender implements MessageStrategy {
 //    private String inviteUrl;
 
     @Override
-    public void sendMessage(String to, String subject, String message){
+    public String sendMessage(EmailDto email){
         MimeMessage mimeMessage = javaMailSender().createMimeMessage();
 //        byte[] imageBytes = QRCodeUtils.gerarQRCode(inviteUrl,"", "UTF-8", 200, 200);
         MimeMessageHelper mimeMessageHelper = null;
@@ -52,14 +53,15 @@ public class EmailSender implements MessageStrategy {
         }
         try{
 //            mimeMessageHelper.addAttachment("qr.png", Files.write(Path.of("invite.png"),imageBytes).toFile());
-            mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setTo(email.getTo());
             mimeMessageHelper.setFrom(emailProperties.getHost());
-            mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setText(message);
+            mimeMessageHelper.setSubject(email.getSubject());
+            mimeMessageHelper.setText(email.getMessage());
         }catch (MessagingException e){
             e.printStackTrace();
         }
         javaMailSender().send(mimeMessage);
+        return "Email enviado com sucesso";
     }
 
     @Bean

@@ -4,6 +4,6 @@ import com.google.zxing.WriterException;
 
 import java.io.IOException;
 
-public interface MessageStrategy {
-    void sendMessage(String to, String from, String message) throws IOException, WriterException;
+public interface MessageStrategy<T, K> {
+    T sendMessage(K messageObject) throws IOException, WriterException;
 }

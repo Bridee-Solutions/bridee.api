@@ -34,4 +34,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDto);
     }
 
+    @ExceptionHandler(UnableToGenerateQRCode.class)
+    public ResponseEntity<ErrorResponseDto> unableToGenerateQRCode(UnableToGenerateQRCode e, HttpServletResponse response){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorResponseDto.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponseDto);
+    }
+
 }
