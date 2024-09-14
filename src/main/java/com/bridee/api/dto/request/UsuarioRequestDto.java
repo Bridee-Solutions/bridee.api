@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 public class UsuarioRequestDto {
 
-
     private int id;
     private String nome;
     @Email
@@ -18,6 +17,4 @@ public class UsuarioRequestDto {
     private String senha;
     private String telefone;
     private String estadoCivil;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

@@ -2,6 +2,8 @@ package com.bridee.api.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -20,7 +22,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Usuario  {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Usuario {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

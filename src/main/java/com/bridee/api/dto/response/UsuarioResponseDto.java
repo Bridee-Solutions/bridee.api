@@ -11,6 +11,4 @@ public class UsuarioResponseDto {
     private String email;
     private String telefone;
     private String estadoCivil;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

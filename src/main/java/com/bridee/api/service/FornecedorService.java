@@ -20,30 +20,25 @@ import java.util.Optional;
 public class FornecedorService {
 
     private final FornecedorRepository repository;
-    private final FornecedorResponseMapper responseMapper;
-    private final FornecedorRequestMapper requestMapper;
 
-    public Page<FornecedorResponseDto> findAll(Pageable pageable){
-        return responseMapper.toDomain(repository.findAll(pageable));
+    public Page<Fornecedor> findAll(Pageable pageable){
+        return repository.findAll(pageable);
     }
 
-    public FornecedorResponseDto findById(Integer id){
-        Fornecedor fornecedor = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        return responseMapper.toDomain(fornecedor);
+    public Fornecedor findById(Integer id){
+        return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public FornecedorResponseDto save(FornecedorRequestDto fornecedorRequestDto){
-        Optional<Fornecedor> optionalFornecedor = repository.findByCnpj(fornecedorRequestDto.getCnpj());
+    public Fornecedor save(Fornecedor fornecedor){
+        Optional<Fornecedor> optionalFornecedor = repository.findByCnpj(fornecedor.getCnpj());
         if(optionalFornecedor.isPresent()) throw new ResourceAlreadyExists();
-        Fornecedor fornecedor = requestMapper.toEntity(fornecedorRequestDto);
-        return responseMapper.toDomain(repository.save(fornecedor));
+        return repository.save(fornecedor);
     }
 
-    public FornecedorResponseDto update(FornecedorRequestDto fornecedorRequestDto, Integer id){
+    public Fornecedor update(Fornecedor fornecedor, Integer id){
         if (!repository.existsById(id)) throw new ResourceNotFoundException();
-        fornecedorRequestDto.setId(id);
-        Fornecedor fornecedor = requestMapper.toEntity(fornecedorRequestDto);
-        return responseMapper.toDomain(repository.save(fornecedor));
+        fornecedor.setId(id);
+        return repository.save(fornecedor);
     }
 
     public void deleteById(Integer id){

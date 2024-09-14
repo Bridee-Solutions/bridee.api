@@ -2,6 +2,7 @@ package com.bridee.api.controller;
 
 import com.bridee.api.entity.Acompanhante;
 import com.bridee.api.service.AcompanhanteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ public class AcompanhanteController {
 
     private final AcompanhanteService service;
 
+    @Autowired
     public AcompanhanteController(AcompanhanteService service) {
         this.service = service;
     }
