@@ -9,6 +9,7 @@ import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AssessorService {
 
     private final AssessorRepository assessorRepository;
@@ -33,13 +35,10 @@ public class AssessorService {
 
     public Assessor save(Assessor assessor){
         if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())) throw new ResourceAlreadyExists("Assessor já cadastrado");
-        List<Role> roles = roleRepository.findAll();
-        if (roles.isEmpty()) throw new ResourceNotFoundException("Nenhuma role foi encontrada");
+        Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         assessor.setSenha(passwordEncoder.encode(assessor.getSenha()));
         Assessor createdAssessor = assessorRepository.save(assessor);
-        roles.stream().filter(role -> role.getNome().equals(RoleEnum.ROLE_USER) || role.getNome().equals(RoleEnum.ROLE_ASSESSOR))
-                .forEach(userRole ->
-                        usuarioRoleRepository.save(new UsuarioRole(null, userRole, createdAssessor)));
+        usuarioRoleRepository.save(new UsuarioRole(null, role, createdAssessor));
         return createdAssessor;
     }
 
@@ -55,5 +54,6 @@ public class AssessorService {
 
     public void deleteById(Integer id){
         if (!assessorRepository.existsById(id)) throw new ResourceNotFoundException();
+        assessorRepository.deleteById(id);
     }
 }

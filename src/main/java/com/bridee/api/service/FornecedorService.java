@@ -8,6 +8,7 @@ import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.FornecedorRequestMapper;
 import com.bridee.api.mapper.FornecedorResponseMapper;
 import com.bridee.api.repository.FornecedorRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FornecedorService {
 
     private final FornecedorRepository repository;

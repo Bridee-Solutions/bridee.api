@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.entity.Acompanhante;
 import com.bridee.api.repository.AcompanhanteRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AcompanhanteService {
 
     @Autowired
