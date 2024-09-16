@@ -3,6 +3,7 @@ package com.bridee.api.dto.security;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.UsuarioRole;
 import com.bridee.api.repository.UsuarioRoleRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,10 +13,10 @@ import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class SecurityUser implements UserDetails {
 
     private final Usuario usuario;
-    @Autowired
     private UsuarioRoleRepository usuarioRoleRepository;
 
     @Override

@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getHeader("Authorization") == null || request.getServletPath().equals("/authentication")){
+        if (isNonFilteredRequest(request)){
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,6 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getJwtFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
         for (Cookie cookie: cookies){
             if (cookie.getName().equals("access_token")){
                 if(cookie.getValue() == null) return null;
@@ -62,5 +63,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         return null;
+    }
+    
+    private boolean isNonFilteredRequest(HttpServletRequest request){
+        String method = request.getMethod();
+        if(method.equals("POST") && (request.getServletPath().equals("/assessores") || request.getServletPath().equals("/casais") || request.getServletPath().equals("/authentication"))){
+            return true;
+        }
+        return false;
     }
 }

@@ -6,5 +6,5 @@ import lombok.Data;
 public class AuthenticationRequestDto {
 
     private String email;
-    private String password;
+    private String senha;
 }
