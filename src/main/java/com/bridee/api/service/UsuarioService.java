@@ -1,6 +1,7 @@
 package com.bridee.api.service;
 
 import com.bridee.api.dto.security.SecurityUser;
+import com.bridee.api.entity.Usuario;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,5 +23,9 @@ public class UsuarioService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return new SecurityUser(repository.findByEmail(username).orElseThrow(ResourceNotFoundException::new), usuarioRoleRepository);
+    }
+
+    public Usuario findByEmail(String email){
+        return repository.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
     }
 }

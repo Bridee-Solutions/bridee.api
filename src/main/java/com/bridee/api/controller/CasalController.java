@@ -1,10 +1,14 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.CasalRequestDto;
+import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
 import com.bridee.api.dto.response.CasalResponseDto;
+import com.bridee.api.dto.response.externo.CasalExternoResponseDto;
 import com.bridee.api.entity.Casal;
-import com.bridee.api.mapper.CasalRequestMapper;
-import com.bridee.api.mapper.CasalResponseMapper;
+import com.bridee.api.mapper.request.CasalRequestMapper;
+import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
+import com.bridee.api.mapper.response.CasalResponseMapper;
+import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.utils.UriUtils;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,8 @@ public class CasalController {
     private final CasalService service;
     private final CasalRequestMapper requestMapper;
     private final CasalResponseMapper responseMapper;
+    private final CasalExternoRequestMapper externoRequestMapper;
+    private final CasalExternoResponseMapper externoResponseMapper;
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
@@ -44,6 +50,13 @@ public class CasalController {
     public ResponseEntity<CasalResponseDto> save(@RequestBody CasalRequestDto requestDto){
         Casal casal = requestMapper.toEntity(requestDto);
         CasalResponseDto responseDto = responseMapper.toDomain(service.save(casal));
+        return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
+    }
+
+    @PostMapping("/externo")
+    public ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody CasalExternoRequestDto requestDto){
+        Casal casal = externoRequestMapper.toEntity(requestDto);
+        CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(service.saveExternal(casal));
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 

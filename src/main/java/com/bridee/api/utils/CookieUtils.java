@@ -8,8 +8,7 @@ import java.time.Duration;
 public class CookieUtils {
 
     public static HttpCookie createCookie(String name, String value, boolean secure, Duration maxAge, String domain){
-        return ResponseCookie.from(name)
-                .value(value)
+        return ResponseCookie.from(name, value)
                 .secure(secure)
                 .maxAge(maxAge)
                 .domain(domain)
@@ -19,8 +18,7 @@ public class CookieUtils {
     }
 
     public static HttpCookie clearCookie(String name, String domain){
-        return ResponseCookie.from(name)
-                .value("")
+        return ResponseCookie.from(name, "")
                 .httpOnly(true)
                 .maxAge(1)
                 .domain(domain)

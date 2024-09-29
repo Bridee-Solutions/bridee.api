@@ -34,11 +34,12 @@ public class AssessorService {
     }
 
     public Assessor save(Assessor assessor){
-        if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())) throw new ResourceAlreadyExists("Assessor já cadastrado");
+        if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
         Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         assessor.setSenha(passwordEncoder.encode(assessor.getSenha()));
         Assessor createdAssessor = assessorRepository.save(assessor);
-        usuarioRoleRepository.save(new UsuarioRole(null, role, createdAssessor));
+        UsuarioRole usuarioRole = new UsuarioRole(null, role, createdAssessor);
+        usuarioRoleRepository.save(usuarioRole);
         return createdAssessor;
     }
 

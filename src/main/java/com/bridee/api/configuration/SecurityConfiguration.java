@@ -3,6 +3,7 @@ package com.bridee.api.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -11,6 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
@@ -25,11 +31,30 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(httpRequest -> {
                         httpRequest
                                 .requestMatchers("/authentication").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/usuarios/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/casais", "/assessores", "/casais/externo").permitAll()
                                 .anyRequest().authenticated();
                 })
                 .csrf(CsrfConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*");
+        config.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
+                "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
+                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+        config.setAllowedMethods(Arrays.asList("DELETE", "GET", "PUT", "POST", "OPTIONS"));
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
     }
 
     @Bean

@@ -1,12 +1,8 @@
 package com.bridee.api.service;
 
-import com.bridee.api.dto.request.FornecedorRequestDto;
-import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.mapper.FornecedorRequestMapper;
-import com.bridee.api.mapper.FornecedorResponseMapper;
 import com.bridee.api.repository.FornecedorRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +29,7 @@ public class FornecedorService {
 
     public Fornecedor save(Fornecedor fornecedor){
         Optional<Fornecedor> optionalFornecedor = repository.findByCnpj(fornecedor.getCnpj());
-        if(optionalFornecedor.isPresent()) throw new ResourceAlreadyExists();
+        if(optionalFornecedor.isPresent()) throw new ResourceAlreadyExists("Fornecedor já cadastrado");
         return repository.save(fornecedor);
     }
 

@@ -29,7 +29,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody AuthenticationRequestDto authenticationRequest){
         AuthenticationResponseDto authenticationResponse = authenticationService.authenticate(authenticationRequest);
         HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", authenticationResponse.getAccessToken(), true, Duration.ofHours(1),"localhost");
-        HttpCookie refreshTokenCookie = CookieUtils.createCookie("refresh_token", authenticationResponse.getRefreshToken(), true, Duration.ofHours(1), "localhost");
+        HttpCookie refreshTokenCookie = CookieUtils.createCookie("refresh_token", authenticationResponse.getRefreshToken(), true, Duration.ofDays(7), "localhost");
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());

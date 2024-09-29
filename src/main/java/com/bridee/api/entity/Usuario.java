@@ -33,6 +33,8 @@ public class Usuario {
     private String senha;
     private String telefone;
     private String estadoCivil;
+    private Boolean enabled = false;
+    private Boolean externo = false;
     
     @CreatedDate
     @Column(updatable = false)
