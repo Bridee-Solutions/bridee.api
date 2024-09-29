@@ -22,10 +22,13 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto){
-        Usuario usuario = usuarioRepository.findByEmail(requestDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Email ou senha inválidos"));
+        Usuario usuario = usuarioRepository.findByEmail(requestDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Usuário Inválido"));
         UserDetails userAuthenticated = new SecurityUser(usuario);
         if (!passwordEncoder.matches(requestDto.getSenha(), userAuthenticated.getPassword())){
-            throw new ResourceNotFoundException("Email ou senha inválidos");
+            throw new ResourceNotFoundException("Usuário inválido");
+        }
+        if (usuario.getExterno()){
+            throw new ResourceNotFoundException("Usuário não cadastro pela aplicação");
         }
         String accessToken = jwtService.generateToken(new HashMap<>(), userAuthenticated);
         String refreshToken = jwtService.generateRefreshToken(userAuthenticated);
