@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -28,8 +29,7 @@ public class VerificationTokenService {
     }
 
     private boolean isVerificationTokenValid(VerificationToken verificationToken){
-            if (LocalDateTime.now().isAfter(verificationToken.getExpiresAt())
-                    || verificationToken.getConfirmedAt() != null){
+            if (LocalDateTime.now().isAfter(verificationToken.getExpiresAt())){
                 return false;
             }
             return true;
@@ -40,10 +40,13 @@ public class VerificationTokenService {
     }
 
     public void confirmVerificationToken(VerificationToken verificationToken){
-        if (!isVerificationTokenValid(verificationToken)){
-            throw new IllegalArgumentException("Token de verificação inválido");
+        if (Objects.isNull(verificationToken.getConfirmedAt())){
+            if (!isVerificationTokenValid(verificationToken)){
+                throw new IllegalArgumentException("Token de verificação inválido");
+            }
         }
-        verificationToken.setConfirmedAt(LocalDateTime.now());
+        LocalDateTime confirmedAt = Objects.nonNull(verificationToken.getConfirmedAt()) ? verificationToken.getConfirmedAt() : LocalDateTime.now();
+        verificationToken.setConfirmedAt(confirmedAt);
         repository.save(verificationToken);
     }
 
