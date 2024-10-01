@@ -24,3 +24,7 @@ services:
 jwt:
   secret:
     key: ${JWT_SECRET:""}
+
+email:
+  register:
+    url: ${EMAIL_REGISTER_URL:http://localhost:8080/usuarios/ativar-conta}

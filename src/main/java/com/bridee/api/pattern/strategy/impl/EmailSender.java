@@ -51,7 +51,7 @@ public class EmailSender implements MessageStrategy<String, EmailDto> {
             mimeMessageHelper.setTo(email.getTo());
             mimeMessageHelper.setFrom(emailProperties.getHost());
             mimeMessageHelper.setSubject(email.getSubject());
-            mimeMessageHelper.setText(email.getMessage());
+            mimeMessageHelper.setText(email.getMessage(), email.isHTML());
         }catch (MessagingException e){
             e.printStackTrace();
         }
@@ -64,6 +64,7 @@ public class EmailSender implements MessageStrategy<String, EmailDto> {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(emailProperties.getHost());
         javaMailSender.setPort(GMAIL_SMTP_PORT);
+        javaMailSender.setDefaultEncoding("UTF-8");
 
         javaMailSender.setUsername(emailProperties.getUser());
         javaMailSender.setPassword(emailProperties.getPassword());
