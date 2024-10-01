@@ -1,0 +1,12 @@
+package com.bridee.api.repository;
+
+import com.bridee.api.entity.VerificationToken;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Integer> {
+
+    Optional<VerificationToken> findByValor(String valor);
+
+}

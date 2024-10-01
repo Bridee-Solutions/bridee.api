@@ -5,13 +5,13 @@ import com.bridee.api.dto.security.SecurityUser;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Usuario;
+import com.bridee.api.entity.VerificationToken;
 import com.bridee.api.entity.enums.email.CadastroEmailFields;
 import com.bridee.api.entity.enums.email.EmailFields;
 import com.bridee.api.entity.enums.email.EmailTemplate;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.utils.EmailTemplateBuilder;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +34,7 @@ public class UsuarioService implements UserDetailsService {
     private final UsuarioRepository repository;
     private final UsuarioRoleRepository usuarioRoleRepository;
     private final EmailService emailService;
+    private final VerificationTokenService verificationTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -44,14 +45,38 @@ public class UsuarioService implements UserDetailsService {
         return repository.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public void sendRegistrationEmail(Usuario usuario){
+    public void validateUser(VerificationToken verificationToken){
+        verificationTokenService.confirmVerificationToken(verificationToken);
+        Usuario usuario = verificationToken.getUsuario();
+        usuario.setEnabled(true);
+        repository.save(usuario);
+    }
+
+    public String sendRegistrationEmail(Usuario usuario){
 
         if (Objects.isNull(usuario)){
             throw new IllegalArgumentException("Usuario não encontrado!");
         }
 
+        var emailFields = buildEmailFields(usuario);
+
+        String emailHtml = EmailTemplateBuilder.generateHtmlEmailTemplate(EmailTemplate.CADASTRO, emailFields);
+        EmailDto emailDto = EmailDto.builder()
+                .to(usuario.getEmail())
+                .subject("Confirmação de cadastro.")
+                .message(emailHtml)
+                .isHTML(true)
+                .build();
+        return emailService.sendEmail(emailDto);
+    }
+
+    public Map<EmailFields, Object> buildEmailFields(Usuario usuario){
+
+        var verificationToken = verificationTokenService.generateVerificationToken(usuario);
+
         Map<EmailFields, Object> emailFields = new HashMap<>();
         emailFields.put(CadastroEmailFields.REGISTER_URL, registerUrl);
+        emailFields.put(CadastroEmailFields.VERIFICATION_TOKEN, verificationToken.getValor());
 
         if(usuario instanceof Casal){
             emailFields.put(CadastroEmailFields.COUPLE_NAME, "%s & %s".formatted(usuario.getNome(), ((Casal) usuario).getNomeParceiro()));
@@ -61,13 +86,6 @@ public class UsuarioService implements UserDetailsService {
             emailFields.put(CadastroEmailFields.IS_ASSESSOR, true);
         }
 
-        String emailHtml = EmailTemplateBuilder.generateHtmlEmailTemplate(EmailTemplate.CADASTRO, emailFields);
-        EmailDto emailDto = EmailDto.builder()
-                .to(usuario.getEmail())
-                .subject("Confirmação de cadastro.")
-                .message(emailHtml)
-                .isHTML(true)
-                .build();
-        emailService.sendEmail(emailDto);
+        return emailFields;
     }
 }

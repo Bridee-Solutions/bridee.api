@@ -1,6 +1,7 @@
 package com.bridee.api.pattern.strategy.impl;
 
 import com.bridee.api.dto.request.EmailDto;
+import com.bridee.api.exception.SendEmailException;
 import com.bridee.api.pattern.strategy.MessageStrategy;
 import com.bridee.api.utils.EmailProperties;
 import com.bridee.api.utils.QRCodeUtils;
@@ -40,20 +41,17 @@ public class EmailSender implements MessageStrategy<String, EmailDto> {
 
     @Override
     public String sendMessage(EmailDto email){
+
         MimeMessage mimeMessage = javaMailSender().createMimeMessage();
         MimeMessageHelper mimeMessageHelper = null;
-        try {
-            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
         try{
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setTo(email.getTo());
             mimeMessageHelper.setFrom(emailProperties.getHost());
             mimeMessageHelper.setSubject(email.getSubject());
             mimeMessageHelper.setText(email.getMessage(), email.isHTML());
         }catch (MessagingException e){
-            e.printStackTrace();
+            throw new SendEmailException();
         }
         javaMailSender().send(mimeMessage);
         return "Email enviado com sucesso";
