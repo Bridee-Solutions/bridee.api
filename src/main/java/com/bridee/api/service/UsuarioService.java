@@ -24,6 +24,7 @@ import com.bridee.api.repository.UsuarioRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -52,27 +53,29 @@ public class UsuarioService implements UserDetailsService {
         repository.save(usuario);
     }
 
-    public String sendRegistrationEmail(Usuario usuario){
+    public void sendRegistrationEmail(Usuario usuario){
 
         if (Objects.isNull(usuario)){
             throw new IllegalArgumentException("Usuario não encontrado!");
         }
 
-        var emailFields = buildEmailFields(usuario);
+        var verificationToken = verificationTokenService.generateVerificationToken(usuario);
 
-        String emailHtml = EmailTemplateBuilder.generateHtmlEmailTemplate(EmailTemplate.CADASTRO, emailFields);
-        EmailDto emailDto = EmailDto.builder()
-                .to(usuario.getEmail())
-                .subject("Confirmação de cadastro.")
-                .message(emailHtml)
-                .isHTML(true)
-                .build();
-        return emailService.sendEmail(emailDto);
+        CompletableFuture.runAsync(() -> {
+            var emailFields = buildEmailFields(usuario, verificationToken);
+
+            String emailHtml = EmailTemplateBuilder.generateHtmlEmailTemplate(EmailTemplate.CADASTRO, emailFields);
+            EmailDto emailDto = EmailDto.builder()
+                    .to(usuario.getEmail())
+                    .subject("Confirmação de cadastro.")
+                    .message(emailHtml)
+                    .isHTML(true)
+                    .build();
+            emailService.sendEmail(emailDto);
+        });
     }
 
-    public Map<EmailFields, Object> buildEmailFields(Usuario usuario){
-
-        var verificationToken = verificationTokenService.generateVerificationToken(usuario);
+    public Map<EmailFields, Object> buildEmailFields(Usuario usuario, VerificationToken verificationToken){
 
         Map<EmailFields, Object> emailFields = new HashMap<>();
         emailFields.put(CadastroEmailFields.REGISTER_URL, registerUrl);

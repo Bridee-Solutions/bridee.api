@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,21 +52,21 @@ public class UsuarioController {
         try {
             usuarioService.validateUser(verificationToken);
             response.sendRedirect(successRegistrationRedirectUri);
+        }catch (IllegalArgumentException e){
+            httpStatus = HttpStatus.BAD_REQUEST;
+            response.sendRedirect("%s#%s".formatted(failRegistrationRedirectUri, Objects.nonNull(usuario) ? usuario.getEmail() : ""));
         }catch (Exception e){
-            if (e.getMessage().equals("Token de verificação inválido")){
-                httpStatus = HttpStatus.BAD_REQUEST;
-                response.sendRedirect("%s#%s".formatted(failRegistrationRedirectUri, Objects.nonNull(usuario) ? usuario.getEmail() : ""));
-            }
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
         return ResponseEntity.status(httpStatus).build();
     }
 
-    @PostMapping("/resend/verification-email")
-    public ResponseEntity<String> resendVerificationEmaill(@RequestBody String email){
+    @GetMapping("/resend/verification-email/{email}")
+    public ResponseEntity<Void> resendVerificationEmail(@PathVariable String email){
         Usuario usuario = usuarioService.findByEmail(email);
         usuarioService.sendRegistrationEmail(usuario);
-        return ResponseEntity.ok(usuarioService.sendRegistrationEmail(usuario));
+        return ResponseEntity.noContent().build();
     }
 
 }

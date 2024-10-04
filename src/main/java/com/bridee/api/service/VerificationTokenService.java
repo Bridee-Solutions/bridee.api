@@ -4,6 +4,7 @@ import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.VerificationToken;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.VerificationTokenRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class VerificationTokenService {
 
     private final VerificationTokenRepository repository;
