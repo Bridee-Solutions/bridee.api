@@ -1,5 +1,7 @@
 package com.bridee.api.service;
 
+import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
+import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Role;
 import com.bridee.api.entity.UsuarioRole;
@@ -16,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,6 +29,7 @@ public class AssessorService {
     private final UsuarioRoleRepository usuarioRoleRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UsuarioService usuarioService;
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
@@ -37,6 +39,17 @@ public class AssessorService {
         if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
         Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         assessor.setSenha(passwordEncoder.encode(assessor.getSenha()));
+        Assessor createdAssessor = assessorRepository.save(assessor);
+        UsuarioRole usuarioRole = new UsuarioRole(null, role, createdAssessor);
+        usuarioRoleRepository.save(usuarioRole);
+        usuarioService.sendRegistrationEmail(createdAssessor);
+        return createdAssessor;
+    }
+
+    public Assessor saveExternal(Assessor assessor){
+        if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
+        Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
+        assessor.setEnabled(true);
         Assessor createdAssessor = assessorRepository.save(assessor);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, createdAssessor);
         usuarioRoleRepository.save(usuarioRole);
@@ -57,4 +70,14 @@ public class AssessorService {
         if (!assessorRepository.existsById(id)) throw new ResourceNotFoundException();
         assessorRepository.deleteById(id);
     }
+
+    public ValidateAssessorFieldsResponseDto validateAssessorFields(ValidateAssessorFieldsRequestDto requestDto) {
+        boolean existsByCnpj = assessorRepository.existsByCnpj(requestDto.getCnpj());
+        boolean existsByEmailEmpresa = assessorRepository.existsByEmailEmpresa(requestDto.getEmailEmpresa());
+        return ValidateAssessorFieldsResponseDto.builder()
+                .cnpjEmpresaExists(existsByCnpj)
+                .emailEmpresaExists(existsByEmailEmpresa)
+                .build();
+    }
+
 }

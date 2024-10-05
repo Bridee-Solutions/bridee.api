@@ -36,6 +36,7 @@ public class AuthenticationService {
                 .builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .enabled(usuario.getEnabled())
                 .build();
     }
 

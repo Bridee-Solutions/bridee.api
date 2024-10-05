@@ -10,5 +10,6 @@ public class AuthenticationResponseDto {
 
     private String accessToken;
     private String refreshToken;
+    private Boolean enabled;
 
 }

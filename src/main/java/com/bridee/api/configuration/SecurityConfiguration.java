@@ -34,7 +34,11 @@ public class SecurityConfiguration {
                         httpRequest
                                 .requestMatchers("/authentication").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/usuarios/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/casais", "/assessores", "/casais/externo").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/casais",
+                                        "/assessores",
+                                        "/casais/externo",
+                                        "/assessores/externo",
+                                        "/assessores/validate-fields").permitAll()
                                 .anyRequest().authenticated();
                 })
                 .csrf(CsrfConfigurer::disable)
