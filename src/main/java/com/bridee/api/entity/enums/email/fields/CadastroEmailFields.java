@@ -1,4 +1,4 @@
-package com.bridee.api.entity.enums.email;
+package com.bridee.api.entity.enums.email.fields;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,8 @@ public enum CadastroEmailFields implements EmailFields{
 
     COUPLE_NAME("coupleName"), REGISTER_URL("registerUrl"),
     ASSESSOR_NAME("assessorName"), IS_ASSESSOR("isAssessor"),
-    VERIFICATION_TOKEN("verificationToken");
+    VERIFICATION_TOKEN("verificationToken"), BODY_IMAGE("bodyImage"),
+    LOGO("logoImage");
 
     private String value;
 

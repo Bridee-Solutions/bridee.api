@@ -3,6 +3,7 @@ package com.bridee.api.controller;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.VerificationToken;
 import com.bridee.api.mapper.response.UsuarioResponseMapper;
+import com.bridee.api.service.EmailService;
 import com.bridee.api.service.UsuarioService;
 import com.bridee.api.service.VerificationTokenService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +32,7 @@ public class UsuarioController {
     private String successRegistrationRedirectUri;
     @Value("${registration.fail.redirectUri}")
     private String failRegistrationRedirectUri;
+    private final EmailService emailService;
     private final UsuarioResponseMapper responseMapper;
     private final UsuarioService usuarioService;
     private final VerificationTokenService verificationTokenService;
@@ -65,7 +66,7 @@ public class UsuarioController {
     @GetMapping("/resend/verification-email/{email}")
     public ResponseEntity<Void> resendVerificationEmail(@PathVariable String email){
         Usuario usuario = usuarioService.findByEmail(email);
-        usuarioService.sendRegistrationEmail(usuario);
+        emailService.sendRegistrationEmail(usuario);
         return ResponseEntity.noContent().build();
     }
 

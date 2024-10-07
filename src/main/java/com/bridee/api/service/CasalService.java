@@ -25,7 +25,7 @@ public class CasalService {
     private final RoleRepository roleRepository;
     private final UsuarioRoleRepository usuarioRoleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UsuarioService usuarioService;
+    private final EmailService emailService;
 
     public Page<Casal> findAll(Pageable pageable){
         return repository.findAll(pageable);
@@ -42,7 +42,7 @@ public class CasalService {
         Casal casalCreated = repository.save(casal);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, casalCreated);
         usuarioRoleRepository.save(usuarioRole);
-        usuarioService.sendRegistrationEmail(casalCreated);
+        emailService.sendRegistrationEmail(casalCreated);
         return casalCreated;
     }
 

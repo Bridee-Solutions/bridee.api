@@ -1,7 +1,7 @@
 package com.bridee.api.utils;
 
-import com.bridee.api.entity.enums.email.EmailFields;
-import com.bridee.api.entity.enums.email.EmailTemplate;
+import com.bridee.api.entity.enums.email.fields.EmailFields;
+import com.bridee.api.entity.enums.email.template.EmailTemplate;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;

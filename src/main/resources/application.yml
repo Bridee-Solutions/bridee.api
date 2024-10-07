@@ -34,3 +34,9 @@ registration:
     redirectUri: ${REGISTRATION_SUCCESS_REDIRECT_URI:http://localhost:5173/login}
   fail:
     redirectUri: ${REGISTRATION_FAIL_REDIRECT_URI:http://localhost:5173/reenviar-email}
+
+azure:
+  data-storage:
+    container:
+      url: ${AZURE_DATASTORAGE_CONTAINER_URL:""}
+      sasToken: ${AZURE_DATASTORAGE_CONTAINER_TOKEN:""}

@@ -1,4 +1,4 @@
-package com.bridee.api.entity.enums.email;
+package com.bridee.api.entity.enums.email.template;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

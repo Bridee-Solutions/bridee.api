@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class AssessorService {
     private final UsuarioRoleRepository usuarioRoleRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UsuarioService usuarioService;
+    private final EmailService emailService;
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
@@ -42,7 +41,7 @@ public class AssessorService {
         Assessor createdAssessor = assessorRepository.save(assessor);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, createdAssessor);
         usuarioRoleRepository.save(usuarioRole);
-        usuarioService.sendRegistrationEmail(createdAssessor);
+        emailService.sendRegistrationEmail(createdAssessor);
         return createdAssessor;
     }
 

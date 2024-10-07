@@ -12,12 +12,12 @@
     <tr style="width:100%">
         <td>
             <div style="background-color:rgb(221,123,120);color:rgb(255,255,255);display:flex;justify-content:center;align-items:center;width:100%;height:3rem">
-                <img src="/email/static/logo.svg" />
+                <img th:src="@{${logoImage}}" />
             </div>
             <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
                 <tbody>
                 <tr>
-                    <td><img src="/email/static/casal-cadastro.jpg" style="display:block;outline:none;border:none;text-decoration:none" width="100%" /></td>
+                    <td><img th:src="@{${bodyImage}}" style="display:block;outline:none;border:none;text-decoration:none" width="100%" /></td>
                 </tr>
                 </tbody>
             </table>
