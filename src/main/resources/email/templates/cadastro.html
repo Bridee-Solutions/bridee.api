@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title</title>
+</head>
+<body>
+<table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="width:91.666667%;max-width:37.5em">
+    <tbody>
+    <tr style="width:100%">
+        <td>
+            <div style="background-color:rgb(221,123,120);color:rgb(255,255,255);display:flex;justify-content:center;align-items:center;width:100%;height:3rem">
+                <img th:src="@{${logoImage}}" />
+            </div>
+            <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation">
+                <tbody>
+                <tr>
+                    <td><img th:src="@{${bodyImage}}" style="display:block;outline:none;border:none;text-decoration:none" width="100%" /></td>
+                </tr>
+                </tbody>
+            </table>
+                <div th:if="${isAssessor}" style="text-align:center;font-weight:700;font-size:1.25rem;line-height:1.75rem;margin:16px 0">
+                    Olá, <span th:utext="${assessorName}"></span>, Estamos muito felizes por ter você na nossa plataforma! 🎉
+                </div>
+                <div th:else="${isAssessor}" style="text-align:center;font-weight:700;font-size:1.25rem;line-height:1.75rem;margin:16px 0">
+                    Olá, <span th:utext="${coupleName}"></span>, Estamos muito felizes por ter você na nossa plataforma! 🎉
+                </div>
+            <p style="text-align:center;font-size:1rem;line-height:1.5rem;margin:16px 0">Você deu o primeiro passo para facilitar o planejamento do seu casamento, e estamos aqui para ajudar em cada detalhe. Para começar a aproveitar todos os recursos do bridee, só falta uma coisinha: confirmar seu cadastro.</p>
+            <p style="text-align:center;font-size:1rem;line-height:1.5rem;margin:16px 0">É fácil! Basta clicar no botão abaixo para ativar sua conta:</p>
+            <table align="center" width="100%" border="0" cellPadding="0" cellSpacing="0" role="presentation" style="width:100%;display:flex;justify-content:center">
+                <tbody>
+                <tr>
+                    <td><a th:href="@{${registerUrl}(token=${verificationToken})}" style="background-color:rgb(221,123,120);padding-top:0.75rem;padding-bottom:0.75rem;padding-left:2rem;padding-right:2rem;border-radius:0.75rem;color:rgb(255,255,255);font-weight:700;line-height:100%;text-decoration:none;display:inline-block;max-width:100%;mso-padding-alt:0px;padding:12px 32px 12px 32px" target="_blank"><span><!--[if mso]><i style="mso-font-width:400%;mso-text-raise:18" hidden>&#8202;&#8202;&#8202;&#8202;</i><![endif]--></span><span style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px">Ativar Conta</span><span><!--[if mso]><i style="mso-font-width:400%" hidden>&#8202;&#8202;&#8202;&#8202;&#8203;</i><![endif]--></span></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <p style="font-size:1rem;line-height:1.5rem;margin:16px 0">Com sua conta confirmada, você poderá explorar todas as funcionalidades que criamos para transformar a organização do seu casamento em algo prático e especial.</p>
+            <p style="font-size:1rem;line-height:1.5rem;margin:16px 0">Qualquer dúvida, estamos prontos para ajudar!</p>
+            <p style="font-size:1rem;line-height:1.5rem;margin:16px 0">Com carinho, Equipe bridee.</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

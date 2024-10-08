@@ -3,6 +3,7 @@ package com.bridee.api.service;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.ConvidadoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ConvidadoService {
 
     @Autowired

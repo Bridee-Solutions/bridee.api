@@ -8,4 +8,7 @@ import java.util.Optional;
 public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
 
     boolean existsByCnpjOrEmail(String cnpj, String email);
+
+    boolean existsByCnpj(String cnpj);
+    boolean existsByEmailEmpresa(String emailEmpresa);
 }

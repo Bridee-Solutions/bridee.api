@@ -1,5 +1,6 @@
-package com.bridee.api.mapper;
+package com.bridee.api.mapper.request;
 
+import com.bridee.api.mapper.BaseMapper;
 import org.mapstruct.Mapper;
 
 import com.bridee.api.dto.request.FornecedorRequestDto;

@@ -1,10 +1,16 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.AssessorRequestDto;
+import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
+import com.bridee.api.dto.request.externo.AssessorExternoRequestDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
+import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
+import com.bridee.api.dto.response.externo.AssessorExternoResponseDto;
 import com.bridee.api.entity.Assessor;
-import com.bridee.api.mapper.AssessorRequestMapper;
-import com.bridee.api.mapper.AssessorResponseMapper;
+import com.bridee.api.mapper.request.AssessorRequestMapper;
+import com.bridee.api.mapper.request.externo.AssessorExternoRequestMapper;
+import com.bridee.api.mapper.response.AssessorResponseMapper;
+import com.bridee.api.mapper.response.externo.AssessorExternoResponseMapper;
 import com.bridee.api.service.AssessorService;
 import com.bridee.api.utils.UriUtils;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +35,8 @@ public class AssessorController {
     private final AssessorService service;
     private final AssessorRequestMapper requestMapper;
     private final AssessorResponseMapper responseMapper;
+    private final AssessorExternoRequestMapper externoRequestMapper;
+    private final AssessorExternoResponseMapper externoResponseMapper;
 
     @GetMapping
     public ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable){
@@ -45,6 +53,20 @@ public class AssessorController {
         Assessor assessor = service.save(requestMapper.toEntity(requestDto));
         AssessorResponseDto responseDto = responseMapper.toDomain(assessor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
+    }
+
+    @PostMapping("/externo")
+    public ResponseEntity<AssessorExternoResponseDto> saveExternal(@RequestBody AssessorExternoRequestDto requestDto){
+        Assessor assessor = service.saveExternal(externoRequestMapper.toEntity(requestDto));
+        AssessorExternoResponseDto responseDto = externoResponseMapper.toDomain(assessor);
+        return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
+
+    }
+
+    @PostMapping("/validate-fields")
+    public ResponseEntity<ValidateAssessorFieldsResponseDto> validateFields(@RequestBody ValidateAssessorFieldsRequestDto requestDto){
+        ValidateAssessorFieldsResponseDto responseDto = service.validateAssessorFields(requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/{id}")
