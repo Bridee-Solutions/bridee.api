@@ -1,13 +1,10 @@
 package com.bridee.api.service;
 
-import com.bridee.api.dto.request.FornecedorRequestDto;
-import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.mapper.FornecedorRequestMapper;
-import com.bridee.api.mapper.FornecedorResponseMapper;
 import com.bridee.api.repository.FornecedorRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,33 +14,29 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FornecedorService {
 
     private final FornecedorRepository repository;
-    private final FornecedorResponseMapper responseMapper;
-    private final FornecedorRequestMapper requestMapper;
 
-    public Page<FornecedorResponseDto> findAll(Pageable pageable){
-        return responseMapper.toDomain(repository.findAll(pageable));
+    public Page<Fornecedor> findAll(Pageable pageable){
+        return repository.findAll(pageable);
     }
 
-    public FornecedorResponseDto findById(Integer id){
-        Fornecedor fornecedor = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        return responseMapper.toDomain(fornecedor);
+    public Fornecedor findById(Integer id){
+        return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public FornecedorResponseDto save(FornecedorRequestDto fornecedorRequestDto){
-        Optional<Fornecedor> optionalFornecedor = repository.findByCnpj(fornecedorRequestDto.getCnpj());
-        if(optionalFornecedor.isPresent()) throw new ResourceAlreadyExists();
-        Fornecedor fornecedor = requestMapper.toEntity(fornecedorRequestDto);
-        return responseMapper.toDomain(repository.save(fornecedor));
+    public Fornecedor save(Fornecedor fornecedor){
+        Optional<Fornecedor> optionalFornecedor = repository.findByCnpj(fornecedor.getCnpj());
+        if(optionalFornecedor.isPresent()) throw new ResourceAlreadyExists("Fornecedor já cadastrado");
+        return repository.save(fornecedor);
     }
 
-    public FornecedorResponseDto update(FornecedorRequestDto fornecedorRequestDto, Integer id){
+    public Fornecedor update(Fornecedor fornecedor, Integer id){
         if (!repository.existsById(id)) throw new ResourceNotFoundException();
-        fornecedorRequestDto.setId(id);
-        Fornecedor fornecedor = requestMapper.toEntity(fornecedorRequestDto);
-        return responseMapper.toDomain(repository.save(fornecedor));
+        fornecedor.setId(id);
+        return repository.save(fornecedor);
     }
 
     public void deleteById(Integer id){

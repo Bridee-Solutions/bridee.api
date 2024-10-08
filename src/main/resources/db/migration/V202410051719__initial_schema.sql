@@ -1,0 +1,1 @@
+ALTER TABLE assessor ADD COLUMN email_empresa VARCHAR(45) NOT NULL

@@ -11,6 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -25,26 +28,30 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Fornecedor {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
     private String nome;
     private String cnpj;
     private String email;
     private String midiaSocial;
     private Integer nota;
+    
     @CreatedBy
     @Column(updatable = false)
     private String createdBy;
+    
     @LastModifiedBy
     @Column(insertable = false)
     private String updatedBy;
+
     @CreatedDate
     @Column(updatable = false)
-    private String createdAt;
+    private LocalDateTime createdAt;
+    
     @LastModifiedDate
     @Column(insertable = false)
-    private String updatedAt;
-
+    private LocalDateTime updatedAt;
 }

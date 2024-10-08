@@ -1,5 +1,7 @@
 package com.bridee.api.pattern.strategy.impl;
 
+import com.bridee.api.dto.request.EmailDto;
+import com.bridee.api.exception.SendEmailException;
 import com.bridee.api.pattern.strategy.MessageStrategy;
 import com.bridee.api.utils.EmailProperties;
 import com.bridee.api.utils.QRCodeUtils;
@@ -32,34 +34,27 @@ import java.util.Properties;
 
 @Configuration
 @RequiredArgsConstructor
-public class EmailSender implements MessageStrategy {
+public class EmailSender implements MessageStrategy<String, EmailDto> {
 
     private static final Integer GMAIL_SMTP_PORT = 587;
     private final EmailProperties emailProperties;
-//    @Value("${services.bridee.email.inviteUrl}")
-//    @Autowired
-//    private String inviteUrl;
 
     @Override
-    public void sendMessage(String to, String subject, String message){
+    public String sendMessage(EmailDto email){
+
         MimeMessage mimeMessage = javaMailSender().createMimeMessage();
-//        byte[] imageBytes = QRCodeUtils.gerarQRCode(inviteUrl,"", "UTF-8", 200, 200);
         MimeMessageHelper mimeMessageHelper = null;
-        try {
-            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
         try{
-//            mimeMessageHelper.addAttachment("qr.png", Files.write(Path.of("invite.png"),imageBytes).toFile());
-            mimeMessageHelper.setTo(to);
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setTo(email.getTo());
             mimeMessageHelper.setFrom(emailProperties.getHost());
-            mimeMessageHelper.setSubject(subject);
-            mimeMessageHelper.setText(message);
+            mimeMessageHelper.setSubject(email.getSubject());
+            mimeMessageHelper.setText(email.getMessage(), email.isHTML());
         }catch (MessagingException e){
-            e.printStackTrace();
+            throw new SendEmailException();
         }
         javaMailSender().send(mimeMessage);
+        return "Email enviado com sucesso";
     }
 
     @Bean
@@ -67,6 +62,7 @@ public class EmailSender implements MessageStrategy {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(emailProperties.getHost());
         javaMailSender.setPort(GMAIL_SMTP_PORT);
+        javaMailSender.setDefaultEncoding("UTF-8");
 
         javaMailSender.setUsername(emailProperties.getUser());
         javaMailSender.setPassword(emailProperties.getPassword());

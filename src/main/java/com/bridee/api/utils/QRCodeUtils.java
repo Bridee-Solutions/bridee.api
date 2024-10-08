@@ -18,7 +18,7 @@ import java.util.Hashtable;
 
 public class QRCodeUtils {
 
-    public static byte[] gerarQRCode(String inviteUrl,String path, String charset, int h, int w) throws WriterException, IOException {
+    public static byte[] gerarQRCode(String inviteUrl, int h, int w) throws WriterException, IOException {
         Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
         hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
         QRCodeWriter qrCodeWriter = new QRCodeWriter();

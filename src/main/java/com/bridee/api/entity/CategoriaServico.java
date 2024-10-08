@@ -1,6 +1,7 @@
 package com.bridee.api.entity;
 
 import com.bridee.api.entity.enums.ServicoCategoria;
+import com.bridee.api.entity.enums.CategoriaServicoEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,12 +21,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoriaServico {
+    
+      @Id
+      @GeneratedValue(strategy = GenerationType.IDENTITY)
+      private Integer id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Enumerated(EnumType.STRING)
-    private ServicoCategoria categoria;
-    private boolean ativa;
-
+      @Enumerated(value = EnumType.STRING)
+      private CategoriaServicoEnum categoria;
+      private Boolean ativa;
+  
 }

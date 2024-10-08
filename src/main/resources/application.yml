@@ -9,7 +9,34 @@ spring:
 services:
   bridee:
     email:
-      inviteUrl: ${BRIDEE_INVITE_URL:http://localhost:8080}
       host: ${BRIDEE_EMAIL_HOST:smtp.gmail.com}
       user: ${BRIDEE_EMAIL_USERNAME:""}
       password: ${BRIDEE_EMAIL_PASSWORD:""}
+    whatsapp:
+      inviteUrl: ${BRIDEE_INVITE_URL:http://localhost:8080}
+      url: ${WHATSAPP_API_URL:https://app.whatsgw.com.br/api/WhatsGw}
+      apiKey: ${WHATSAPP_API_KEY:6c28732c-85a2-4286-9d2e-41dc4658e31d}
+      phoneSender: ${BRIDEE_PHONE_NUMBER:5573988110632}
+    pexels:
+      url: ${PEXELS_URL:https://api.pexels.com}
+      apiKey: ${PEXELS_API_KEY:0SuVakENYYmZjAdLk2M3ltPqPPcgS8SHHgHakSYOqUQSVoCh9C1f2nQo}
+
+jwt:
+  secret:
+    key: ${JWT_SECRET:""}
+
+email:
+  register:
+    url: ${EMAIL_REGISTER_URL:http://localhost:8080/usuarios/ativar-conta}
+
+registration:
+  success:
+    redirectUri: ${REGISTRATION_SUCCESS_REDIRECT_URI:http://localhost:5173/login}
+  fail:
+    redirectUri: ${REGISTRATION_FAIL_REDIRECT_URI:http://localhost:5173/reenviar-email}
+
+azure:
+  data-storage:
+    container:
+      url: ${AZURE_DATASTORAGE_CONTAINER_URL:""}
+      sasToken: ${AZURE_DATASTORAGE_CONTAINER_TOKEN:""}

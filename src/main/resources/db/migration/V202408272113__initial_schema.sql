@@ -23,10 +23,10 @@ create table
         tipo varchar(45),
         token varchar(45),
         expired tinyInt (1),
-        fk_aplicacao int,
-        fk_usuario int,
-        CONSTRAINT fkAplicacao FOREIGN KEY (fk_aplicacao) REFERENCES aplicacao (id),
-        CONSTRAINT fkUsuarioToken FOREIGN KEY (fk_usuario) REFERENCES usuario (id)
+        aplicacao_id int,
+        usuario_id int,
+        CONSTRAINT fkAplicacao FOREIGN KEY (aplicacao_id) REFERENCES aplicacao (id),
+        CONSTRAINT fkUsuarioToken FOREIGN KEY (usuario_id) REFERENCES usuario (id)
     );
 
 create table
@@ -38,10 +38,10 @@ create table
 create table
     user_token (
         id int primary key auto_increment,
-        fk_role int,
-        fk_usuario int,
-        CONSTRAINT fkRole_const FOREIGN KEY (fk_role) REFERENCES role (id),
-        CONSTRAINT fkUsuario_const FOREIGN KEY (fk_usuario) REFERENCES usuario (id)
+        role_id int,
+        usuario_id int,
+        CONSTRAINT fkRole_const FOREIGN KEY (role_id) REFERENCES role (id),
+        CONSTRAINT fkUsuario_const FOREIGN KEY (usuario_id) REFERENCES usuario (id)
     );
 
 create table
@@ -51,8 +51,8 @@ create table
         senha varchar(255),
         telefone1 varchar(45),
         telefone2 varchar(45),
-        fk_usuario int,
-        CONSTRAINT fkUsuarioCasal FOREIGN KEY (fk_usuario) REFERENCES usuario (id)
+        usuario_id int,
+        CONSTRAINT fkUsuarioCasal FOREIGN KEY (usuario_id) REFERENCES usuario (id)
     );
 
 create table
@@ -63,21 +63,21 @@ create table
         email varchar(45),
         nota int,
         premium tinyInt (1),
-        fk_usuario int,
+        usuario_id int,
         created_by varchar(45),
         updated_by varchar(45),
         created_at datetime,
         updated_at datetime,
-        CONSTRAINT fkUsuarioFornecedor FOREIGN KEY (fk_usuario) REFERENCES usuario (id)
+        CONSTRAINT fkUsuarioFornecedor FOREIGN KEY (usuario_id) REFERENCES usuario (id)
     );
 
 create table
     fornecedor_casal (
         id int primary key auto_increment,
-        fk_fornecedor int,
-        fk_usuario int,
-        CONSTRAINT fkFornecedor FOREIGN KEY (fk_fornecedor) REFERENCES fornecedor (id),
-        CONSTRAINT fkUsuarioFornecedorCasal FOREIGN KEY (fk_usuario) REFERENCES usuario (id)
+        fornecedor_id int,
+        usuario_id int,
+        CONSTRAINT fkFornecedor FOREIGN KEY (fornecedor_id) REFERENCES fornecedor (id),
+        CONSTRAINT fkUsuarioFornecedorCasal FOREIGN KEY (usuario_id) REFERENCES usuario (id)
     );
 
 create table
@@ -91,16 +91,16 @@ create table
     servico (
         id int primary key auto_increment,
         nome varchar(45),
-        fk_categoria int,
+        categoria_id int,
         preco decimal(10, 2),
         nota int,
-        fk_fornecedor int,
+        fornecedor_id int,
         created_by varchar(45),
         updated_by varchar(45),
         created_at datetime,
         updated_at datetime,
-        CONSTRAINT fkFornecedorServico FOREIGN KEY (fk_fornecedor) REFERENCES fornecedor (id),
-        CONSTRAINT categoria FOREIGN KEY (fk_categoria) REFERENCES categoria_servico (id)
+        CONSTRAINT fkFornecedorServico FOREIGN KEY (fornecedor_id) REFERENCES fornecedor (id),
+        CONSTRAINT categoria FOREIGN KEY (categoria_id) REFERENCES categoria_servico (id)
     );
 
 create table
@@ -113,10 +113,10 @@ create table
 create table
     pin (
         id int primary key auto_increment,
-        fk_imagem int,
-        fk_casal int,
-        CONSTRAINT fkImagem FOREIGN KEY (fk_imagem) REFERENCES imagem (id),
-        CONSTRAINT fkCasalPin FOREIGN KEY (fk_casal) REFERENCES casal (id)
+        imagem_id int,
+        casal_id int,
+        CONSTRAINT fkImagem FOREIGN KEY (imagem_id) REFERENCES imagem (id),
+        CONSTRAINT fkCasalPin FOREIGN KEY (casal_id) REFERENCES casal (id)
     );
 
 create table
@@ -125,8 +125,8 @@ create table
         nome varchar(45),
         categoria varchar(45),
         valor decimal(10,2),
-        fk_casal int,
-        CONSTRAINT fkCasalPresente FOREIGN KEY (fk_casal) REFERENCES casal (id)
+        casal_id int,
+        CONSTRAINT fkCasalPresente FOREIGN KEY (casal_id) REFERENCES casal (id)
 
     );
 
@@ -134,8 +134,8 @@ create table
     playlist (
         id int primary key auto_increment,
         nome varchar(45),
-        fk_casal int,
-        CONSTRAINT fkCasalPlaylist FOREIGN KEY (fk_casal) REFERENCES casal (id)
+        casal_id int,
+        CONSTRAINT fkCasalPlaylist FOREIGN KEY (casal_id) REFERENCES casal (id)
     );
 
 create table
@@ -144,25 +144,25 @@ create table
         nome varchar(45),
         artista varchar(45),
         url varchar(255),
-        fk_playlist int,
-        CONSTRAINT fkPlaylist FOREIGN KEY (fk_playlist) REFERENCES playlist (id)
+        playlist_id int,
+        CONSTRAINT fkPlaylist FOREIGN KEY (playlist_id) REFERENCES playlist (id)
     );
 
 create table
     assessor (
         id int primary key auto_increment,
         cnpj char(14),
-        fk_usuario int,
-        CONSTRAINT fkUsuario FOREIGN KEY (fk_usuario) REFERENCES usuario (id)
+        usuario_id int,
+        CONSTRAINT fkUsuario FOREIGN KEY (usuario_id) REFERENCES usuario (id)
     );
 
 create table
     casal_assessor (
         id int primary key auto_increment,
-        fk_casal int,
-        fk_assessor int,
-        CONSTRAINT fkAssessor FOREIGN KEY (fk_assessor) REFERENCES assessor (id),
-        CONSTRAINT fkCasal FOREIGN KEY (fk_casal) REFERENCES casal (id)
+        casal_id int,
+        assessor_id int,
+        CONSTRAINT fkAssessor FOREIGN KEY (assessor_id) REFERENCES assessor (id),
+        CONSTRAINT fkCasal FOREIGN KEY (casal_id) REFERENCES casal (id)
     );
 
 create table
@@ -175,8 +175,8 @@ create table
 create table
     item_orcamento (
         id int primary key auto_increment,
-        fk_tipo int,
-        CONSTRAINT tipo FOREIGN KEY (fk_tipo) REFERENCES tipo_orcamento (id)
+        tipo_id int,
+        CONSTRAINT tipo FOREIGN KEY (tipo_id) REFERENCES tipo_orcamento (id)
     );
 
 create table
@@ -189,8 +189,8 @@ create table
         updated_by varchar(45),
         created_at datetime,
         updated_at datetime,
-        fk_item_orcamento int,
-        CONSTRAINT fkItemOrcamentoCusto FOREIGN KEY (fk_item_orcamento) REFERENCES item_orcamento (id)
+        item_orcamento_id int,
+        CONSTRAINT fkItemOrcamentoCusto FOREIGN KEY (item_orcamento_id) REFERENCES item_orcamento (id)
     );
 
 create table
@@ -198,12 +198,12 @@ create table
         id int primary key auto_increment,
         nome varchar(45),
 	categoria varchar(45),
-        fk_casal_assessor int,
-        fk_servico int,
-        fk_item_orcamento int,
-        CONSTRAINT fkCasalXAssessor FOREIGN KEY (fk_casal_assessor) REFERENCES casal_assessor (id),
-        CONSTRAINT fkServico FOREIGN KEY (fk_servico) REFERENCES assessor (id),
-    	CONSTRAINT fkItemOrcamento FOREIGN KEY (fk_item_orcamento) REFERENCES item_orcamento (id)
+        casal_assessor_id int,
+        servico_id int,
+        item_orcamento_id int,
+        CONSTRAINT fkCasalXAssessor FOREIGN KEY (casal_assessor_id) REFERENCES casal_assessor (id),
+        CONSTRAINT fkServico FOREIGN KEY (servico_id) REFERENCES assessor (id),
+    	CONSTRAINT fkItemOrcamento FOREIGN KEY (item_orcamento_id) REFERENCES item_orcamento (id)
     );
 
 create table
@@ -221,23 +221,23 @@ create table
         total_convidados int,
         data_inicio DATE,
         data_fim DATE,
-        fk_casal int,
-        fk_assessor int,
-        fk_tipo int,
+        casal_id int,
+        assessor_id int,
+        tipo_id int,
 		created_by varchar(45),
         updated_by varchar(45),
         created_at datetime,
         updated_at datetime,
-        CONSTRAINT fkAssessorEvento FOREIGN KEY (fk_assessor) REFERENCES assessor (id),
-		CONSTRAINT fkCasalEvento FOREIGN KEY (fk_casal) REFERENCES casal (id),
-		CONSTRAINT fkTipo FOREIGN KEY (fk_tipo) REFERENCES tipo_evento (id)
+        CONSTRAINT fkAssessorEvento FOREIGN KEY (assessor_id) REFERENCES assessor (id),
+		CONSTRAINT fkCasalEvento FOREIGN KEY (casal_id) REFERENCES casal (id),
+		CONSTRAINT fkTipo FOREIGN KEY (tipo_id) REFERENCES tipo_evento (id)
     );
 
 create table
     cronograma (
         id int primary key auto_increment,
-        fk_evento int,
-        CONSTRAINT fk_evento FOREIGN KEY (fk_evento) REFERENCES evento (id)
+        evento_id int,
+        CONSTRAINT evento_id FOREIGN KEY (evento_id) REFERENCES evento (id)
     );
 
 create table
@@ -246,8 +246,8 @@ create table
         nome varchar(45),
         inicio time,
         fim time,
-        fk_cronograma int,
-        CONSTRAINT fkCronograma FOREIGN KEY (fk_cronograma) REFERENCES cronograma (id)
+        cronograma_id int,
+        CONSTRAINT fkCronograma FOREIGN KEY (cronograma_id) REFERENCES cronograma (id)
     );
 
 create table
@@ -256,28 +256,28 @@ create table
         nome varchar(45),
         numero_assentos int,
         disponivel tinyint(1),
-        fk_evento int,
-        CONSTRAINT fkEventoMesa FOREIGN KEY (fk_evento) REFERENCES evento (id)
+        evento_id int,
+        CONSTRAINT fkEventoMesa FOREIGN KEY (evento_id) REFERENCES evento (id)
     );
 
 create table
     convidado (
         id int primary key auto_increment,
         nome varchar(45),
-        categoria time,
+        categoria varchar(45),
         telefone char(13),
         status varchar(45),
-        fk_mesa int,
-        CONSTRAINT fkMesa FOREIGN KEY (fk_mesa) REFERENCES mesa (id)
+        mesa_id int,
+        CONSTRAINT fkMesa FOREIGN KEY (mesa_id) REFERENCES mesa (id)
     );
 
 create table
     convidado_evento (
         id int primary key auto_increment,
-        fk_evento int,
-        fk_convidado int,
-        CONSTRAINT fkEvento FOREIGN KEY (fk_evento) REFERENCES evento (id),
-        CONSTRAINT fkConvidadoEvento FOREIGN KEY (fk_convidado) REFERENCES convidado (id)
+        evento_id int,
+        convidado_id int,
+        CONSTRAINT fkEvento FOREIGN KEY (evento_id) REFERENCES evento (id),
+        CONSTRAINT fkConvidadoEvento FOREIGN KEY (convidado_id) REFERENCES convidado (id)
     );
 
 create table
@@ -285,6 +285,7 @@ create table
         id int primary key auto_increment,
         nome varchar(45),
 		categoria varchar(45),
-        fk_convidado int,
-        CONSTRAINT fkConvidado FOREIGN KEY (fk_convidado) REFERENCES convidado (id)
+		menor_idade boolean,
+        convidado_id int,
+        CONSTRAINT fkConvidado FOREIGN KEY (convidado_id) REFERENCES convidado (id)
     );
