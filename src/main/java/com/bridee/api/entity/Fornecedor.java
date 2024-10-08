@@ -36,6 +36,7 @@ public class Fornecedor {
     private String nome;
     private String cnpj;
     private String email;
+    private String midiaSocial;
     private Integer nota;
     
     @CreatedBy
