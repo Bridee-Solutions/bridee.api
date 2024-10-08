@@ -1,11 +1,10 @@
 name: Bridee CI pipeline
 on:
-  push:
-    branches:
-     - ci/cd
   pull_request:
     branches:
       - master
+      - desenvolvimento
+      - homologacao
     types: [opened, reopened]
 jobs:
   build:
