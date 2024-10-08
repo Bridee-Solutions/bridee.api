@@ -6,7 +6,7 @@ name: Build and deploy JAR app to Azure Web App - bridee-api
 on:
   push:
     branches:
-      - feature/login-cadastro
+      - main
   workflow_dispatch:
 
 jobs:
