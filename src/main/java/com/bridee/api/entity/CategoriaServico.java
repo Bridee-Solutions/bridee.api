@@ -29,5 +29,6 @@ public class CategoriaServico {
       @Enumerated(value = EnumType.STRING)
       private CategoriaServicoEnum categoria;
       private Boolean ativa;
+      private String imagemUrl;
   
 }

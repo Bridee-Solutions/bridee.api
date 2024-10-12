@@ -12,19 +12,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class Mesa {
+@AllArgsConstructor
+@NoArgsConstructor
+public class SubcategoriaServico {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
-    private Integer numeroAssentos;
-    private Boolean disponivel;
-    
+    private Boolean ativa;
+    private String imagemUrl;
+
     @ManyToOne
     @JoinColumn
-    private Casamento casamento;
+    private CategoriaServico categoriaServico;
 }

@@ -12,19 +12,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class Mesa {
+@NoArgsConstructor
+@AllArgsConstructor
+public class FormaPagamentoAssociado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome;
-    private Integer numeroAssentos;
-    private Boolean disponivel;
-    
+
     @ManyToOne
     @JoinColumn
-    private Casamento casamento;
+    private FormaPagamento formaPagamento;
+
+    @ManyToOne
+    @JoinColumn
+    private InformacaoAssociado informacaoAssociado;
+
 }

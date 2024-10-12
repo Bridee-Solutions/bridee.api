@@ -27,7 +27,7 @@ public class Convite {
     
     @ManyToOne
     @JoinColumn
-    private Evento evento;
+    private Casamento casamento;
     
     @ManyToOne
     @JoinColumn

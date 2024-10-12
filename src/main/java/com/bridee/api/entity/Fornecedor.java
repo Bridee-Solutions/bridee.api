@@ -6,6 +6,8 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +38,6 @@ public class Fornecedor {
     private String nome;
     private String cnpj;
     private String email;
-    private String midiaSocial;
     private Integer nota;
     
     @CreatedBy
@@ -54,4 +55,8 @@ public class Fornecedor {
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "subcategoria_servico_id")
+    private SubcategoriaServico subCategoriaServico;
 }
