@@ -13,6 +13,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
 
     @Query("""
             SELECT f.nome as nome,
+            f.id as id,
             f.informacaoAssociado.visaoGeral as visaoGeral,
             f.informacaoAssociado.local as local,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = :id GROUP BY a.nota) as media,
