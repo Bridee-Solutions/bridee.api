@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +29,10 @@ public class InformacaoAssociado {
     private Boolean casamentosCatolicos;
     private String urlSite;
     private String local;
-    @ManyToOne
+    @OneToOne
     @JoinColumn
     private Fornecedor fornecedor;
-    @ManyToOne
+    @OneToOne
     @JoinColumn
     private Assessor assessor;
 

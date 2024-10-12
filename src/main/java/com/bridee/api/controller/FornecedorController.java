@@ -5,6 +5,7 @@ import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.mapper.request.FornecedorRequestMapper;
 import com.bridee.api.mapper.response.FornecedorResponseMapper;
+import com.bridee.api.projection.FornecedorResponseProjection;
 import com.bridee.api.service.FornecedorService;
 import com.bridee.api.utils.UriUtils;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,11 @@ public class FornecedorController {
     @GetMapping("/{id}")
     public ResponseEntity<FornecedorResponseDto> findById(@PathVariable Integer id){
         return ResponseEntity.ok(responseMapper.toDomain(fornecedorService.findById(id)));
+    }
+
+    @GetMapping("/details/{id}")
+    public ResponseEntity<FornecedorResponseProjection> findFornecedorDetails(@PathVariable Integer id){
+        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(id));
     }
 
     @PostMapping

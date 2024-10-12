@@ -3,6 +3,7 @@ package com.bridee.api.service;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.projection.FornecedorResponseProjection;
 import com.bridee.api.repository.FornecedorRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,13 @@ public class FornecedorService {
 
     public Fornecedor findById(Integer id){
         return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public FornecedorResponseProjection findFornecedorDetails(Integer id){
+        if (!repository.existsById(id)){
+            throw new ResourceNotFoundException("Fornecedor não encontrado!");
+        }
+        return repository.findFornecedorDetails(id);
     }
 
     public Fornecedor save(Fornecedor fornecedor){
