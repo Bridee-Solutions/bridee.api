@@ -1,6 +1,7 @@
 package com.bridee.api.service;
 
 import com.bridee.api.entity.CategoriaServico;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.CategoriaServicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,12 @@ public class CategoriaServicoService {
 
     public Page<CategoriaServico> findAll(Pageable pageable){
         return repository.findAll(pageable);
+    }
+
+    public void existsById(Integer id){
+        if (!repository.existsById(id)){
+            throw new ResourceNotFoundException("CategoriaServico não encontrado!");
+        }
     }
 
 }
