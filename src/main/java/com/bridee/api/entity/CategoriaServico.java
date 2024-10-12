@@ -27,8 +27,8 @@ public class CategoriaServico {
       private Integer id;
 
       @Enumerated(value = EnumType.STRING)
-      private CategoriaServicoEnum categoria;
-      private Boolean ativa;
+      private CategoriaServicoEnum nome;
+      private Boolean active;
       private String imagemUrl;
   
 }
