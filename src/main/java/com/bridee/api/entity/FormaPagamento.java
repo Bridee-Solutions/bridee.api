@@ -1,10 +1,6 @@
 package com.bridee.api.entity;
 
-import com.bridee.api.entity.enums.TipoEventoEnum;
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,16 +10,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class TipoEvento {
+@NoArgsConstructor
+@AllArgsConstructor
+public class FormaPagamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String nome;
 
-    @Enumerated(value = EnumType.STRING)
-    private TipoEventoEnum tipo;
 }

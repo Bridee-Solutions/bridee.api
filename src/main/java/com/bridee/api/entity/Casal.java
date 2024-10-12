@@ -26,5 +26,6 @@ public class Casal extends Usuario {
     private String telefoneParceiro;
     private String endereco;
     private String cep;
+    private String foto;
 
 }

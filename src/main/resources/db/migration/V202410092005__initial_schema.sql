@@ -91,3 +91,13 @@ ALTER TABLE fornecedor DROP CONSTRAINT categoriaServicoFornecedor;
 ALTER TABLE fornecedor DROP COLUMN categoria_servico_id;
 ALTER TABLE fornecedor ADD COLUMN subcategoria_servico_id int;
 ALTER TABLE fornecedor ADD CONSTRAINT subcategoriaServicoFornecedor FOREIGN KEY (subcategoria_servico_id) REFERENCES subcategoria_servico(id);
+ALTER TABLE informacao_associado DROP CONSTRAINT informacaoPagamento;
+ALTER TABLE informacao_associado DROP COLUMN forma_pagamento_id;
+
+CREATE TABLE forma_pagamento_associado(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    informacao_associado_id INT,
+    forma_pagamento_id INT,
+    CONSTRAINT formaPagamentoAssociado FOREIGN KEY (informacao_associado_id) REFERENCES informacao_associado(id),
+    CONSTRAINT associadoFormaPagamento FOREIGN KEY (forma_pagamento_id) REFERENCES forma_pagamento(id)
+);

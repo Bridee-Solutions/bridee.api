@@ -26,14 +26,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Evento {
+public class Casamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-    @OneToOne
-    @JoinColumn
-    private TipoEvento tipoEvento;
     
     private LocalDate dataInicio;
     

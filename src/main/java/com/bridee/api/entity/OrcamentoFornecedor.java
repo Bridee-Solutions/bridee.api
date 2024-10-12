@@ -11,20 +11,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class Mesa {
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrcamentoFornecedor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome;
-    private Integer numeroAssentos;
-    private Boolean disponivel;
-    
+
+    private BigDecimal preco;
+
     @ManyToOne
-    @JoinColumn
-    private Casamento casamento;
+    @JoinColumn(name = "fornecedor_id")
+    private Fornecedor fornecedor;
+
+    @ManyToOne
+    @JoinColumn(name = "casal_id")
+    private Casal casal;
+
 }

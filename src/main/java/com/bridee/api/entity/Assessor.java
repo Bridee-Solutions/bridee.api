@@ -29,5 +29,7 @@ public class Assessor extends Usuario{
     private BigDecimal preco;
     private Boolean premium;
     private String emailEmpresa;
+    private String foto;
+    private String telefoneEmpresa;
 
 }
