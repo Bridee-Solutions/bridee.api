@@ -11,6 +11,7 @@ import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.utils.UriUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,21 +48,21 @@ public class CasalController {
     }
 
     @PostMapping
-    public ResponseEntity<CasalResponseDto> save(@RequestBody CasalRequestDto requestDto){
+    public ResponseEntity<CasalResponseDto> save(@RequestBody @Valid CasalRequestDto requestDto){
         Casal casal = requestMapper.toEntity(requestDto);
         CasalResponseDto responseDto = responseMapper.toDomain(service.save(casal));
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
     @PostMapping("/externo")
-    public ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody CasalExternoRequestDto requestDto){
+    public ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody @Valid CasalExternoRequestDto requestDto){
         Casal casal = externoRequestMapper.toEntity(requestDto);
         CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(service.saveExternal(casal));
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CasalResponseDto> update(@RequestBody CasalRequestDto requestDto, @PathVariable Integer id){
+    public ResponseEntity<CasalResponseDto> update(@RequestBody @Valid CasalRequestDto requestDto, @PathVariable Integer id){
         Casal casal = requestMapper.toEntity(requestDto);
         CasalResponseDto responseDto = responseMapper.toDomain(service.update(casal, id));
         return ResponseEntity.ok(responseDto);

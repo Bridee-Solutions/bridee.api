@@ -79,4 +79,10 @@ public class AssessorService {
                 .build();
     }
 
+    public void existsByEmailEmpresa(String email){
+        if (!assessorRepository.existsByEmailEmpresa(email)){
+            throw new ResourceNotFoundException("Email empresa inválido!");
+        }
+    }
+
 }

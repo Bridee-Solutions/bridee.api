@@ -4,6 +4,7 @@ import com.bridee.api.dto.request.AuthenticationRequestDto;
 import com.bridee.api.dto.response.AuthenticationResponseDto;
 import com.bridee.api.service.AuthenticationService;
 import com.bridee.api.utils.CookieUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +27,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/authentication")
-    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody AuthenticationRequestDto authenticationRequest){
+    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody @Valid AuthenticationRequestDto authenticationRequest){
         AuthenticationResponseDto authenticationResponse = authenticationService.authenticate(authenticationRequest);
         HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", authenticationResponse.getAccessToken(), true, Duration.ofHours(1),"localhost");
         HttpCookie refreshTokenCookie = CookieUtils.createCookie("refresh_token", authenticationResponse.getRefreshToken(), true, Duration.ofDays(7), "localhost");

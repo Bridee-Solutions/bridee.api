@@ -1,6 +1,7 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.AssessorRequestDto;
+import com.bridee.api.dto.request.SolicitacaoOrcamentoRequestDto;
 import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
 import com.bridee.api.dto.request.externo.AssessorExternoRequestDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
@@ -12,7 +13,9 @@ import com.bridee.api.mapper.request.externo.AssessorExternoRequestMapper;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.mapper.response.externo.AssessorExternoResponseMapper;
 import com.bridee.api.service.AssessorService;
+import com.bridee.api.service.EmailService;
 import com.bridee.api.utils.UriUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AssessorController {
 
     private final AssessorService service;
+    private final EmailService emailService;
     private final AssessorRequestMapper requestMapper;
     private final AssessorResponseMapper responseMapper;
     private final AssessorExternoRequestMapper externoRequestMapper;
@@ -48,15 +52,21 @@ public class AssessorController {
         return ResponseEntity.ok(responseMapper.toDomain(service.findById(id)));
     }
 
+    @PostMapping("/solicitar-orcamento")
+    public ResponseEntity<Void> sendOrcamentoEmail(@RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto){
+        emailService.sendOrcamentoEmail(requestDto);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping
-    public ResponseEntity<AssessorResponseDto> save(@RequestBody AssessorRequestDto requestDto){
+    public ResponseEntity<AssessorResponseDto> save(@RequestBody @Valid AssessorRequestDto requestDto){
         Assessor assessor = service.save(requestMapper.toEntity(requestDto));
         AssessorResponseDto responseDto = responseMapper.toDomain(assessor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
     @PostMapping("/externo")
-    public ResponseEntity<AssessorExternoResponseDto> saveExternal(@RequestBody AssessorExternoRequestDto requestDto){
+    public ResponseEntity<AssessorExternoResponseDto> saveExternal(@RequestBody @Valid AssessorExternoRequestDto requestDto){
         Assessor assessor = service.saveExternal(externoRequestMapper.toEntity(requestDto));
         AssessorExternoResponseDto responseDto = externoResponseMapper.toDomain(assessor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
@@ -64,13 +74,13 @@ public class AssessorController {
     }
 
     @PostMapping("/validate-fields")
-    public ResponseEntity<ValidateAssessorFieldsResponseDto> validateFields(@RequestBody ValidateAssessorFieldsRequestDto requestDto){
+    public ResponseEntity<ValidateAssessorFieldsResponseDto> validateFields(@RequestBody @Valid ValidateAssessorFieldsRequestDto requestDto){
         ValidateAssessorFieldsResponseDto responseDto = service.validateAssessorFields(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AssessorResponseDto> update(@RequestBody AssessorRequestDto requestDto, @PathVariable Integer id){
+    public ResponseEntity<AssessorResponseDto> update(@RequestBody @Valid AssessorRequestDto requestDto, @PathVariable Integer id){
         Assessor assessor = service.update(requestMapper.toEntity(requestDto), id);
         return ResponseEntity.ok(responseMapper.toDomain(assessor));
     }

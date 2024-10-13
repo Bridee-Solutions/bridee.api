@@ -67,4 +67,10 @@ public class CasalService {
         repository.deleteById(id);
     }
 
+    public void existsByEmail(String email){
+        if (!repository.existsByEmail(email)){
+            throw new ResourceNotFoundException("Casal não cadastrado!");
+        }
+    }
+
 }

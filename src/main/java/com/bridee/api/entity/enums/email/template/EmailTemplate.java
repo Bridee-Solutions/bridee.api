@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public enum EmailTemplate {
 
-    CADASTRO("cadastro");
+    CADASTRO("cadastro"), ORCAMENTO("orcamento");
 
     private String value;
 

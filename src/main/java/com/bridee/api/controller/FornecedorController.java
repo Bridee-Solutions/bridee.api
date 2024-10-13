@@ -8,6 +8,7 @@ import com.bridee.api.mapper.response.FornecedorResponseMapper;
 import com.bridee.api.projection.FornecedorResponseProjection;
 import com.bridee.api.service.FornecedorService;
 import com.bridee.api.utils.UriUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +47,7 @@ public class FornecedorController {
     }
 
     @PostMapping
-    public ResponseEntity<FornecedorResponseDto> save(@RequestBody FornecedorRequestDto fornecedorRequestDto){
+    public ResponseEntity<FornecedorResponseDto> save(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto){
         Fornecedor fornecedor = fornecedorService
                 .save(requestMapper.toEntity(fornecedorRequestDto));
         FornecedorResponseDto responseDto = responseMapper
@@ -55,7 +56,7 @@ public class FornecedorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FornecedorResponseDto> update(@RequestBody FornecedorRequestDto fornecedorRequestDto, @PathVariable Integer id){
+    public ResponseEntity<FornecedorResponseDto> update(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto, @PathVariable Integer id){
         Fornecedor fornecedor = fornecedorService.update(requestMapper.toEntity(fornecedorRequestDto), id);
         FornecedorResponseDto responseDto = responseMapper.toDomain(fornecedor);
         return ResponseEntity.ok(responseDto);
