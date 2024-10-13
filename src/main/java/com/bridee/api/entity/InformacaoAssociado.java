@@ -6,11 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,5 +38,11 @@ public class InformacaoAssociado {
     @OneToOne
     @JoinColumn
     private Assessor assessor;
+
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<ImagemAssociado> imagemAssociados;
+
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<FormaPagamentoAssociado> formaPagamentoAssociados;
 
 }
