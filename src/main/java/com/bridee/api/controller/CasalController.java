@@ -2,11 +2,13 @@ package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.CasalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
+import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
 import com.bridee.api.dto.response.CasalResponseDto;
 import com.bridee.api.dto.response.externo.CasalExternoResponseDto;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.mapper.request.CasalRequestMapper;
 import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
+import com.bridee.api.mapper.response.CasalOrcamentoResponseMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
 import com.bridee.api.service.CasalService;
@@ -32,6 +34,7 @@ public class CasalController {
     private final CasalService service;
     private final CasalRequestMapper requestMapper;
     private final CasalResponseMapper responseMapper;
+    private final CasalOrcamentoResponseMapper casalOrcamentoResponseMapper;
     private final CasalExternoRequestMapper externoRequestMapper;
     private final CasalExternoResponseMapper externoResponseMapper;
 
@@ -39,6 +42,12 @@ public class CasalController {
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
         Page<CasalResponseDto> responseDto = responseMapper.toDomain(service.findAll(pageable));
         return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/orcamento/{id}")
+    public ResponseEntity<CasalOrcamentoResponseDto> findOrcamentoCasal(@PathVariable Integer id){
+        Casal casal = service.findById(id);
+        return ResponseEntity.ok(casalOrcamentoResponseMapper.toDomain(casal));
     }
 
     @GetMapping("/{id}")

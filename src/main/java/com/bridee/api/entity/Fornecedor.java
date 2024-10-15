@@ -59,7 +59,7 @@ public class Fornecedor {
 
     @ManyToOne
     @JoinColumn(name = "subcategoria_servico_id")
-    private SubcategoriaServico subCategoriaServico;
+    private SubcategoriaServico subcategoriaServico;
 
     @OneToOne
     private InformacaoAssociado informacaoAssociado;

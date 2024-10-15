@@ -3,7 +3,8 @@ package com.bridee.api.service;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.projection.FornecedorResponseProjection;
+import com.bridee.api.projection.fornecedor.FornecedorGeralResponseProjection;
+import com.bridee.api.projection.fornecedor.FornecedorResponseProjection;
 import com.bridee.api.repository.FornecedorRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class FornecedorService {
 
     private final FornecedorRepository repository;
+    private final SubcategoriaServicoService subcategoriaServicoService;
 
     public Page<Fornecedor> findAll(Pageable pageable){
         return repository.findAll(pageable);
@@ -28,11 +30,16 @@ public class FornecedorService {
         return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public FornecedorResponseProjection findFornecedorDetails(Integer id){
+    public Page<FornecedorResponseProjection> findFornecedorDetails(Integer subcategoriaId, Pageable pageable){
+        subcategoriaServicoService.existsById(subcategoriaId);
+        return repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);
+    }
+
+    public FornecedorGeralResponseProjection findFornecedorInformations(Integer id){
         if (!repository.existsById(id)){
             throw new ResourceNotFoundException("Fornecedor não encontrado!");
         }
-        return repository.findFornecedorDetails(id);
+        return repository.findFornecedorInformations(id);
     }
 
     public Fornecedor save(Fornecedor fornecedor){

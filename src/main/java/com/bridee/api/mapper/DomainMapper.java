@@ -14,4 +14,14 @@ public interface DomainMapper<D, E> {
         Pageable pageRequest = PageRequest.of(entity.getTotalPages(), entity.getSize(), entity.getSort());
         return new PageImpl<>(toDomain(entity.getContent()), pageRequest, entity.getTotalElements());
     }
+
+    default Page<D> toPage(List<D> domain){
+        Pageable pageRequest = PageRequest.of(domain.size()/10, 10);
+        return new PageImpl<>(domain, pageRequest, domain.size());
+    }
+
+    default Page<D> toDomainPage(List<E> entity){
+        Pageable pageRequest = PageRequest.of(entity.size()/10, 10);
+        return new PageImpl<>(toDomain(entity), pageRequest, entity.size());
+    }
 }

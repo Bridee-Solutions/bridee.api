@@ -1,4 +1,4 @@
-package com.bridee.api.projection;
+package com.bridee.api.projection.fornecedor;
 
 import java.util.List;
 

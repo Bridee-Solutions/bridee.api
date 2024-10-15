@@ -5,7 +5,8 @@ import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.mapper.request.FornecedorRequestMapper;
 import com.bridee.api.mapper.response.FornecedorResponseMapper;
-import com.bridee.api.projection.FornecedorResponseProjection;
+import com.bridee.api.projection.fornecedor.FornecedorGeralResponseProjection;
+import com.bridee.api.projection.fornecedor.FornecedorResponseProjection;
 import com.bridee.api.service.FornecedorService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
@@ -42,8 +43,13 @@ public class FornecedorController {
     }
 
     @GetMapping("/details/{id}")
-    public ResponseEntity<FornecedorResponseProjection> findFornecedorDetails(@PathVariable Integer id){
-        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(id));
+    public ResponseEntity<Page<FornecedorResponseProjection>> findFornecedorDetails(@PathVariable Integer id, Pageable pageable){
+        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(id, pageable));
+    }
+
+    @GetMapping("/information/{id}")
+    public ResponseEntity<FornecedorGeralResponseProjection> findFornecedorInformation(@PathVariable Integer id){
+        return ResponseEntity.ok(fornecedorService.findFornecedorInformations(id));
     }
 
     @PostMapping

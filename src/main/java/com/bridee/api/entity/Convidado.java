@@ -25,9 +25,13 @@ public class Convidado {
     private String categoria;
     private String telefone;
     private String status;
-    private String pin;
+    private String tipo;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mesa_id")
     private Mesa mesa;
+
+    @ManyToOne
+    @JoinColumn
+    private Convite convite;
 }

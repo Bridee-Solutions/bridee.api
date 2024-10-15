@@ -7,11 +7,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -19,6 +24,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Casal extends Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,5 +33,15 @@ public class Casal extends Usuario {
     private String endereco;
     private String cep;
     private String foto;
+    private BigDecimal orcamentoTotal;
 
+    @ManyToOne
+    @JoinColumn
+    private Assessor assessor;
+
+    @OneToMany(mappedBy = "casal")
+    private List<ItemOrcamento> itemOrcamentos;
+
+    @OneToMany(mappedBy = "casal")
+    private List<OrcamentoFornecedor> orcamentoFornecedores;
 }
