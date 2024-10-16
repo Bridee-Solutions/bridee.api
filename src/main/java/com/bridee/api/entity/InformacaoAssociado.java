@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,9 +41,9 @@ public class InformacaoAssociado {
     private Assessor assessor;
 
     @OneToMany(mappedBy = "informacaoAssociado")
-    private List<ImagemAssociado> imagemAssociados;
+    private List<ImagemAssociado> imagemAssociados = new ArrayList<>();
 
     @OneToMany(mappedBy = "informacaoAssociado")
-    private List<FormaPagamentoAssociado> formaPagamentoAssociados;
+    private List<FormaPagamentoAssociado> formaPagamentoAssociados = new ArrayList<>();
 
 }

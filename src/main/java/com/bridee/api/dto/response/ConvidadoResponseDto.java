@@ -15,6 +15,7 @@ public class ConvidadoResponseDto {
     private String categoria;
     private String telefone;
     private String status;
+    private String faixaEtaria;
     private String tipo;
 
     public ConvidadoResponseDto(Convidado convidado){
@@ -23,7 +24,8 @@ public class ConvidadoResponseDto {
         this.categoria = convidado.getCategoria();
         this.telefone = convidado.getTelefone();
         this.status = convidado.getStatus();
-        this.tipo = convidado.getTipo();
+        this.tipo = convidado.getTipo().name();
+        this.faixaEtaria = convidado.getFaixaEtaria();
     }
 
 }

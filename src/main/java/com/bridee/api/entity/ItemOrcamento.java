@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,6 @@ public class ItemOrcamento {
     private Casal casal;
 
     @OneToMany(mappedBy = "itemOrcamento")
-    private List<Custo> custos;
+    private List<Custo> custos = new ArrayList<>();
 
 }

@@ -1,6 +1,9 @@
 package com.bridee.api.entity;
 
+import com.bridee.api.entity.enums.TipoConvidado;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,13 +28,15 @@ public class Convidado {
     private String categoria;
     private String telefone;
     private String status;
-    private String tipo;
+    private String faixaEtaria;
+    @Enumerated(EnumType.STRING)
+    private TipoConvidado tipo = TipoConvidado.NAO_TITULAR;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mesa_id")
     private Mesa mesa;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Convite convite;
 }

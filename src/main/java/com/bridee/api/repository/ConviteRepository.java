@@ -2,10 +2,10 @@ package com.bridee.api.repository;
 
 import com.bridee.api.entity.Convite;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.List;
 
-public interface ConviteRepository extends JpaRepository<Convite, Integer> {
+public interface ConviteRepository extends JpaRepository<Convite, Integer>, JpaSpecificationExecutor<Convite> {
 
-    List<Convite> findAllByCasamentoId(Integer casamentoId);
+    boolean existsByNomeAndCasamentoId(String nome, Integer casamentoId);
 }

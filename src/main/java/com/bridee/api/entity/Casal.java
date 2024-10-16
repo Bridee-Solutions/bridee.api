@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,8 +41,8 @@ public class Casal extends Usuario {
     private Assessor assessor;
 
     @OneToMany(mappedBy = "casal")
-    private List<ItemOrcamento> itemOrcamentos;
+    private List<ItemOrcamento> itemOrcamentos = new ArrayList<>();
 
     @OneToMany(mappedBy = "casal")
-    private List<OrcamentoFornecedor> orcamentoFornecedores;
+    private List<OrcamentoFornecedor> orcamentoFornecedores = new ArrayList<>();
 }

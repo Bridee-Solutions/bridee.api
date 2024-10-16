@@ -1,8 +1,15 @@
 package com.bridee.api.controller;
 
+import com.bridee.api.dto.request.ConvidadoRequestDto;
+import com.bridee.api.dto.response.ConvidadoResponseDto;
 import com.bridee.api.entity.Convidado;
+import com.bridee.api.mapper.request.ConvidadoRequestMapper;
+import com.bridee.api.mapper.response.ConvidadoResponseMapper;
 import com.bridee.api.service.ConvidadoService;
+import com.bridee.api.utils.UriUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,34 +22,30 @@ import java.util.Optional;
 public class ConvidadoController {
 
     private final ConvidadoService service;
-
-    @GetMapping
-    public ResponseEntity<List<Convidado>> findAll(){
-        return ResponseEntity.ok(service.findAll());
-    }
+    private final ConvidadoRequestMapper convidadoRequestMapper;
+    private final ConvidadoResponseMapper convidadoResponseMapper;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Convidado> findById(@PathVariable Integer id) {
+    public ResponseEntity<ConvidadoResponseDto> findById(@PathVariable Integer id) {
         Convidado convidado = service.findById(id);
-        return ResponseEntity.ok(convidado);
+        return ResponseEntity.ok(convidadoResponseMapper.toDomain(convidado));
     }
 
-    @PostMapping
-    public ResponseEntity<Convidado> create(@RequestBody Convidado convidado) {
-        return ResponseEntity.ok(service.save(convidado));
+    @PostMapping("/{conviteId}")
+    public ResponseEntity<ConvidadoResponseDto> create(@RequestBody @Valid ConvidadoRequestDto requestDto,
+                                            @PathVariable Integer conviteId) {
+        Convidado convidado = convidadoRequestMapper.toEntity(requestDto);
+        convidado = service.save(convidado, conviteId);
+        ConvidadoResponseDto convidadoResponseDto = convidadoResponseMapper.toDomain(convidado);
+        return ResponseEntity.created(UriUtils.uriBuilder(convidadoResponseDto.getId())).body(convidadoResponseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Convidado> update(@PathVariable Integer id, @RequestBody Convidado convidadoDetails) {
-
-        Convidado existingConvidado = service.findById(id);
-
-        existingConvidado.setNome(convidadoDetails.getNome());
-        existingConvidado.setCategoria(convidadoDetails.getCategoria());
-        existingConvidado.setTelefone(convidadoDetails.getTelefone());
-        existingConvidado.setStatus(convidadoDetails.getStatus());
-
-        return ResponseEntity.ok(service.save(existingConvidado));
+    public ResponseEntity<ConvidadoResponseDto> update(@PathVariable Integer id,
+                                                       @RequestBody @Valid ConvidadoRequestDto requestDto) {
+        Convidado convidado = convidadoRequestMapper.toEntity(requestDto);
+        convidado = service.update(convidado, id);
+        return ResponseEntity.ok(convidadoResponseMapper.toDomain(convidado));
     }
 
     @DeleteMapping("/{id}")
