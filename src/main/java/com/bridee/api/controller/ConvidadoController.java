@@ -1,11 +1,14 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.ConvidadoRequestDto;
+import com.bridee.api.dto.request.MesaConvidadoRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
 import com.bridee.api.entity.Convidado;
+import com.bridee.api.entity.Mesa;
 import com.bridee.api.mapper.request.ConvidadoRequestMapper;
 import com.bridee.api.mapper.response.ConvidadoResponseMapper;
 import com.bridee.api.service.ConvidadoService;
+import com.bridee.api.service.MesaService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import java.util.Optional;
 public class ConvidadoController {
 
     private final ConvidadoService service;
+    private final MesaService mesaService;
     private final ConvidadoRequestMapper convidadoRequestMapper;
     private final ConvidadoResponseMapper convidadoResponseMapper;
 
@@ -31,7 +35,20 @@ public class ConvidadoController {
         return ResponseEntity.ok(convidadoResponseMapper.toDomain(convidado));
     }
 
-    @PostMapping("/{conviteId}")
+    @GetMapping("/{casamentoId}")
+    public ResponseEntity<Page<ConvidadoResponseDto>> findConvidadosWithoutMesa(@PathVariable Integer casamentoId, @RequestParam String nome){
+        List<Mesa> mesas = mesaService.findAllByCasamentoId(casamentoId);
+        List<Convidado> convidadosWithoutMesa = service.convidadosWithoutMesa(mesas, nome);
+        return ResponseEntity.ok(convidadoResponseMapper.toDomainPage(convidadosWithoutMesa));
+    }
+
+    @PostMapping("/mesa")
+    public ResponseEntity<Void> vinculateToMesa(@RequestBody @Valid List<MesaConvidadoRequestDto> requestDtoList){
+        service.vinculateConvidadoToMesa(requestDtoList);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/convite/{conviteId}")
     public ResponseEntity<ConvidadoResponseDto> create(@RequestBody @Valid ConvidadoRequestDto requestDto,
                                             @PathVariable Integer conviteId) {
         Convidado convidado = convidadoRequestMapper.toEntity(requestDto);
