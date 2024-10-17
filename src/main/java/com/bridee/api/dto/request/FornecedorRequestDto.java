@@ -15,9 +15,6 @@ public class FornecedorRequestDto {
     @Size(min = 3)
     @NotBlank
     private String nome;
-    @CNPJ
-    @NotBlank
-    private String cnpj;
     @Email
     private String email;
     @PositiveOrZero

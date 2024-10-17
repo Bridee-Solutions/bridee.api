@@ -12,29 +12,42 @@ import java.util.Optional;
 
 public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer> {
 
-    Optional<Fornecedor> findByCnpj(String cnpj);
-
     @Query("""
-            SELECT f.nome as nome,
-            f.id as id,
-            f.informacaoAssociado.visaoGeral as visaoGeral,
-            f.informacaoAssociado.local as local,
-            (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = :subcategoriaId GROUP BY a.nota) as media,
-            (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = :subcategoriaId GROUP BY a) as totalAvaliacoes
-            FROM Fornecedor f WHERE f.subcategoriaServico.id = :subcategoriaId
+            SELECT ifs.fornecedor.nome as nome,
+            ifs.fornecedor.id as id,
+            ifs.visaoGeral as visaoGeral,
+            ifs.local as local,
+            (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id GROUP BY a.nota) as notaMedia,
+            (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id GROUP BY a) as totalAvaliacoes
+            FROM InformacaoAssociado ifs WHERE ifs.fornecedor.subcategoriaServico.id = :subcategoriaId
             """)
     Page<FornecedorResponseProjection> findFornecedorDetailsBySubcategoria(Integer subcategoriaId, Pageable pageable);
 
     @Query("""
-            SELECT f.nome as nome,
-            f.id as id,
-            f.informacaoAssociado.visaoGeral as visaoGeral,
-            f.informacaoAssociado.local as local,
-            f.informacaoAssociado.imagemAssociados as imagens,
-            f.informacaoAssociado.formaPagamentoAssociados as formaPagamento,
+            SELECT ifs.fornecedor.nome as nome,
+            ifs.fornecedor.id as id,
+            ifs.visaoGeral as visaoGeral,
+            ifs.local as local,
+            (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id GROUP BY a.nota) as notaMedia,
+            (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id GROUP BY a) as totalAvaliacoes
+            FROM InformacaoAssociado ifs WHERE ifs.fornecedor.subcategoriaServico.categoriaServico.id = :categoriaId
+            """)
+    Page<FornecedorResponseProjection> findFornecedorDetailsByCategoria(Integer categoriaId, Pageable pageable);
+
+    @Query("""
+            SELECT ifs.fornecedor.nome as nome,
+            ifs.fornecedor.id as id,
+            ifs.visaoGeral as visaoGeral,
+            ifs.local as local,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = :id GROUP BY a.nota) as media,
-            (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = :id GROUP BY a) as totalAvaliacoes
-            FROM Fornecedor f WHERE f.id = :id
+            (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = :id GROUP BY a) as totalAvaliacoes,
+            ifs.urlSite as siteUrl,
+            ifs.servicosOferecidos as servicosFornecidos,
+            ifs.formaDeTrabalho as formaDeTrabalho,
+            ifs.tamanhoCasamento as qtdConvidados
+            FROM InformacaoAssociado ifs WHERE ifs.fornecedor.id = :id
             """)
     FornecedorGeralResponseProjection findFornecedorInformations(Integer id);
+
+    Optional<Fornecedor> findByEmail(String email);
 }

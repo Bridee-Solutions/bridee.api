@@ -5,6 +5,7 @@ import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.mapper.request.FornecedorRequestMapper;
 import com.bridee.api.mapper.response.FornecedorResponseMapper;
+import com.bridee.api.projection.fornecedor.FornecedorGeralResponseDto;
 import com.bridee.api.projection.fornecedor.FornecedorGeralResponseProjection;
 import com.bridee.api.projection.fornecedor.FornecedorResponseProjection;
 import com.bridee.api.service.FornecedorService;
@@ -42,13 +43,18 @@ public class FornecedorController {
         return ResponseEntity.ok(responseMapper.toDomain(fornecedorService.findById(id)));
     }
 
-    @GetMapping("/details/{id}")
-    public ResponseEntity<Page<FornecedorResponseProjection>> findFornecedorDetails(@PathVariable Integer id, Pageable pageable){
-        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(id, pageable));
+    @GetMapping("/details/categoria/{categoriaId}")
+    public ResponseEntity<Page<FornecedorResponseProjection>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId, Pageable pageable){
+        return ResponseEntity.ok(fornecedorService.findFornecedorDetailsByCategoria(categoriaId, pageable));
+    }
+
+    @GetMapping("/details/subcategoria/{subcategoriaId}")
+    public ResponseEntity<Page<FornecedorResponseProjection>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable){
+        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(subcategoriaId, pageable));
     }
 
     @GetMapping("/information/{id}")
-    public ResponseEntity<FornecedorGeralResponseProjection> findFornecedorInformation(@PathVariable Integer id){
+    public ResponseEntity<FornecedorGeralResponseDto> findFornecedorInformation(@PathVariable Integer id){
         return ResponseEntity.ok(fornecedorService.findFornecedorInformations(id));
     }
 

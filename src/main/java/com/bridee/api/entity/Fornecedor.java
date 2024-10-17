@@ -37,7 +37,6 @@ public class Fornecedor {
     private Integer id;
     
     private String nome;
-    private String cnpj;
     private String email;
     private Integer nota;
     
@@ -60,8 +59,5 @@ public class Fornecedor {
     @ManyToOne
     @JoinColumn(name = "subcategoria_servico_id")
     private SubcategoriaServico subcategoriaServico;
-
-    @OneToOne
-    private InformacaoAssociado informacaoAssociado;
 
 }

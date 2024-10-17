@@ -33,6 +33,7 @@ public class InformacaoAssociado {
     private Boolean casamentosCatolicos;
     private String urlSite;
     private String local;
+
     @OneToOne
     @JoinColumn
     private Fornecedor fornecedor;

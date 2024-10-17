@@ -9,7 +9,6 @@ public class FornecedorResponseDto {
 
     private Integer id;
     private String nome;
-    private String cnpj;
     private String email;
     private Integer nota;
 

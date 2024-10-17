@@ -1,5 +1,7 @@
 package com.bridee.api.projection.fornecedor;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.List;
 
 public interface FornecedorGeralResponseProjection extends FornecedorResponseProjection{
@@ -8,7 +10,5 @@ public interface FornecedorGeralResponseProjection extends FornecedorResponsePro
     String getServicosFornecidos();
     String getFormaDeTrabalho();
     String getQtdConvidados();
-    List<ImagemAssociadoProjection> getImagens();
-    List<FormaPagamentoProjection> getFormaPagamento();
 
 }
