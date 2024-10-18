@@ -1,6 +1,6 @@
 package com.bridee.api.projection.fornecedor;
 
-public interface FornecedorResponseProjection {
+public interface AssociadoResponseProjection {
 
     Integer getId();
     String getNome();

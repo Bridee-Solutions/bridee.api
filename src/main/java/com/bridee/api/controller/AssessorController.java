@@ -12,6 +12,8 @@ import com.bridee.api.mapper.request.AssessorRequestMapper;
 import com.bridee.api.mapper.request.externo.AssessorExternoRequestMapper;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.mapper.response.externo.AssessorExternoResponseMapper;
+import com.bridee.api.projection.fornecedor.AssociadoGeralResponseDto;
+import com.bridee.api.projection.fornecedor.AssociadoResponseProjection;
 import com.bridee.api.service.AssessorService;
 import com.bridee.api.service.EmailService;
 import com.bridee.api.utils.UriUtils;
@@ -50,6 +52,16 @@ public class AssessorController {
     @GetMapping("/{id}")
     public ResponseEntity<AssessorResponseDto> findById(@PathVariable Integer id){
         return ResponseEntity.ok(responseMapper.toDomain(service.findById(id)));
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<Page<AssociadoResponseProjection>> findAssessoresDetails(Pageable pageable){
+        return ResponseEntity.ok(service.findAssessoresDetails(pageable));
+    }
+
+    @GetMapping("/information/{id}")
+    public ResponseEntity<AssociadoGeralResponseDto> findAssessorInformation(@PathVariable Integer id){
+        return ResponseEntity.ok(service.findAssessorInformation(id));
     }
 
     @PostMapping("/solicitar-orcamento")

@@ -12,4 +12,9 @@ public interface FormaPagamentoRepository extends JpaRepository<FormaPagamento, 
             SELECT fpa.formaPagamento FROM FormaPagamentoAssociado fpa WHERE fpa.informacaoAssociado.fornecedor.id = :fornecedorId
             """)
     List<FormaPagamento> findByFornecedorId(Integer fornecedorId);
+
+    @Query("""
+            SELECT fpa.formaPagamento FROM FormaPagamentoAssociado fpa WHERE fpa.informacaoAssociado.assessor.id = :assessorId
+            """)
+    List<FormaPagamento> findByAssessorId(Integer assessorId);
 }

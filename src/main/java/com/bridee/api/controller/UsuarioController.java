@@ -48,7 +48,7 @@ public class UsuarioController {
 
         HttpStatus httpStatus = HttpStatus.OK;
         VerificationToken verificationToken = verificationTokenService.findVerificationTokenByValor(token);
-        Usuario usuario = Objects.nonNull(verificationToken.getUsuario()) ? verificationToken.getUsuario() : null;
+        Usuario usuario = verificationToken.getUsuario();
 
         try {
             usuarioService.validateUser(verificationToken);

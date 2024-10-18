@@ -5,9 +5,8 @@ import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.mapper.request.FornecedorRequestMapper;
 import com.bridee.api.mapper.response.FornecedorResponseMapper;
-import com.bridee.api.projection.fornecedor.FornecedorGeralResponseDto;
-import com.bridee.api.projection.fornecedor.FornecedorGeralResponseProjection;
-import com.bridee.api.projection.fornecedor.FornecedorResponseProjection;
+import com.bridee.api.projection.fornecedor.AssociadoGeralResponseDto;
+import com.bridee.api.projection.fornecedor.AssociadoResponseProjection;
 import com.bridee.api.service.FornecedorService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
@@ -44,17 +43,17 @@ public class FornecedorController {
     }
 
     @GetMapping("/details/categoria/{categoriaId}")
-    public ResponseEntity<Page<FornecedorResponseProjection>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId, Pageable pageable){
+    public ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId, Pageable pageable){
         return ResponseEntity.ok(fornecedorService.findFornecedorDetailsByCategoria(categoriaId, pageable));
     }
 
     @GetMapping("/details/subcategoria/{subcategoriaId}")
-    public ResponseEntity<Page<FornecedorResponseProjection>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable){
+    public ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable){
         return ResponseEntity.ok(fornecedorService.findFornecedorDetails(subcategoriaId, pageable));
     }
 
     @GetMapping("/information/{id}")
-    public ResponseEntity<FornecedorGeralResponseDto> findFornecedorInformation(@PathVariable Integer id){
+    public ResponseEntity<AssociadoGeralResponseDto> findFornecedorInformation(@PathVariable Integer id){
         return ResponseEntity.ok(fornecedorService.findFornecedorInformations(id));
     }
 
