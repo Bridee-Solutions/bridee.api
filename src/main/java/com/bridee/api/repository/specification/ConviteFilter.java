@@ -8,7 +8,6 @@ import jakarta.persistence.criteria.Fetch;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,14 +25,18 @@ public class ConviteFilter implements Specification<Convite> {
     private String status;
     private String faixaEtaria;
     private String categoria;
+    private String convidado;
+    private String convite;
 
     public ConviteFilter() {
     }
 
-    public ConviteFilter(String status, String faixaEtaria, String categoria) {
+    public ConviteFilter(String status, String faixaEtaria, String categoria, String convidado, String convite) {
         this.status = status;
         this.faixaEtaria = faixaEtaria;
         this.categoria = categoria;
+        this.convidado = convidado;
+        this.convite = convite;
     }
 
     @Override
@@ -54,6 +57,12 @@ public class ConviteFilter implements Specification<Convite> {
         }
         if (StringUtils.isNotBlank(categoria)){
             predicates.add(criteriaBuilder.equal(convidado.get("categoria"), categoria));
+        }
+        if (StringUtils.isNotBlank(convite)){
+            predicates.add(criteriaBuilder.like(criteriaBuilder.upper(root.get("nome")), "%"+convite.toUpperCase()+"%"));
+        }
+        if (StringUtils.isNotBlank(this.convidado)){
+            predicates.add(criteriaBuilder.like(criteriaBuilder.upper(convidado.get("nome")), "%"+this.convidado.toUpperCase()+"%"));
         }
 
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface DomainMapper<D, E> {
@@ -16,12 +17,14 @@ public interface DomainMapper<D, E> {
     }
 
     default Page<D> toPage(List<D> domain){
-        Pageable pageRequest = PageRequest.of(domain.size()/10, 10);
+        Pageable pageRequest = PageRequest.of(domain.size()/10, 15);
+        domain = !domain.isEmpty() ? domain : new ArrayList<>();
         return new PageImpl<>(domain, pageRequest, domain.size());
     }
 
     default Page<D> toDomainPage(List<E> entity){
-        Pageable pageRequest = PageRequest.of(entity.size()/10, 10);
-        return new PageImpl<>(toDomain(entity), pageRequest, entity.size());
+        Pageable pageRequest = PageRequest.of(entity.size()/10, 15);
+        List<D> content = !entity.isEmpty() ? toDomain(entity) : new ArrayList<>();
+        return new PageImpl<>(content, pageRequest, entity.size());
     }
 }
