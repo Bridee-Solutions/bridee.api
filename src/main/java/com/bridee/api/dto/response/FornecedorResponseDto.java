@@ -12,10 +12,12 @@ public class FornecedorResponseDto {
     private String nome;
     private String email;
     private Integer nota;
+    private SubcategoriaServicoResponseDto subcategoriaServico;
 
     public FornecedorResponseDto(Fornecedor fornecedor){
         this.id = fornecedor.getId();
         this.nome = fornecedor.getNome();
+        this.subcategoriaServico = new SubcategoriaServicoResponseDto(fornecedor.getSubcategoriaServico());
     }
 
 }
