@@ -14,10 +14,4 @@ public class FornecedorResponseDto {
     private Integer nota;
     private SubcategoriaServicoResponseDto subcategoriaServico;
 
-    public FornecedorResponseDto(Fornecedor fornecedor){
-        this.id = fornecedor.getId();
-        this.nome = fornecedor.getNome();
-        this.subcategoriaServico = new SubcategoriaServicoResponseDto(fornecedor.getSubcategoriaServico());
-    }
-
 }

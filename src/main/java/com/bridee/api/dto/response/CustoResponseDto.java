@@ -12,10 +12,4 @@ public class CustoResponseDto {
     private String nome;
     private BigDecimal precoAtual;
 
-    public CustoResponseDto(Custo custo){
-        this.id = custo.getId();
-        this.nome = custo.getNome();
-        this.precoAtual = custo.getPrecoAtual();
-    }
-
 }

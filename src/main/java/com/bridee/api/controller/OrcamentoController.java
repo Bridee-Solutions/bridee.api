@@ -4,7 +4,8 @@ import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.mapper.response.CasalOrcamentoResponseMapper;
-import com.bridee.api.service.CasalService;
+import com.bridee.api.projection.orcamento.OrcamentoFornecedorProjection;
+import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.service.OrcamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrcamentoController {
 
-    private final CasalService casalService;
     private final CasalOrcamentoResponseMapper casalOrcamentoResponseMapper;
     private final OrcamentoService orcamentoService;
 
     @GetMapping("/casal/{id}")
-    public ResponseEntity<CasalOrcamentoResponseDto> findOrcamentoCasal(@PathVariable Integer id){
-        Casal casal = casalService.findById(id);
-        return ResponseEntity.ok(casalOrcamentoResponseMapper.toDomain(casal));
+    public ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@PathVariable Integer id){
+        OrcamentoProjection projection = orcamentoService.findCasalOrcamento(id);
+        return ResponseEntity.ok(projection);
     }
 
     @PostMapping("/casal")

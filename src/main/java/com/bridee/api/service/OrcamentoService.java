@@ -10,6 +10,8 @@ import com.bridee.api.entity.OrcamentoFornecedor;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.FornecedorOrcamentoRequestMapper;
 import com.bridee.api.mapper.request.ItemOrcamentoRequestMapper;
+import com.bridee.api.projection.orcamento.OrcamentoFornecedorProjection;
+import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
@@ -17,11 +19,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrcamentoService {
 
     private final AssessorRepository assessorRepository;
@@ -30,7 +34,19 @@ public class OrcamentoService {
     private final ItemOrcamentoService itemOrcamentoService;
     private final CustoService custoService;
     private final FornecedorOrcamentoRequestMapper orcamentoRequestMapper;
-    private final OrcamentoFornecedorRepository repository;
+    private final OrcamentoFornecedorService orcamentoFornecedorService;
+    private final SubcategoriaServicoService subcategoriaServicoService;
+
+    @Transactional
+    public OrcamentoProjection findCasalOrcamento(Integer casalId){
+        if (!casalRepository.existsById(casalId)){
+            throw new ResourceNotFoundException("Casal não encontrado!");
+        }
+        orcamentoFornecedorService.findByCasalId(casalId);
+        subcategoriaServicoService.findAll();
+        itemOrcamentoService.findAllByCasalId(casalId);
+        return casalRepository.findOrcamentoByCasalId(casalId);
+    }
 
     @Transactional
     public Casal saveOrcamentoCasal(OrcamentoCasalRequestDto orcamentoCasalRequestDto){
@@ -39,7 +55,7 @@ public class OrcamentoService {
         List<ItemOrcamento> itens = itemOrcamentoRequestMapper.toEntity(orcamentoCasalRequestDto.getItemOrcamentos());
         List<OrcamentoFornecedor> orcamentoFornecedores = orcamentoRequestMapper.toEntity(orcamentoCasalRequestDto.getOrcamentoFornecedores());
 
-        repository.saveAll(orcamentoFornecedores);
+        orcamentoFornecedorService.saveAll(orcamentoFornecedores);
         casal.setOrcamentoFornecedores(orcamentoFornecedores);
         casal.setItemOrcamentos(saveAllItemOrcamento(itens));
         return casalRepository.save(casal);
@@ -91,5 +107,25 @@ public class OrcamentoService {
         if (!casalRepository.existsByEmail(emailCasal)){
             throw new ResourceNotFoundException("Não existe casal com esse e-mail");
         }
+    }
+
+    @Transactional
+    public BigDecimal calculateTotalOrcamento(Casal casal){
+
+        if (Objects.isNull(casal)){
+            throw new ResourceNotFoundException("Não foi possível calcular o orcamento de um casal não cadastrado");
+        }
+        List<ItemOrcamento> itensOrcamento = casal.getItemOrcamentos();
+        List<OrcamentoFornecedor> orcamentoFornecedores = casal.getOrcamentoFornecedores();
+
+        Double valorTotalItens = itensOrcamento.stream().mapToDouble(item -> item.getCustos().stream()
+                .mapToDouble(custo -> Double.parseDouble(custo.getPrecoAtual().toString())).sum()).sum();
+
+        Double valorTotalFornecedores = orcamentoFornecedores.stream()
+                .mapToDouble(orcamento -> Double.parseDouble(orcamento.getPreco().toString())).sum();
+
+        BigDecimal totalItens = new BigDecimal(valorTotalItens);
+        BigDecimal totalFornecedores = new BigDecimal(valorTotalFornecedores);
+        return totalItens.add(totalFornecedores);
     }
 }

@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.entity.ItemOrcamento;
 import com.bridee.api.exception.ResourceAlreadyExists;
+import com.bridee.api.projection.orcamento.ItemOrcamentoProjection;
 import com.bridee.api.repository.ItemOrcamentoRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +16,10 @@ import java.util.List;
 public class ItemOrcamentoService {
 
     private final ItemOrcamentoRepository repository;
+
+    public List<ItemOrcamentoProjection> findAllByCasalId(Integer casalId){
+        return repository.findAllByCasalId(casalId);
+    }
 
     @Transactional
     public ItemOrcamento save(ItemOrcamento itemOrcamento){
