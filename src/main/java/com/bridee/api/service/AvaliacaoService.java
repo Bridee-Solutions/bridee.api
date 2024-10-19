@@ -18,7 +18,9 @@ public class AvaliacaoService {
 
     @Transactional
     public Avaliacao save(Avaliacao avaliacao){
+        Integer nota = avaliacao.getNota();
         avaliacao = avaliacaoToBeInserted(avaliacao);
+        avaliacao.setNota(nota);
         return repository.save(avaliacao);
     }
 

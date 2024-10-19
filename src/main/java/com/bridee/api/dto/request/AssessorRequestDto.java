@@ -16,8 +16,8 @@ public class AssessorRequestDto extends UsuarioRequestDto{
     @CNPJ
     @NotBlank
     private String cnpj;
-    @Positive
-    @NotNull
+    @NotBlank
+    private String emailEmpresa;
     private BigDecimal preco;
     private Boolean premium;
 

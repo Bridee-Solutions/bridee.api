@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -53,6 +54,10 @@ public class AssessorService {
         }
 
         AssociadoGeralResponseProjection resultProjection = assessorRepository.findFornecedorInformations(assessorId);
+        if (Objects.isNull(resultProjection)){
+            throw new ResourceNotFoundException("Não foi possível recuperar as informações do assessor");
+        }
+
         List<String> imagensUrl = imagemService.findUrlImagensAssessor(assessorId);
         List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(assessorId);
 

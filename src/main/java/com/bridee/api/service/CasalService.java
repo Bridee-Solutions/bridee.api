@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -73,4 +75,9 @@ public class CasalService {
         }
     }
 
+    public Casal updateOrcamentoTotal(Integer id, BigDecimal orcamentoTotal) {
+        Casal casal = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casal não encontrado!"));
+        casal.setOrcamentoTotal(orcamentoTotal);
+        return repository.save(casal);
+    }
 }

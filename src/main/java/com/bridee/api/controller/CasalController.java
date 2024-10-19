@@ -12,6 +12,7 @@ import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/casais")
@@ -68,5 +71,10 @@ public class CasalController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @PutMapping("/orcamento-total/{id}")
+    public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody BigDecimal orcamentoTotal){
+        Casal casal = service.updateOrcamentoTotal(id, orcamentoTotal);
+        return ResponseEntity.ok(responseMapper.toDomain(casal));
+    }
 
 }
