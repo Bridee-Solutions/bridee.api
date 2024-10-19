@@ -36,9 +36,9 @@ public class ConviteController {
     private final ConviteResponseMapper responseMapper;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ConviteResponseDto> findById(@PathVariable Integer id){
+    public ResponseEntity<ConvitesResponseDto> findById(@PathVariable Integer id){
         Convite convite = conviteService.findById(id);
-        return ResponseEntity.ok(responseMapper.toConviteResponse(convite));
+        return ResponseEntity.ok(responseMapper.toDomain(convite));
     }
 
     //TODO: Aplicar Specification para filtrar os status e outras informações do convite / convidados.

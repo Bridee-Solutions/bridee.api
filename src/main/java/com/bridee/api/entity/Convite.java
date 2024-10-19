@@ -30,10 +30,10 @@ public class Convite {
     private String nome;
     private String pin;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Casamento casamento;
 
-    @OneToMany(mappedBy = "convite", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "convite")
     private List<Convidado> convidados = new ArrayList<>();
 }

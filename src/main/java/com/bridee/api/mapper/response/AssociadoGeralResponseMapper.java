@@ -1,7 +1,7 @@
 package com.bridee.api.mapper.response;
 
-import com.bridee.api.projection.fornecedor.AssociadoGeralResponseDto;
-import com.bridee.api.projection.fornecedor.AssociadoGeralResponseProjection;
+import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
+import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

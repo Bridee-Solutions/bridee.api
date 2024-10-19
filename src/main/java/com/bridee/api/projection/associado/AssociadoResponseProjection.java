@@ -1,4 +1,4 @@
-package com.bridee.api.projection.fornecedor;
+package com.bridee.api.projection.associado;
 
 public interface AssociadoResponseProjection {
 

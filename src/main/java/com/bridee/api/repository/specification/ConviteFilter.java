@@ -4,9 +4,11 @@ import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Fetch;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,19 +38,22 @@ public class ConviteFilter implements Specification<Convite> {
 
     @Override
     public Predicate toPredicate(Root<Convite> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+
         List<Predicate> predicates = new ArrayList<>();
-        Join<Convite, Convidado> convidados = root.join("convidados");
+        Fetch<Convidado, Convite> fetchConvidado = root.fetch("convidados");
+        Join<Convidado, Convite> convidado = (Join<Convidado, Convite>) fetchConvidado;
+
         if (casamentoId != null){
             predicates.add(criteriaBuilder.equal(root.get("casamento").get("id"), casamentoId));
         }
         if (StringUtils.isNotBlank(status)){
-            predicates.add(criteriaBuilder.equal(convidados.get("status"), status));
+            predicates.add(criteriaBuilder.equal(convidado.get("status"), status));
         }
         if (StringUtils.isNotBlank(faixaEtaria)){
-            predicates.add(criteriaBuilder.equal(convidados.get("faixaEtaria"), faixaEtaria));
+            predicates.add(criteriaBuilder.equal(convidado.get("faixaEtaria"), faixaEtaria));
         }
         if (StringUtils.isNotBlank(categoria)){
-            predicates.add(criteriaBuilder.equal(convidados.get("categoria"), categoria));
+            predicates.add(criteriaBuilder.equal(convidado.get("categoria"), categoria));
         }
 
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
