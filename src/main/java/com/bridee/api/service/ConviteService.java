@@ -9,7 +9,6 @@ import com.bridee.api.repository.ConviteRepository;
 import com.bridee.api.repository.specification.ConviteFilter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +20,15 @@ import java.util.Optional;
 public class ConviteService {
 
     private final ConviteRepository repository;
-    private final ConvidadoService service;
+    private final ConvidadoService convidadoService;
 
     public List<Convite> findAllByCasamentoId(Map<String, Object> filter, Integer casamentoId){
         //TODO: validar existência do casamento.
-        ConviteFilter spec = new ConviteFilter();
         filter.put("casamentoId", casamentoId);
+
+        ConviteFilter spec = new ConviteFilter();
         spec.fillSpecification(filter);
+
         return repository.findAll(spec);
     }
 
@@ -36,15 +37,17 @@ public class ConviteService {
         if (repository.existsByNomeAndCasamentoId(convite.getNome(), casamentoId)){
             throw new ResourceAlreadyExists("Convite já cadastrado para esse casamento.");
         }
+
         Optional<Convidado> optionalConvidado = convite.getConvidados().stream()
                 .filter(convidado -> convidado.getTelefone().equals(telefoneTitular)).findFirst();
         if (optionalConvidado.isEmpty()){
             throw new ResourceNotFoundException("Titular não foi adicionado para o convite!");
         }
+
+        convite = repository.save(convite);
         optionalConvidado.get().setTipo(TipoConvidado.TITULAR);
-        List<Convidado> convidados = service.saveAll(convite.getConvidados());
-        convite.setConvidados(convidados);
-        return repository.save(convite);
+        convidadoService.saveAll(convite.getConvidados(), convite);
+        return convite;
     }
 
     @Transactional
@@ -64,4 +67,7 @@ public class ConviteService {
         repository.deleteById(id);
     }
 
+    public Convite findById(Integer id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado!"));
+    }
 }

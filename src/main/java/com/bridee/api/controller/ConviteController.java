@@ -35,8 +35,14 @@ public class ConviteController {
     private final ConviteRequestMapper requestMapper;
     private final ConviteResponseMapper responseMapper;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ConviteResponseDto> findById(@PathVariable Integer id){
+        Convite convite = conviteService.findById(id);
+        return ResponseEntity.ok(responseMapper.toConviteResponse(convite));
+    }
+
     //TODO: Aplicar Specification para filtrar os status e outras informações do convite / convidados.
-    @GetMapping("/{casamentoId}")
+    @GetMapping("/casamento/{casamentoId}")
     public ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter, @PathVariable Integer casamentoId){
         List<Convite> convites = conviteService.findAllByCasamentoId(filter, casamentoId);
         List<ConvitesResponseDto> convitesResponse = responseMapper.toDomain(convites);

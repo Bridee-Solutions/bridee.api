@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.request.MesaConvidadoRequestDto;
 import com.bridee.api.entity.Convidado;
+import com.bridee.api.entity.Convite;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
@@ -46,8 +47,9 @@ public class ConvidadoService {
         return repository.save(convidado);
     }
 
-    public List<Convidado> saveAll(List<Convidado> convidados){
+    public List<Convidado> saveAll(List<Convidado> convidados, Convite convite){
         convidados = removeDuplicatedConvidados(convidados);
+        convidados.forEach(convidado -> convidado.setConvite(convite));
         return repository.saveAll(convidados);
     }
 
@@ -100,7 +102,7 @@ public class ConvidadoService {
         Optional<List<Convidado>> convidadosWithMesaOptional = mesas.stream().map(Mesa::getConvidados).findFirst();
 
         if (convidadosWithMesaOptional.isEmpty()){
-            return new ArrayList<>();
+            return allConvidados;
         }
 
         List<Convidado> convidadosWithMesa = convidadosWithMesaOptional.get();
@@ -123,7 +125,15 @@ public class ConvidadoService {
 
     private void validateConvidadoConvite(Convidado convidado, Integer conviteId){
         if (repository.existsByTelefoneAndConviteId(convidado.getTelefone(), conviteId)){
-            throw new ResourceAlreadyExists("Convidado já cadastrado para esse casamento!");
+            throw new ResourceAlreadyExists("Convidado já cadastrado para esse convite!");
         }
+        vinculateConvidadoToConvite(convidado, conviteId);
+    }
+
+    private void vinculateConvidadoToConvite(Convidado convidado, Integer conviteId){
+        Convite convite = Convite.builder()
+                .id(conviteId)
+                .build();
+        convidado.setConvite(convite);
     }
 }

@@ -3,6 +3,7 @@ package com.bridee.api.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import lombok.Builder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -26,6 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Casamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

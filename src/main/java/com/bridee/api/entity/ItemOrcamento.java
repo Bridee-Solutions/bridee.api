@@ -33,7 +33,7 @@ public class ItemOrcamento {
     @JoinColumn
     private Casal casal;
 
-    @OneToMany(mappedBy = "itemOrcamento")
+    @OneToMany(mappedBy = "itemOrcamento", fetch = FetchType.EAGER)
     private List<Custo> custos = new ArrayList<>();
 
 }

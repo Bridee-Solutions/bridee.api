@@ -35,7 +35,7 @@ public class ConvidadoController {
         return ResponseEntity.ok(convidadoResponseMapper.toDomain(convidado));
     }
 
-    @GetMapping("/{casamentoId}")
+    @GetMapping("/casamento/{casamentoId}")
     public ResponseEntity<Page<ConvidadoResponseDto>> findConvidadosWithoutMesa(@PathVariable Integer casamentoId, @RequestParam String nome){
         List<Mesa> mesas = mesaService.findAllByCasamentoId(casamentoId);
         List<Convidado> convidadosWithoutMesa = service.convidadosWithoutMesa(mesas, nome);

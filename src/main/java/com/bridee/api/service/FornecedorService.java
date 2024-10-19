@@ -49,7 +49,6 @@ public class FornecedorService {
     }
 
     public AssociadoGeralResponseDto findFornecedorInformations(Integer id){
-
         if (!repository.existsById(id)){
             throw new ResourceNotFoundException("Fornecedor não encontrado!");
         }
