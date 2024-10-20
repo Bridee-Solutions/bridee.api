@@ -31,6 +31,7 @@ public class FornecedorService {
     private final AssociadoGeralResponseMapper geralResponseMapper;
 
     public Page<Fornecedor> findAll(Pageable pageable){
+        subcategoriaServicoService.findAll();
         return repository.findAll(pageable);
     }
 

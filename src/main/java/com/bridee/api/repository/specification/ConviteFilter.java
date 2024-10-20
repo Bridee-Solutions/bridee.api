@@ -43,8 +43,13 @@ public class ConviteFilter implements Specification<Convite> {
     public Predicate toPredicate(Root<Convite> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 
         List<Predicate> predicates = new ArrayList<>();
-        Fetch<Convidado, Convite> fetchConvidado = root.fetch("convidados");
-        Join<Convidado, Convite> convidado = (Join<Convidado, Convite>) fetchConvidado;
+        Join<Convite, Convidado> convidado = null;
+        if (query.getResultType() == Long.class){
+            convidado = root.join("convidados");
+        }else {
+            Fetch<Convite, Convidado> fetchConvidado = root.fetch("convidados");
+            convidado = (Join<Convite, Convidado>) fetchConvidado;
+        }
 
         if (casamentoId != null){
             predicates.add(criteriaBuilder.equal(root.get("casamento").get("id"), casamentoId));

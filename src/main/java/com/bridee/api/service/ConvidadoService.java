@@ -10,6 +10,7 @@ import com.bridee.api.repository.ConvidadoRepository;
 import com.bridee.api.repository.specification.ConvidadoFilter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -78,27 +79,31 @@ public class ConvidadoService {
         repository.deleteById(id);
     }
 
-    private List<Convidado> findByCasamentoId(Integer casamentoId, String nome){
+    private List<Convidado> findByCasamentoIdAndNome(Integer casamentoId, String nome){
         //TODO: verificar se o casamento existe.
-        Specification<Convidado> spec = Specification.where(ConvidadoFilter.hasNome(nome))
-                .and(ConvidadoFilter.hasCasamentoId(casamentoId));
+        Specification<Convidado> spec = null;
+        if(Objects.nonNull(nome)){
+            spec = Specification
+                    .where(ConvidadoFilter.hasCasamentoId(casamentoId)).and(ConvidadoFilter.hasNome(nome));
+        }else{
+            spec = Specification
+                    .where(ConvidadoFilter.hasCasamentoId(casamentoId));
+        }
         return repository.findAll(spec);
     }
 
-    public List<Convidado> convidadosWithoutMesa(List<Mesa> mesas, String nome){
-
-        if (mesas.isEmpty()){
-            throw new IllegalArgumentException("Mesas não informadas");
-        }
-
-        return extractConvidadosWithoutMesa(mesas, nome);
+    public List<Convidado> convidadosWithoutMesa(List<Mesa> mesas, String nome, Integer casamentoId){
+        return extractConvidadosWithoutMesa(mesas, nome, casamentoId);
     }
 
-    private List<Convidado> extractConvidadosWithoutMesa(List<Mesa> mesas, String nome){
+    private List<Convidado> extractConvidadosWithoutMesa(List<Mesa> mesas, String nome, Integer casamentoId){
 
-        Integer casamentoId = Objects.nonNull(mesas.get(0).getCasamento()) ? mesas.get(0).getCasamento().getId() : null;
+        List<Convidado> allConvidados = findByCasamentoIdAndNome(casamentoId, nome);
 
-        List<Convidado> allConvidados = findByCasamentoId(casamentoId, nome);
+        if (mesas.isEmpty()){
+            return allConvidados;
+        }
+
         Optional<List<Convidado>> convidadosWithMesaOptional = mesas.stream().map(Mesa::getConvidados).findFirst();
 
         if (convidadosWithMesaOptional.isEmpty()){

@@ -5,10 +5,13 @@ import com.bridee.api.entity.Convite;
 import com.bridee.api.entity.enums.TipoConvidado;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.projection.orcamento.RelatorioProjection;
 import com.bridee.api.repository.ConviteRepository;
 import com.bridee.api.repository.specification.ConviteFilter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,5 +72,9 @@ public class ConviteService {
 
     public Convite findById(Integer id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado!"));
+    }
+
+    public RelatorioProjection gerarRelatorioCasamento(Integer casamentoId) {
+        return repository.gerarRelatorio(casamentoId);
     }
 }

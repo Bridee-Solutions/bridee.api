@@ -19,7 +19,7 @@ public class ConvidadoFilter {
             Join<Convidado, Convite> convite = root.join("convite");
             Join<Convite, Casamento> casamento = convite.join("casamento");
 
-            return criteriaBuilder.equal(casamento.get("id"), casamento);
+            return criteriaBuilder.equal(casamento.get("id"), casamentoId);
         };
     }
 

@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
@@ -28,6 +29,9 @@ public class MesaService {
     @Transactional
     public Mesa save(Mesa mesa, Integer casamentoId){
         validateMesaCasamento(mesa, casamentoId);
+        mesa.setCasamento(Casamento.builder()
+                .id(casamentoId)
+                .build());
         return repository.save(mesa);
     }
 
@@ -49,7 +53,7 @@ public class MesaService {
     }
 
     private void validateMesaCasamento(Mesa mesa, Integer casamentoId){
-        if (repository.existsByNomeAndCasamentoId(mesa, casamentoId)){
+        if (repository.existsByNomeAndCasamentoId(mesa.getNome(), casamentoId)){
             throw new ResourceAlreadyExists("Mesa já cadastrada para esse casamento.");
         }
     }

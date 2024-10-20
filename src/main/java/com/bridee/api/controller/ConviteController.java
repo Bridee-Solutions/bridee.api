@@ -6,12 +6,14 @@ import com.bridee.api.dto.response.ConvitesResponseDto;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.mapper.request.ConviteRequestMapper;
 import com.bridee.api.mapper.response.ConviteResponseMapper;
-import com.bridee.api.repository.specification.ConviteFilter;
+import com.bridee.api.projection.orcamento.RelatorioProjection;
 import com.bridee.api.service.ConviteService;
+import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,8 +47,13 @@ public class ConviteController {
     @GetMapping("/casamento/{casamentoId}")
     public ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter, @PathVariable Integer casamentoId){
         List<Convite> convites = conviteService.findAllByCasamentoId(filter, casamentoId);
-        List<ConvitesResponseDto> convitesResponse = responseMapper.toDomain(convites);
-        return ResponseEntity.ok(responseMapper.toPage(convitesResponse));
+        Pageable pageable = PageUtils.buildPageable(filter);
+        return ResponseEntity.ok(responseMapper.toDomainPage(convites, pageable));
+    }
+
+    @GetMapping("/casamento/{casamentoId}/relatorio")
+    public ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@PathVariable Integer casamentoId){
+        return ResponseEntity.ok(conviteService.gerarRelatorioCasamento(casamentoId));
     }
 
     @PostMapping
