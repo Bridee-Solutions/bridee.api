@@ -15,10 +15,12 @@ import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
+import com.bridee.api.utils.CsvUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -127,5 +129,19 @@ public class OrcamentoService {
         BigDecimal totalItens = new BigDecimal(valorTotalItens);
         BigDecimal totalFornecedores = new BigDecimal(valorTotalFornecedores);
         return totalItens.add(totalFornecedores);
+    }
+
+    public byte[] generateCsvFile(Integer id) {
+
+        OrcamentoProjection orcamentoProjection = findCasalOrcamento(id);
+
+        byte[] csv = null;
+        try {
+            csv = CsvUtils.createResumeCostsCsv(orcamentoProjection);
+        } catch (IOException e) {
+            throw new RuntimeException("Não foi possível gerar o arquivo csv para o casal %d".formatted(id));
+        }
+
+        return csv;
     }
 }

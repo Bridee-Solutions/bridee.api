@@ -9,6 +9,9 @@ import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.service.OrcamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +32,16 @@ public class OrcamentoController {
     public ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@PathVariable Integer id){
         OrcamentoProjection projection = orcamentoService.findCasalOrcamento(id);
         return ResponseEntity.ok(projection);
+    }
+
+    @GetMapping(value = "/csv/casal/{id}", produces = "text/plain")
+    public ResponseEntity<byte[]> downloadOrcamentoCsv(@PathVariable Integer id){
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.TEXT_PLAIN);
+        httpHeaders.setContentDispositionFormData("attachment", "orcamento.csv");
+
+        return new ResponseEntity<>(orcamentoService.generateCsvFile(id), httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/casal")

@@ -11,6 +11,7 @@ public class CasalOrcamentoResponseDto {
 
     private BigDecimal orcamentoTotal;
     private BigDecimal orcamentoGasto;
+    private String nomeCasal;
     private List<ItemOrcamentoResponseDto> itemOrcamentos = new ArrayList<>();
     private List<OrcamentoFornecedorResponseDto> orcamentoFornecedores = new ArrayList<>();
 

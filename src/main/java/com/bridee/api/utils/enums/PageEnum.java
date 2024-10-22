@@ -1,4 +1,4 @@
-package com.bridee.api.utils;
+package com.bridee.api.utils.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
