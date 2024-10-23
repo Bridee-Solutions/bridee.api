@@ -1,10 +1,9 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.mapper.response.CasalOrcamentoResponseMapper;
-import com.bridee.api.projection.orcamento.OrcamentoFornecedorProjection;
 import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.service.OrcamentoService;
 import jakarta.validation.Valid;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/orcamentos")
 @RequiredArgsConstructor
-public class OrcamentoController {
+public class OrcamentoControllerImpl {
 
     private final CasalOrcamentoResponseMapper casalOrcamentoResponseMapper;
     private final OrcamentoService orcamentoService;

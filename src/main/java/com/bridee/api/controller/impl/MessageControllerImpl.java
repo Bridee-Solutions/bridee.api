@@ -1,12 +1,10 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.client.dto.response.WhatsappResponseDto;
 import com.bridee.api.dto.request.ConviteMessageDto;
 import com.bridee.api.dto.request.EmailDto;
 import com.bridee.api.client.dto.request.WhatsappRequestDto;
 import com.bridee.api.mapper.request.ConviteMessageMapper;
-import com.bridee.api.pattern.observer.dto.ConviteTopicDto;
-import com.bridee.api.pattern.strategy.impl.WhatsappSender;
 import com.bridee.api.service.ConviteService;
 import com.bridee.api.service.EmailService;
 import com.bridee.api.service.WhatsappService;
@@ -20,12 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/messages")
 @RequiredArgsConstructor
-public class MessageController {
+public class MessageControllerImpl {
 
     private final EmailService emailService;
     private final WhatsappService whatsappService;

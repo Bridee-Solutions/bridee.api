@@ -1,4 +1,4 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.dto.response.SubcategoriaServicoResponseDto;
 import com.bridee.api.entity.SubcategoriaServico;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/subcategorias")
 @RequiredArgsConstructor
-public class SubcategoriaServicoController {
+public class SubcategoriaServicoControllerImpl {
 
     private final SubcategoriaServicoService subcategoriaServicoService;
     private final SubcategoriaServicoResponseMapper responseMapper;

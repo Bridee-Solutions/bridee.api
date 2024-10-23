@@ -7,99 +7,108 @@ import com.bridee.api.dto.request.externo.AssessorExternoRequestDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.dto.response.externo.AssessorExternoResponseDto;
-import com.bridee.api.entity.Assessor;
-import com.bridee.api.mapper.request.AssessorRequestMapper;
-import com.bridee.api.mapper.request.externo.AssessorExternoRequestMapper;
-import com.bridee.api.mapper.response.AssessorResponseMapper;
-import com.bridee.api.mapper.response.externo.AssessorExternoResponseMapper;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
-import com.bridee.api.service.AssessorService;
-import com.bridee.api.service.EmailService;
-import com.bridee.api.utils.UriUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/assessores")
-@RequiredArgsConstructor
-public class AssessorController {
+@Tag(name = "Assessor Controller",
+        description = "Controladora para gerenciar as informações dos assessores.")
+public interface AssessorController {
 
-    private final AssessorService service;
-    private final EmailService emailService;
-    private final AssessorRequestMapper requestMapper;
-    private final AssessorResponseMapper responseMapper;
-    private final AssessorExternoRequestMapper externoRequestMapper;
-    private final AssessorExternoResponseMapper externoResponseMapper;
+    @Operation(summary = "Encontra todos os assessores cadastrados",
+            description = "Encontra todos os assessores cadastrados de forma paginada")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "Retorna uma lista de assessores")
+    )
+    ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable);
 
-    @GetMapping
-    public ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable){
-        return ResponseEntity.ok(responseMapper.toDomain(service.findAll(pageable)));
+    @Operation(summary = "Encontra um assessor específico",
+            description = "Encontra um assessor específico pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de assessores"),
+            @ApiResponse(responseCode = "404", description = "Assessor não encontrado")
+        }
+    )
+    ResponseEntity<AssessorResponseDto> findById(@PathVariable Integer id);
+
+    @Operation(summary = "Encontra uma lista de detalhes dos assessores.",
+            description = "Retorna os detalhes de todos os assessores.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de assessores"),
     }
+    )
+    ResponseEntity<Page<AssociadoResponseProjection>> findAssessoresDetails(Pageable pageable);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AssessorResponseDto> findById(@PathVariable Integer id){
-        return ResponseEntity.ok(responseMapper.toDomain(service.findById(id)));
+    @Operation(summary = "Retorna todas as informações sobre um assessor e seus serviços",
+            description = "Retorna todas as informações sobre um assessor e seus serviços")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de assessores")
+        }
+    )
+    ResponseEntity<AssociadoGeralResponseDto> findAssessorInformation(@PathVariable Integer id);
+
+    @Operation(summary = "Envio de e-mail de orçamento",
+            description = "Envia um e-mail de solicitação de orcamento de um casal para um assessor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "E-mail enviado com sucesso")
+        }
+    )
+    ResponseEntity<Void> sendOrcamentoEmail(@RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto);
+
+    @Operation(summary = "Cria um assessor",
+            description = "Cria um assessor a partir do fluxo da nossa aplicação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cria um assessor"),
+            @ApiResponse(responseCode = "409", description = "Email ou Cnpj do assessor já cadastrado"),
+            @ApiResponse(responseCode = "404", description = "Role de assessor não encontrado")
+        }
+    )
+    ResponseEntity<AssessorResponseDto> save(@RequestBody @Valid AssessorRequestDto requestDto);
+
+    @Operation(summary = "Cria um assessor externo",
+            description = "Cria um assessor externo (de uma aplicação externa)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cria um assessor"),
+            @ApiResponse(responseCode = "409", description = "Email ou Cnpj do assessor já cadastrado"),
+            @ApiResponse(responseCode = "404", description = "Role de assessor não encontrado")
     }
+    )
+    ResponseEntity<AssessorExternoResponseDto> saveExternal(@RequestBody @Valid AssessorExternoRequestDto requestDto);
 
-    @GetMapping("/details")
-    public ResponseEntity<Page<AssociadoResponseProjection>> findAssessoresDetails(Pageable pageable){
-        return ResponseEntity.ok(service.findAssessoresDetails(pageable));
+    @Operation(summary = "Validação informações do usuário",
+            description = "Validar informações do assessor durante o cadastro")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna um objeto com o resultado das validações")
+        }
+    )
+    ResponseEntity<ValidateAssessorFieldsResponseDto> validateFields(@RequestBody @Valid ValidateAssessorFieldsRequestDto requestDto);
+
+    @Operation(summary = "Atualiza as informações de um assessor",
+            description = "Atualiza as informações de um assessor pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Informações atualizadas com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Assessor não encontrado")
+        }
+    )
+    ResponseEntity<AssessorResponseDto> update(@RequestBody @Valid AssessorRequestDto requestDto, @PathVariable Integer id);
+
+    @Operation(summary = "Deleta as informações de um assessor",
+            description = "Deleta as informações de um assessor pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Assessor não encontrado")
     }
+    )
+    ResponseEntity<Void> delete(@PathVariable Integer id);
 
-    @GetMapping("/information/{id}")
-    public ResponseEntity<AssociadoGeralResponseDto> findAssessorInformation(@PathVariable Integer id){
-        return ResponseEntity.ok(service.findAssessorInformation(id));
-    }
-
-    @PostMapping("/solicitar-orcamento")
-    public ResponseEntity<Void> sendOrcamentoEmail(@RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto){
-        emailService.sendOrcamentoEmail(requestDto);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping
-    public ResponseEntity<AssessorResponseDto> save(@RequestBody @Valid AssessorRequestDto requestDto){
-        Assessor assessor = service.save(requestMapper.toEntity(requestDto));
-        AssessorResponseDto responseDto = responseMapper.toDomain(assessor);
-        return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
-    }
-
-    @PostMapping("/externo")
-    public ResponseEntity<AssessorExternoResponseDto> saveExternal(@RequestBody @Valid AssessorExternoRequestDto requestDto){
-        Assessor assessor = service.saveExternal(externoRequestMapper.toEntity(requestDto));
-        AssessorExternoResponseDto responseDto = externoResponseMapper.toDomain(assessor);
-        return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
-
-    }
-
-    @PostMapping("/validate-fields")
-    public ResponseEntity<ValidateAssessorFieldsResponseDto> validateFields(@RequestBody @Valid ValidateAssessorFieldsRequestDto requestDto){
-        ValidateAssessorFieldsResponseDto responseDto = service.validateAssessorFields(requestDto);
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<AssessorResponseDto> update(@RequestBody @Valid AssessorRequestDto requestDto, @PathVariable Integer id){
-        Assessor assessor = service.update(requestMapper.toEntity(requestDto), id);
-        return ResponseEntity.ok(responseMapper.toDomain(assessor));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id){
-        service.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
 }
+

@@ -1,4 +1,4 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.dto.request.CasalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
@@ -12,7 +12,6 @@ import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/casais")
 @RequiredArgsConstructor
-public class CasalController {
+public class CasalControllerImpl {
 
     private final CasalService service;
     private final CasalRequestMapper requestMapper;

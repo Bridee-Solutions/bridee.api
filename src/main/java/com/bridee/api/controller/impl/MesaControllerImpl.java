@@ -1,4 +1,4 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.dto.request.MesaRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
@@ -14,7 +14,6 @@ import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.UriUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/mesas")
 @RequiredArgsConstructor
-public class MesaController {
+public class MesaControllerImpl {
 
     private final MesaService mesaService;
     private final ConvidadoService convidadoService;

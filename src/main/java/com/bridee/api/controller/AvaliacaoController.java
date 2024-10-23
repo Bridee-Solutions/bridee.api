@@ -1,31 +1,25 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.AvaliacaoRequestDto;
-import com.bridee.api.entity.Avaliacao;
-import com.bridee.api.mapper.request.AvaliacaoRequestMapper;
-import com.bridee.api.service.AvaliacaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/avaliacoes")
-@RequiredArgsConstructor
-public class AvaliacaoController {
+@Tag(name = "Controladora de avaliação",
+        description = "Controladora para validar as avaliações.")
+public interface AvaliacaoController {
 
-    private final AvaliacaoService service;
-    private final AvaliacaoRequestMapper requestMapper;
-
-    @PostMapping
-    public ResponseEntity<Void> saveAvaliacao(@RequestBody @Valid AvaliacaoRequestDto requestDto){
-        Avaliacao avaliacao = requestMapper.toEntity(requestDto);
-        service.save(avaliacao);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
+    @Operation(summary = "Cadastra a avaliação do casal",
+            description = "Cadastra a avalição do casal para um assessor ou fornecedor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400",
+                    description = "Tentativa de avaliar um assessor e fornecedor ao mesmo tempo"),
+            @ApiResponse(responseCode = "200",
+                    description = "Avaliação criada com sucesso")
+    })
+    ResponseEntity<Void> saveAvaliacao(@RequestBody @Valid AvaliacaoRequestDto requestDto);
 }

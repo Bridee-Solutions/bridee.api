@@ -1,4 +1,4 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.dto.response.CategoriaServicoResponseDto;
 import com.bridee.api.entity.CategoriaServico;
@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/categorias-servicos")
 @RequiredArgsConstructor
-public class CategoriaServicoController {
+public class CategoriaServicoControllerImpl {
 
     private final CategoriaServicoService service;
     private final CategoriaServicoResponseMapper responseMapper;

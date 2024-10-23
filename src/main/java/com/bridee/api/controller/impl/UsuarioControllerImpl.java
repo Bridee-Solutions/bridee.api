@@ -1,4 +1,4 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.VerificationToken;
@@ -26,7 +26,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
-public class UsuarioController {
+public class UsuarioControllerImpl {
 
     @Value("${registration.success.redirectUri}")
     private String successRegistrationRedirectUri;

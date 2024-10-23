@@ -1,10 +1,9 @@
-package com.bridee.api.controller;
+package com.bridee.api.controller.impl;
 
 import com.bridee.api.dto.request.ConvidadoRequestDto;
 import com.bridee.api.dto.request.MesaConvidadoRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
 import com.bridee.api.entity.Convidado;
-import com.bridee.api.entity.Mesa;
 import com.bridee.api.mapper.request.ConvidadoRequestMapper;
 import com.bridee.api.mapper.response.ConvidadoResponseMapper;
 import com.bridee.api.service.ConvidadoService;
@@ -12,18 +11,15 @@ import com.bridee.api.service.MesaService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/convidados")
 @RequiredArgsConstructor
-public class ConvidadoController {
+public class ConvidadoControllerImpl {
 
     private final ConvidadoService service;
     private final MesaService mesaService;
