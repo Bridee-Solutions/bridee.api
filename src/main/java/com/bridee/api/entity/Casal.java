@@ -1,6 +1,7 @@
 package com.bridee.api.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +39,8 @@ public class Casal extends Usuario {
     private String foto;
     private BigDecimal orcamentoTotal;
 
-    @ManyToOne
+    // TODO: Deletar esse relacionamento, completamente redundante, já existe na tabela casamento.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Assessor assessor;
 

@@ -9,6 +9,7 @@ import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.ConvidadoRepository;
 import com.bridee.api.repository.specification.ConvidadoFilter;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -48,10 +49,9 @@ public class ConvidadoService {
         return repository.save(convidado);
     }
 
-    public List<Convidado> saveAll(List<Convidado> convidados, Convite convite){
+    public void saveAll(List<Convidado> convidados, Convite convite){
         convidados = removeDuplicatedConvidados(convidados);
         convidados.forEach(convidado -> convidado.setConvite(convite));
-        return repository.saveAll(convidados);
     }
 
     public void vinculateConvidadoToMesa(List<MesaConvidadoRequestDto> mesaConvidadoDto){
@@ -140,5 +140,9 @@ public class ConvidadoService {
                 .id(conviteId)
                 .build();
         convidado.setConvite(convite);
+    }
+
+    public List<Convidado> findAllByIds(@NotNull List<@NotNull Integer> convidadosIds) {
+        return repository.findAllById(convidadosIds);
     }
 }

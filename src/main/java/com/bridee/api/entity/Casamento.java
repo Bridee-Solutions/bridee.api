@@ -3,6 +3,7 @@ package com.bridee.api.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.FetchType;
 import lombok.Builder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,7 +42,7 @@ public class Casamento {
     @JoinColumn
     private Casal casal;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Assessor assessor;
     
