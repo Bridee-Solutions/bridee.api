@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.controller.ConvidadoController;
 import com.bridee.api.dto.request.ConvidadoRequestDto;
 import com.bridee.api.dto.request.MesaConvidadoRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
@@ -19,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/convidados")
 @RequiredArgsConstructor
-public class ConvidadoControllerImpl {
+public class ConvidadoControllerImpl implements ConvidadoController {
 
     private final ConvidadoService service;
     private final MesaService mesaService;
@@ -31,8 +32,6 @@ public class ConvidadoControllerImpl {
         Convidado convidado = service.findById(id);
         return ResponseEntity.ok(convidadoResponseMapper.toDomain(convidado));
     }
-
-
 
     @PostMapping("/mesa")
     public ResponseEntity<Void> vinculateToMesa(@RequestBody @Valid List<MesaConvidadoRequestDto> requestDtoList){

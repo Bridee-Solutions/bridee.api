@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.controller.CasalController;
 import com.bridee.api.dto.request.CasalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
 import com.bridee.api.dto.response.CasalResponseDto;
@@ -29,7 +30,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/casais")
 @RequiredArgsConstructor
-public class CasalControllerImpl {
+public class CasalControllerImpl implements CasalController {
 
     private final CasalService service;
     private final CasalRequestMapper requestMapper;

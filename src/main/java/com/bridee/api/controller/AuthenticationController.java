@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.Duration;
 
-@Tag(name = "Authentication Controller",
-    description = "Controladora responsável por fornecer autenticação."
-)
+@Tag(name = "Controller de autenticação")
 public interface AuthenticationController {
 
     @Operation(summary = "Autenticação de usuário",

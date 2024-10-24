@@ -10,6 +10,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(BadRequestEntityException.class)
+    public ResponseEntity<ErrorResponseDto> badRequest(BadRequestEntityException e, HttpServletResponse response){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setMessage(e.getMessage());
+        errorResponseDto.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.ok(errorResponseDto);
+    }
+
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ResponseEntity<ErrorResponseDto> unprocessableEntity(UnprocessableEntityException e, HttpServletResponse response){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setStatusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+        errorResponseDto.setMessage(e.getMessage());
+        return ResponseEntity.unprocessableEntity().body(errorResponseDto);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDto> illegalArgumentException(IllegalArgumentException e, HttpServletResponse response){
         ErrorResponseDto errorResponseDto = new ErrorResponseDto();

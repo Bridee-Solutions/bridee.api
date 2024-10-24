@@ -59,6 +59,10 @@ public class ConvidadoService {
         List<Integer> convidadosIds = mesaConvidadoDto.stream().map(MesaConvidadoRequestDto::getConvidadoId).toList();
         List<Convidado> convidados = repository.findAllById(convidadosIds);
 
+        if (convidados.isEmpty()){
+            throw new ResourceNotFoundException("Nenhum dos convidados informados existem!");
+        }
+
         convidados.forEach(convidado -> {
             mesaConvidadoDto.forEach(mesa -> {
                 if (mesa.getConvidadoId().equals(convidado.getId())){

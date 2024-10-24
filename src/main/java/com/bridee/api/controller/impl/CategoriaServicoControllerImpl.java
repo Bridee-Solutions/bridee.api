@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.controller.CategoriaServicoController;
 import com.bridee.api.dto.response.CategoriaServicoResponseDto;
 import com.bridee.api.entity.CategoriaServico;
 import com.bridee.api.mapper.response.CategoriaServicoResponseMapper;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/categorias-servicos")
 @RequiredArgsConstructor
-public class CategoriaServicoControllerImpl {
+public class CategoriaServicoControllerImpl implements CategoriaServicoController {
 
     private final CategoriaServicoService service;
     private final CategoriaServicoResponseMapper responseMapper;

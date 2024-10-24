@@ -9,8 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Controladora de avaliação",
-        description = "Controladora para validar as avaliações.")
+@Tag(name = "Controller de avaliação")
 public interface AvaliacaoController {
 
     @Operation(summary = "Cadastra a avaliação do casal",

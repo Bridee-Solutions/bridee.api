@@ -6,6 +6,7 @@ import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.entity.enums.TipoConvidado;
+import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.ConviteMessageMapper;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -104,7 +106,11 @@ public class ConviteService {
     }
 
     public RelatorioProjection gerarRelatorioCasamento(Integer casamentoId) {
-        return repository.gerarRelatorio(casamentoId);
+        RelatorioProjection projection = repository.gerarRelatorio(casamentoId);
+        if (Objects.isNull(projection)){
+            throw new BadRequestEntityException("Não há dados para gerar on relátorio do casal");
+        }
+        return projection;
     }
 
     public String generatePinCode(Integer casamentoId) {

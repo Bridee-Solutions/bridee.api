@@ -20,8 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Assessor Controller",
-        description = "Controladora para gerenciar as informações dos assessores.")
+@Tag(name = "Controller de assessor")
 public interface AssessorController {
 
     @Operation(summary = "Encontra todos os assessores cadastrados",
