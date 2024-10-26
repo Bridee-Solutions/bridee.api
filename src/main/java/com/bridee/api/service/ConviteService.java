@@ -108,7 +108,7 @@ public class ConviteService {
     public RelatorioProjection gerarRelatorioCasamento(Integer casamentoId) {
         RelatorioProjection projection = repository.gerarRelatorio(casamentoId);
         if (Objects.isNull(projection)){
-            throw new BadRequestEntityException("Não há dados para gerar on relátorio do casal");
+            throw new ResourceNotFoundException("Não há dados para gerar on relátorio do casal");
         }
         return projection;
     }

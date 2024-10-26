@@ -7,6 +7,7 @@ import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Custo;
 import com.bridee.api.entity.ItemOrcamento;
 import com.bridee.api.entity.OrcamentoFornecedor;
+import com.bridee.api.exception.CsvDownloadErro;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.FornecedorOrcamentoRequestMapper;
 import com.bridee.api.mapper.request.ItemOrcamentoRequestMapper;
@@ -139,7 +140,7 @@ public class OrcamentoService {
         try {
             csv = CsvUtils.createResumeCostsCsv(orcamentoProjection);
         } catch (IOException e) {
-            throw new RuntimeException("Não foi possível gerar o arquivo csv para o casal %d".formatted(id));
+            throw new CsvDownloadErro("Não foi possível gerar o arquivo csv para o casal %d".formatted(id));
         }
 
         return csv;

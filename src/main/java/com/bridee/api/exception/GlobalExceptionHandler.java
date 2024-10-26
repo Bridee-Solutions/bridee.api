@@ -10,6 +10,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(CsvDownloadErro.class)
+    public ResponseEntity<ErrorResponseDto> csvDownload(CsvDownloadErro e, HttpServletResponse response){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setStatusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+        errorResponseDto.setMessage(e.getMessage());
+        return ResponseEntity.unprocessableEntity().body(errorResponseDto);
+    }
+
     @ExceptionHandler(BadRequestEntityException.class)
     public ResponseEntity<ErrorResponseDto> badRequest(BadRequestEntityException e, HttpServletResponse response){
         ErrorResponseDto errorResponseDto = new ErrorResponseDto();

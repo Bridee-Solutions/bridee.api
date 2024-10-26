@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.controller.FornecedorController;
 import com.bridee.api.dto.request.FornecedorRequestDto;
 import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/fornecedores")
 @RequiredArgsConstructor
-public class FornecedorControllerImpl {
+public class FornecedorControllerImpl implements FornecedorController {
 
     private final FornecedorService fornecedorService;
     private final FornecedorResponseMapper responseMapper;

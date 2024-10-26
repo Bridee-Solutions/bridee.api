@@ -1,6 +1,7 @@
 package com.bridee.api.controller.impl;
 
 import com.bridee.api.client.dto.response.PexelsImageResponseDto;
+import com.bridee.api.controller.PexelsController;
 import com.bridee.api.service.PexelsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/pexels")
 @RestController
 @RequiredArgsConstructor
-public class PexelsControllerImpl {
+public class PexelsControllerImpl implements PexelsController {
 
     private final PexelsService pexelsService;
 

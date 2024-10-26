@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.controller.MesaController;
 import com.bridee.api.dto.request.MesaRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
 import com.bridee.api.dto.response.MesaResponseDto;
@@ -32,7 +33,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/mesas")
 @RequiredArgsConstructor
-public class MesaControllerImpl {
+public class MesaControllerImpl implements MesaController {
 
     private final MesaService mesaService;
     private final ConvidadoService convidadoService;

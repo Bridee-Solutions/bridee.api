@@ -48,15 +48,34 @@ public interface ConviteController {
     @Operation(summary = "Relatório de convites do casamento",
             description = "Gera um relatório sobre os status dos convites do casamento")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Retorna os relátorios dos convites")
+            @ApiResponse(responseCode = "200", description = "Retorna os relátorios dos convites"),
+            @ApiResponse(responseCode = "404", description = "Não encontrou os dados para gerar o relatório")
     })
     ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@PathVariable Integer casamentoId);
 
+    @Operation(summary = "Cria um convite para um casamento",
+            description = "Cria um convite para um casamento já cadastrado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cria e associa um convite a um casamento"),
+            @ApiResponse(responseCode = "409", description = "Convite já cadastrado para esse casamento"),
+            @ApiResponse(responseCode = "404", description = "Titular do convite não encontrado")
+    })
     ResponseEntity<ConvitesResponseDto> save(@RequestBody @Valid ConviteRequestDto requestDto);
 
+    @Operation(summary = "Atualiza um convite",
+            description = "Atualiza um convite pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Convite atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Convite não encontrado")
+    })
     ResponseEntity<ConviteResponseDto> update(@RequestBody @Valid ConviteRequestDto requestDto,
                                                      @PathVariable Integer id);
-
+    @Operation(summary = "Deleta um convite",
+            description = "Deleta um convite pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Convite deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Convite não encontrado")
+    })
     ResponseEntity<Void> delete(@PathVariable Integer id);
 
 }

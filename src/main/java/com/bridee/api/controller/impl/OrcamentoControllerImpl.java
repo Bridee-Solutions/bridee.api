@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.controller.OrcamentoController;
 import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
 import com.bridee.api.entity.Casal;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/orcamentos")
 @RequiredArgsConstructor
-public class OrcamentoControllerImpl {
+public class OrcamentoControllerImpl implements OrcamentoController {
 
     private final CasalOrcamentoResponseMapper casalOrcamentoResponseMapper;
     private final OrcamentoService orcamentoService;

@@ -1,6 +1,7 @@
 package com.bridee.api.controller.impl;
 
 import com.bridee.api.client.dto.response.WhatsappResponseDto;
+import com.bridee.api.controller.MessageController;
 import com.bridee.api.dto.request.ConviteMessageDto;
 import com.bridee.api.dto.request.EmailDto;
 import com.bridee.api.client.dto.request.WhatsappRequestDto;
@@ -22,17 +23,12 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/messages")
 @RequiredArgsConstructor
-public class MessageControllerImpl {
+public class MessageControllerImpl implements MessageController {
 
     private final EmailService emailService;
     private final WhatsappService whatsappService;
     private final ConviteService conviteService;
     private final ConviteMessageMapper conviteMapper;
-
-    @PostMapping("/email")
-    public ResponseEntity<String> sendEmail(@RequestBody EmailDto emailDto){
-        return ResponseEntity.ok(emailService.sendEmail(emailDto));
-    }
 
     @PostMapping("/whatsapp")
     public ResponseEntity<WhatsappResponseDto> sendWhatsappMessage(@RequestBody WhatsappRequestDto whatsappRequestDto) throws IOException, WriterException {

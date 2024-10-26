@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.controller.ConviteController;
 import com.bridee.api.dto.request.ConviteRequestDto;
 import com.bridee.api.dto.response.ConviteResponseDto;
 import com.bridee.api.dto.response.ConvitesResponseDto;
@@ -31,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/convites")
 @RequiredArgsConstructor
-public class ConviteControllerImpl {
+public class ConviteControllerImpl implements ConviteController {
 
     private final ConviteService conviteService;
     private final ConviteRequestMapper requestMapper;
