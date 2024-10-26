@@ -26,7 +26,6 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-@Builder
 public class Casal extends Usuario {
 
     @Id
@@ -49,4 +48,9 @@ public class Casal extends Usuario {
 
     @OneToMany(mappedBy = "casal")
     private List<OrcamentoFornecedor> orcamentoFornecedores = new ArrayList<>();
+
+    public Casal(Integer id) {
+        this.id = id;
+    }
+
 }

@@ -26,9 +26,7 @@ public interface AvaliacaoRequestMapper extends BaseMapper<AvaliacaoRequestDto, 
             return null;
         }
 
-        return Casal.builder()
-                .id(casalId)
-                .build();
+        return new Casal(casalId);
     }
 
     @Named("createFornecedorEntity")
@@ -46,9 +44,7 @@ public interface AvaliacaoRequestMapper extends BaseMapper<AvaliacaoRequestDto, 
         if (assessorId == null){
             return null;
         }
-        return Assessor.builder()
-                .id(assessorId)
-                .build();
+        return new Assessor(assessorId);
     }
 
 }

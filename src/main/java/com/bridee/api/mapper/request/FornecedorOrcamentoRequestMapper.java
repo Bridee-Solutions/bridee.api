@@ -29,9 +29,7 @@ public interface FornecedorOrcamentoRequestMapper extends BaseMapper<FornecedorO
 
     @Named("createCasalEntity")
     default Casal createCasal(Integer casalId){
-        return Casal.builder()
-                .id(casalId)
-                .build();
+        return new Casal(casalId);
     }
 
 }

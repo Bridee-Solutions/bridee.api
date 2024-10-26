@@ -18,9 +18,7 @@ public interface ItemOrcamentoRequestMapper extends BaseMapper<ItemOrcamentoRequ
 
     @Named("createCasalEntity")
     default Casal createCasal(Integer casalId){
-        return Casal.builder()
-                .id(casalId)
-                .build();
+        return new Casal(casalId);
     }
 
 }

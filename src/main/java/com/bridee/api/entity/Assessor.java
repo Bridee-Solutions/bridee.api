@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 public class Assessor extends Usuario{
 
     @Id
@@ -34,4 +33,7 @@ public class Assessor extends Usuario{
     private String foto;
     private String telefoneEmpresa;
 
+    public Assessor(Integer id) {
+        this.id = id;
+    }
 }
