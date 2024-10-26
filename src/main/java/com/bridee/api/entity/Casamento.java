@@ -33,10 +33,14 @@ public class Casamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private String nome;
     
     private LocalDate dataInicio;
     
     private LocalDate dataFim;
+
+    private Integer totalConvidados;
     
     @ManyToOne
     @JoinColumn

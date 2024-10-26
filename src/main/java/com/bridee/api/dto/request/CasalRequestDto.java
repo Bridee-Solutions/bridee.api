@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Schema(name = "DTO de request do casal",
@@ -18,6 +20,8 @@ public class CasalRequestDto extends UsuarioRequestDto{
     @Schema(description = "telefone do parceiro", example = "+xx(xx)xxxxxxxxx")
     private String telefoneParceiro;
     private String endereco;
+    private Integer quantidadeConvidados;
+    private LocalDate dataCasamento;
     @Size(min = 8, max = 8)
     @Schema(description = "CEP do endereço", example = "08140300")
     private String cep;

@@ -11,6 +11,7 @@ import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
 import com.bridee.api.service.CasalService;
+import com.bridee.api.service.CasamentoService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class CasalControllerImpl implements CasalController {
     private final CasalResponseMapper responseMapper;
     private final CasalExternoRequestMapper externoRequestMapper;
     private final CasalExternoResponseMapper externoResponseMapper;
+    private final CasamentoService casamentoService;
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
@@ -53,14 +55,18 @@ public class CasalControllerImpl implements CasalController {
     @PostMapping
     public ResponseEntity<CasalResponseDto> save(@RequestBody @Valid CasalRequestDto requestDto){
         Casal casal = requestMapper.toEntity(requestDto);
-        CasalResponseDto responseDto = responseMapper.toDomain(service.save(casal));
+        casal = service.save(casal);
+        casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento());
+        CasalResponseDto responseDto = responseMapper.toDomain(casal);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
     @PostMapping("/externo")
     public ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody @Valid CasalExternoRequestDto requestDto){
         Casal casal = externoRequestMapper.toEntity(requestDto);
-        CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(service.saveExternal(casal));
+        casal = service.save(casal);
+        casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento());
+        CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(casal);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 

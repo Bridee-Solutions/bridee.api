@@ -2,7 +2,7 @@ spring:
   jpa:
     show-sql: true
   application:
-    name:
+    name: bridee-api
   datasource:
     url: ${MYSQL_URL:jdbc:mysql://localhost:3307/bridee}
     username: ${MYSQL_USERNAME:bridee}
