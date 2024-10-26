@@ -3,9 +3,12 @@ package com.bridee.api.controller;
 import com.bridee.api.dto.request.ConvidadoRequestDto;
 import com.bridee.api.dto.request.MesaConvidadoRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.utils.UriUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +29,8 @@ public interface ConvidadoController {
             description = "Busca um convidado pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o convidado"),
-            @ApiResponse(responseCode = "404", description = "Convidado não encontrado")
+            @ApiResponse(responseCode = "404", description = "Convidado não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<ConvidadoResponseDto> findById(@PathVariable Integer id);
 
@@ -34,7 +38,8 @@ public interface ConvidadoController {
             description = "Vincula os usuários as suas respectivas mesas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Vincula mesas e convidados"),
-            @ApiResponse(responseCode = "404", description = "Convidados não existem")
+            @ApiResponse(responseCode = "404", description = "Convidados não existem",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<Void> vinculateToMesa(@RequestBody @Valid List<MesaConvidadoRequestDto> requestDtoList);
 
@@ -42,7 +47,8 @@ public interface ConvidadoController {
             description = "Cria um convidado, vinculando a um convite já existente")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Convidado criado com sucesso"),
-            @ApiResponse(responseCode = "409", description = "Convidado já cadastrado para o convite")
+            @ApiResponse(responseCode = "409", description = "Convidado já cadastrado para o convite",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<ConvidadoResponseDto> create(@RequestBody @Valid ConvidadoRequestDto requestDto,
                                                        @PathVariable Integer conviteId);
@@ -50,7 +56,8 @@ public interface ConvidadoController {
             description = "Atualiza um convidado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Convidado atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Convidado não encontrado")
+            @ApiResponse(responseCode = "404", description = "Convidado não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<ConvidadoResponseDto> update(@PathVariable Integer id,
                                                        @RequestBody @Valid ConvidadoRequestDto requestDto);
@@ -58,7 +65,8 @@ public interface ConvidadoController {
             description = "Deleta um convidado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Convidado deletado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Convidado não encontrado")
+            @ApiResponse(responseCode = "404", description = "Convidado não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<Void> deleteById(@PathVariable Integer id);
 

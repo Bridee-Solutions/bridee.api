@@ -1,7 +1,10 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.AvaliacaoRequestDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +19,8 @@ public interface AvaliacaoController {
             description = "Cadastra a avalição do casal para um assessor ou fornecedor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "400",
-                    description = "Tentativa de avaliar um assessor e fornecedor ao mesmo tempo"),
+                    description = "Tentativa de avaliar um assessor e fornecedor ao mesmo tempo",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "200",
                     description = "Avaliação criada com sucesso")
     })

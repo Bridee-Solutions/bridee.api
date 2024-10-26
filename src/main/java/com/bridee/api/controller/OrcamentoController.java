@@ -2,9 +2,12 @@ package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +28,8 @@ public interface OrcamentoController {
             description = "Busca o  orcamento de um casal pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o orçamento do casal"),
-            @ApiResponse(responseCode = "404", description = "Casal não encontrado")
+            @ApiResponse(responseCode = "404", description = "Casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@PathVariable Integer id);
 
@@ -33,8 +37,10 @@ public interface OrcamentoController {
             description = "Realiza o download de um arquivo csv com o orçamento do casal")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Arquivo gerado com sucesso"),
-            @ApiResponse(responseCode = "422", description = "Não foi possível gerar o arquivo"),
-            @ApiResponse(responseCode = "404", description = "Orçamento não encontrado")
+            @ApiResponse(responseCode = "422", description = "Não foi possível gerar o arquivo",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Orçamento não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<byte[]> downloadOrcamentoCsv(@PathVariable Integer id);
 

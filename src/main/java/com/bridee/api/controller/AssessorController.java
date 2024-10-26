@@ -5,11 +5,14 @@ import com.bridee.api.dto.request.SolicitacaoOrcamentoRequestDto;
 import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
 import com.bridee.api.dto.request.externo.AssessorExternoRequestDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.dto.response.externo.AssessorExternoResponseDto;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +37,8 @@ public interface AssessorController {
             description = "Encontra um assessor específico pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de assessores"),
-            @ApiResponse(responseCode = "404", description = "Assessor não encontrado")
+            @ApiResponse(responseCode = "404", description = "Assessor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
         }
     )
     ResponseEntity<AssessorResponseDto> findById(@PathVariable Integer id);
@@ -67,8 +71,10 @@ public interface AssessorController {
             description = "Cria um assessor a partir do fluxo da nossa aplicação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cria um assessor"),
-            @ApiResponse(responseCode = "409", description = "Email ou Cnpj do assessor já cadastrado"),
-            @ApiResponse(responseCode = "404", description = "Role de assessor não encontrado")
+            @ApiResponse(responseCode = "409", description = "Email ou Cnpj do assessor já cadastrado",
+                        content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Role de assessor não encontrado",
+                        content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
         }
     )
     ResponseEntity<AssessorResponseDto> save(@RequestBody @Valid AssessorRequestDto requestDto);
@@ -77,8 +83,10 @@ public interface AssessorController {
             description = "Cria um assessor externo (de uma aplicação externa)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cria um assessor"),
-            @ApiResponse(responseCode = "409", description = "Email ou Cnpj do assessor já cadastrado"),
-            @ApiResponse(responseCode = "404", description = "Role de assessor não encontrado")
+            @ApiResponse(responseCode = "409", description = "Email ou Cnpj do assessor já cadastrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Role de assessor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     }
     )
     ResponseEntity<AssessorExternoResponseDto> saveExternal(@RequestBody @Valid AssessorExternoRequestDto requestDto);
@@ -95,7 +103,8 @@ public interface AssessorController {
             description = "Atualiza as informações de um assessor pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Informações atualizadas com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Assessor não encontrado")
+            @ApiResponse(responseCode = "404", description = "Assessor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
         }
     )
     ResponseEntity<AssessorResponseDto> update(@RequestBody @Valid AssessorRequestDto requestDto, @PathVariable Integer id);
@@ -104,7 +113,8 @@ public interface AssessorController {
             description = "Deleta as informações de um assessor pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deletado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Assessor não encontrado")
+            @ApiResponse(responseCode = "404", description = "Assessor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     }
     )
     ResponseEntity<Void> delete(@PathVariable Integer id);

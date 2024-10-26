@@ -2,12 +2,15 @@ package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.MesaRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.MesaResponseDto;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.UriUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +35,8 @@ public interface MesaController {
             description = "Busca todas as mesas paginadas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna todas as mesas"),
-            @ApiResponse(responseCode = "404", description = "Casamento não encontrado")
+            @ApiResponse(responseCode = "404", description = "Casamento não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<Page<MesaResponseDto>> findAll(@PathVariable Integer casamentoId, Pageable pageable);
 
@@ -47,7 +51,8 @@ public interface MesaController {
             description = "Cria uma mesa vinculada a um casamento")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Mesa criada com sucesso"),
-            @ApiResponse(responseCode = "409", description = "Mesa já cadastrada para o casamento")
+            @ApiResponse(responseCode = "409", description = "Mesa já cadastrada para o casamento",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<MesaResponseDto> save(@RequestBody MesaRequestDto requestDto,
                                                 @PathVariable Integer casamentoId);
@@ -56,7 +61,8 @@ public interface MesaController {
             description = "Atualiza uma mesa")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Mesa atualizada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Mesa não encontrada")
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<MesaResponseDto> update(@RequestBody MesaRequestDto requestDto,
                                                   @PathVariable Integer id);
@@ -64,7 +70,8 @@ public interface MesaController {
             description = "Deleta uma mesa")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Mesa deletada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Mesa não encontrada")
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<Void> deleteById(@PathVariable Integer id);
 }

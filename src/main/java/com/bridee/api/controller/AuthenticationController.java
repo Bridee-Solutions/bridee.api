@@ -2,8 +2,11 @@ package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.AuthenticationRequestDto;
 import com.bridee.api.dto.response.AuthenticationResponseDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.utils.CookieUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +28,10 @@ public interface AuthenticationController {
             description = "Autenticação do usuário e retornando um JWT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna um HttpOnly cookie com o access token"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-            @ApiResponse(responseCode = "409", description = "Usuário de uma aplicação externa")
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "409", description = "Usuário de uma aplicação externa",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody @Valid AuthenticationRequestDto authenticationRequest);
 

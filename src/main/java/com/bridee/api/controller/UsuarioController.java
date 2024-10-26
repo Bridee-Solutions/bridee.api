@@ -1,9 +1,12 @@
 package com.bridee.api.controller;
 
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.UsuarioResponseDto;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.VerificationToken;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +27,8 @@ public interface UsuarioController {
             description = "Busca um usuário pelo e-mail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o usuário"),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<UsuarioResponseDto> findByEmail(@PathVariable String email);
 
@@ -32,7 +36,8 @@ public interface UsuarioController {
             description = "Ativa a conta do usuário pelo token de verificação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Token de validação expirado")
+            @ApiResponse(responseCode = "400", description = "Token de validação expirado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<Void> activeAccount(@RequestParam String token, HttpServletResponse response) throws IOException;
 
@@ -40,7 +45,8 @@ public interface UsuarioController {
             description = "Envia e-mail de verificação do usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "E-mail enviado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "E-mail não encontrado")
+            @ApiResponse(responseCode = "404", description = "E-mail não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<Void> resendVerificationEmail(@PathVariable String email);
 }

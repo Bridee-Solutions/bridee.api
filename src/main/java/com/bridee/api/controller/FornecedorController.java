@@ -1,12 +1,15 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.FornecedorRequestDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.utils.UriUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +36,8 @@ public interface FornecedorController {
             description = "Busca um fornecedor específico pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna um fornecedor específico"),
-            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado")
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<FornecedorResponseDto> findById(@PathVariable Integer id);
 
@@ -51,7 +55,8 @@ public interface FornecedorController {
             description = "Busca as informações de um fornecedor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna as informações do fornecedor"),
-            @ApiResponse(responseCode = "404", description = "Fornecedor ou informações não encontradas")
+            @ApiResponse(responseCode = "404", description = "Fornecedor ou informações não encontradas",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<AssociadoGeralResponseDto> findFornecedorInformation(@PathVariable Integer id);
 
@@ -59,7 +64,8 @@ public interface FornecedorController {
             description = "Cadastra um fornecedor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cria um fornecedor"),
-            @ApiResponse(responseCode = "409", description = "Fornecedor já existe")
+            @ApiResponse(responseCode = "409", description = "Fornecedor já existe",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<FornecedorResponseDto> save(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto);
 
@@ -67,7 +73,8 @@ public interface FornecedorController {
             description = "Atualiza um fornecedor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cria um fornecedor"),
-            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado")
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<FornecedorResponseDto> update(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto, @PathVariable Integer id);
 
@@ -75,7 +82,8 @@ public interface FornecedorController {
             description = "Deleta um fornecedor")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleta um fornecedor"),
-            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado")
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<Void> delete(@PathVariable Integer id);
 }

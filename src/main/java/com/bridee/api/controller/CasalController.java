@@ -3,10 +3,13 @@ package com.bridee.api.controller;
 import com.bridee.api.dto.request.CasalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
 import com.bridee.api.dto.response.CasalResponseDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.externo.CasalExternoResponseDto;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.utils.UriUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +37,8 @@ public interface CasalController {
             description = "Busca um casal específico pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Busca um casal pelo id"),
-            @ApiResponse(responseCode = "404", description = "Casal não encontrado")
+            @ApiResponse(responseCode = "404", description = "Casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<CasalResponseDto> findById(@PathVariable Integer id);
 
@@ -42,9 +46,12 @@ public interface CasalController {
             description = "Salva um casal na aplicação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cria um casal"),
-            @ApiResponse(responseCode = "409", description = "Email do casal já cadastrado"),
-            @ApiResponse(responseCode = "404", description = "Role de casal não encontrado"),
-            @ApiResponse(responseCode = "422", description = "Tentativa de cadastrar um usuário externo")
+            @ApiResponse(responseCode = "409", description = "Email do casal já cadastrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Role de casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "422", description = "Tentativa de cadastrar um usuário externo",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     }
     )
     ResponseEntity<CasalResponseDto> save(@RequestBody @Valid CasalRequestDto requestDto);
@@ -53,9 +60,12 @@ public interface CasalController {
             description = "Salva um casal na aplicação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cria um casal"),
-            @ApiResponse(responseCode = "409", description = "Email do casal já cadastrado"),
-            @ApiResponse(responseCode = "404", description = "Role de casal não encontrado"),
-            @ApiResponse(responseCode = "422", description = "Tentativa de cadastrar um usuário não externo")
+            @ApiResponse(responseCode = "409", description = "Email do casal já cadastrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Role de casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "422", description = "Tentativa de cadastrar um usuário não externo",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     }
     )
     ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody @Valid CasalExternoRequestDto requestDto);
@@ -64,7 +74,8 @@ public interface CasalController {
             description = "Atualização um casal na aplicação")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Atualiza um casal"),
-            @ApiResponse(responseCode = "404", description = "Casal não encontrado"),
+            @ApiResponse(responseCode = "404", description = "Casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
     )
     ResponseEntity<CasalResponseDto> update(@RequestBody @Valid CasalRequestDto requestDto, @PathVariable Integer id);
@@ -73,7 +84,8 @@ public interface CasalController {
             description = "Atualiza o orcamento de um casal pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Atualiza um casal"),
-            @ApiResponse(responseCode = "404", description = "Casal não encontrado"),
+            @ApiResponse(responseCode = "404", description = "Casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
     )
     ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody BigDecimal orcamentoTotal);
