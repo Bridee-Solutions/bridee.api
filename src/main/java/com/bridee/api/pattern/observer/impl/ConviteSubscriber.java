@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -28,11 +29,16 @@ public class ConviteSubscriber implements ConviteObserver {
     @Override
     public void update() {
         List<ConviteTopicDto> convitesTopics = conviteSubject.getUpdate(this);
-        convitesTopics.forEach(topic -> {
-            WhatsappRequestDto requestDto = whatsappRequestMapper.toRequestDto(topic);
-            whatsappService.sendMessage(requestDto);
-        });
+        sendInvites(convitesTopics, 0);
+    }
 
+    private void sendInvites(List<ConviteTopicDto> topic, Integer totalSend){
+        if (totalSend == topic.size()){
+            return;
+        }
+        WhatsappRequestDto requestDto = whatsappRequestMapper.toRequestDto(topic.get(totalSend++));
+        whatsappService.sendMessage(requestDto);
+        sendInvites(topic, totalSend);
     }
 
     @Override
