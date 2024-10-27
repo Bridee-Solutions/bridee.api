@@ -1,13 +1,19 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.FornecedorRequestDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
-import com.bridee.api.mapper.request.FornecedorRequestMapper;
-import com.bridee.api.mapper.response.FornecedorResponseMapper;
-import com.bridee.api.service.FornecedorService;
+import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
+import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.utils.UriUtils;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,48 +23,67 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/fornecedores")
-@RequiredArgsConstructor
-public class FornecedorController {
+@Tag(name = "Controller de fornecedor")
+public interface FornecedorController {
 
-    private final FornecedorService fornecedorService;
-    private final FornecedorResponseMapper responseMapper;
-    private final FornecedorRequestMapper requestMapper;
+    @Operation(summary = "Busca todos os fornecedores paginados",
+            description = "Busca todos os fornecedores paginados")
+    @ApiResponse(responseCode = "200", description = "Retorna todos os fornecedores")
+    ResponseEntity<Page<FornecedorResponseDto>> findAll(Pageable pageable);
 
-    @GetMapping
-    public ResponseEntity<Page<FornecedorResponseDto>> findAll(Pageable pageable){
-        return ResponseEntity.ok(responseMapper.toDomain(fornecedorService.findAll(pageable)));
-    }
+    @Operation(summary = "Busca um fornecedor",
+            description = "Busca um fornecedor específico pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna um fornecedor específico"),
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<FornecedorResponseDto> findById(@PathVariable Integer id);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FornecedorResponseDto> findById(@PathVariable Integer id){
-        return ResponseEntity.ok(responseMapper.toDomain(fornecedorService.findById(id)));
-    }
+    @Operation(summary = "Busca os detalhes do fornecedor",
+            description = "Busca os detalhes de um fornecedor pela categoria")
+    @ApiResponse(responseCode = "200", description = "Retorna os detalhes do fornecedor")
+    ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId, Pageable pageable);
 
-    @PostMapping
-    public ResponseEntity<FornecedorResponseDto> save(@RequestBody FornecedorRequestDto fornecedorRequestDto){
-        Fornecedor fornecedor = fornecedorService
-                .save(requestMapper.toEntity(fornecedorRequestDto));
-        FornecedorResponseDto responseDto = responseMapper
-                .toDomain(fornecedor);
-        return ResponseEntity.created(UriUtils.uriBuilder(responseDto)).body(responseDto);
-    }
+    @Operation(summary = "Busca os detalhes do fornecedor",
+            description = "Busca os detalhes de um fornecedor pela subcategoria")
+    @ApiResponse(responseCode = "200", description = "Retorna os detalhes do fornecedor")
+    ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable);
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FornecedorResponseDto> update(@RequestBody FornecedorRequestDto fornecedorRequestDto, @PathVariable Integer id){
-        Fornecedor fornecedor = fornecedorService.update(requestMapper.toEntity(fornecedorRequestDto), id);
-        FornecedorResponseDto responseDto = responseMapper.toDomain(fornecedor);
-        return ResponseEntity.ok(responseDto);
-    }
+    @Operation(summary = "Busca as informações do fornecedor",
+            description = "Busca as informações de um fornecedor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna as informações do fornecedor"),
+            @ApiResponse(responseCode = "404", description = "Fornecedor ou informações não encontradas",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<AssociadoGeralResponseDto> findFornecedorInformation(@PathVariable Integer id);
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id){
-        fornecedorService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+    @Operation(summary = "Cadastra um fornecedor",
+            description = "Cadastra um fornecedor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cria um fornecedor"),
+            @ApiResponse(responseCode = "409", description = "Fornecedor já existe",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<FornecedorResponseDto> save(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto);
 
+    @Operation(summary = "Atualiza um fornecedor",
+            description = "Atualiza um fornecedor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cria um fornecedor"),
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<FornecedorResponseDto> update(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto, @PathVariable Integer id);
+
+    @Operation(summary = "Deleta um fornecedor",
+            description = "Deleta um fornecedor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleta um fornecedor"),
+            @ApiResponse(responseCode = "404", description = "Fornecedor não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<Void> delete(@PathVariable Integer id);
 }

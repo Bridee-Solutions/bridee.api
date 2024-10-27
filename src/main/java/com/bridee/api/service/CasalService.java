@@ -6,6 +6,7 @@ import com.bridee.api.entity.UsuarioRole;
 import com.bridee.api.entity.enums.RoleEnum;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +42,16 @@ public class CasalService {
         if (repository.existsByEmail(casal.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
         Role role = roleRepository.findByNome(RoleEnum.ROLE_CASAL).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         casal.setSenha(passwordEncoder.encode(casal.getSenha()));
+
+        if (casal.getExterno()){
+            throw new UnprocessableEntityException("Não é possível cadastrar um usuário externo");
+        }
+
         Casal casalCreated = repository.save(casal);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, casalCreated);
         usuarioRoleRepository.save(usuarioRole);
         emailService.sendRegistrationEmail(casalCreated);
+
         return casalCreated;
     }
 
@@ -50,9 +59,15 @@ public class CasalService {
         if (repository.existsByEmail(casal.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
         Role role = roleRepository.findByNome(RoleEnum.ROLE_CASAL).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         casal.setEnabled(true);
+
+        if (!casal.getExterno()){
+            throw new UnprocessableEntityException("Não é possível cadastrar um usuário que não seja de uma aplicação terceira.");
+        }
+
         Casal casalCreated = repository.save(casal);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, casalCreated);
         usuarioRoleRepository.save(usuarioRole);
+
         return casalCreated;
     }
 
@@ -67,4 +82,15 @@ public class CasalService {
         repository.deleteById(id);
     }
 
+    public void existsByEmail(String email){
+        if (!repository.existsByEmail(email)){
+            throw new ResourceNotFoundException("Casal não cadastrado!");
+        }
+    }
+
+    public Casal updateOrcamentoTotal(Integer id, BigDecimal orcamentoTotal) {
+        Casal casal = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casal não encontrado!"));
+        casal.setOrcamentoTotal(orcamentoTotal);
+        return repository.save(casal);
+    }
 }

@@ -3,9 +3,15 @@ package com.bridee.api.client.dto.request;
 import com.bridee.api.client.enums.WhatsappClientType;
 import com.bridee.api.client.enums.WhatsappMessageType;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class WhatsappRequestDto {
 
     @JsonProperty("apikey")
@@ -30,5 +36,7 @@ public class WhatsappRequestDto {
     private String messageBody;
     @JsonProperty("client_type")
     private WhatsappClientType whatsappClientType;
+
+    private String pinCode;
 
 }

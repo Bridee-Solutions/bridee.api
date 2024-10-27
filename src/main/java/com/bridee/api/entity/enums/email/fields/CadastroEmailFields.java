@@ -2,9 +2,9 @@ package com.bridee.api.entity.enums.email.fields;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public enum CadastroEmailFields implements EmailFields{
 
     COUPLE_NAME("coupleName"), REGISTER_URL("registerUrl"),
@@ -12,7 +12,7 @@ public enum CadastroEmailFields implements EmailFields{
     VERIFICATION_TOKEN("verificationToken"), BODY_IMAGE("bodyImage"),
     LOGO("logoImage");
 
-    private String value;
+    private final String value;
 
     @Override
     public String getValue() {

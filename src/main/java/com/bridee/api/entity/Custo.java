@@ -1,7 +1,9 @@
 package com.bridee.api.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.FetchType;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -29,12 +31,12 @@ public class Custo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
-    private Double precoEstimado;
-    private Double precoAtual;
+    private BigDecimal precoEstimado;
+    private BigDecimal precoAtual;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Orcamento orcamento;
+    private ItemOrcamento itemOrcamento;
      
     @CreatedBy
     @Column(updatable = false)
