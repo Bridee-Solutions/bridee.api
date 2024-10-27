@@ -39,6 +39,8 @@ public class SecurityConfiguration {
                                         "/casais/externo",
                                         "/assessores/externo",
                                         "/assessores/validate-fields").permitAll()
+                                .requestMatchers("/v3/api-docs/**",
+                                        "/swagger-ui/**").permitAll()
                                 .anyRequest().authenticated();
                 })
                 .csrf(CsrfConfigurer::disable)
