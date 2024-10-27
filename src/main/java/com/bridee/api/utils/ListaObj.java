@@ -3,19 +3,19 @@ package com.bridee.api.utils;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ListaObj<T> {
+public class ListaObj<T extends Comparable<T>> {
 
     protected T[] vetor;
     protected int size;
     protected static final int CAPACIDADE_PADRAO = 16;
 
     public ListaObj() {
-        this.vetor = (T[]) new Object[CAPACIDADE_PADRAO];
+        this.vetor = (T[]) new Comparable[CAPACIDADE_PADRAO];
         this.size = 0;
     }
 
     public ListaObj(int capacidade){
-        this.vetor = (T[]) new Object[capacidade];
+        this.vetor = (T[]) new Comparable[capacidade];
         size = 0;
     }
 
@@ -112,18 +112,15 @@ public class ListaObj<T> {
         return listaEstatica;
     }
 
-    public T[] toArray(ListaObj<T> lista){
-        if (lista.isEmpty()){
-            return (T[]) new Object[0];
-        }
-        T[] newArray = (T[]) new Object[vetor.length];
+    public T[] toArray(){
+        T[] newArray = (T[]) new Comparable[vetor.length];
         for (int i = 0; i < vetor.length; i++) {
             newArray[i] = vetor[i];
         }
         return newArray;
     }
 
-    public <R> ListaObj<R> map (Function<T, R> function){
+    public <R extends Comparable<R>> ListaObj<R> map (Function<T, R> function){
         ListaObj<R> newLista = new ListaObj<>();
         fromArray(vetor).forEach(valor -> {
             newLista.add(function.apply(valor));
