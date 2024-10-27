@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,10 +55,9 @@ public class ConviteService {
         Convite convite = findById(conviteMessageDto.getConviteId());
         List<Convidado> convidados = convidadoService.findAllByIds(conviteMessageDto.getConvidadosIds());
 
-        if (convidados.isEmpty()){
-            throw new ResourceNotFoundException("Não foi encontrado nenhum dos convidados informados para o convite de id %d"
-                    .formatted(convite.getId()));
-        }
+        validateCasalCasamento(casamento, casal);
+        validateConviteCasamento(casamento, convite);
+        validateConvidadosConvite(convite, convidados);
 
         List<ConviteTopicDto> convidadosTopics = convidados.stream()
                 .map(convidado -> conviteMessageMapper.toTopicDto(convite, casal, convidado)).toList();
@@ -122,9 +122,30 @@ public class ConviteService {
         return pinCode;
     }
 
-    public void validateConviteMessage(){
-            //TODO: validação convite message
+    private void validateCasalCasamento(Casamento casamento, Casal casal){
+        if(!casamento.getCasal().equals(casal)){
+            throw new BadRequestEntityException("Casal não associado ao casamento especificado");
+        }
     }
 
+    private void validateConviteCasamento(Casamento casamento, Convite convite){
+        if (!convite.getCasamento().equals(casamento)) {
+            throw new BadRequestEntityException("Convite não pertence ao casamento especificado");
+        }
+    }
+
+    private void validateConvidadosConvite(Convite convite, List<Convidado> convidados){
+        HashSet<Convidado> convidadosConvite = new HashSet<>(convite.getConvidados());
+
+        if (convidados.isEmpty() || convidadosConvite.isEmpty()){
+            throw new ResourceNotFoundException("Não foi encontrado nenhum dos convidados informados para o convite de id %d"
+                    .formatted(convite.getId()));
+        }
+
+        if (!convidadosConvite.containsAll(convidados)){
+            throw new BadRequestEntityException("Um ou mais convidados não associados ao convite.");
+        }
+
+    }
 
 }
