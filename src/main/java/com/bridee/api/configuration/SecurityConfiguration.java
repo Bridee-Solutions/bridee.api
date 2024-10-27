@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                                         "/casais/externo",
                                         "/assessores/externo",
                                         "/assessores/validate-fields").permitAll()
-                                .anyRequest().permitAll();
+                                .anyRequest().authenticated();
                 })
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
