@@ -2,9 +2,10 @@ package com.bridee.api.utils;
 
 public class MergeSort {
 
-    public static <T extends Comparable<T>> void mergeSort(ListaObj<T> lista){
+    public static <T extends Comparable<T>> T[] mergeSort(ListaObj<T> lista){
         T[] vetor = lista.toArray();
-        mergeSort(0, vetor.length, vetor);
+        mergeSort(0, vetor.length -1, vetor);
+        return vetor;
     }
 
     private static <T extends Comparable<T>> void mergeSort(int inicio , int fim, T[] vetor){

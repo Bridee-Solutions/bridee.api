@@ -19,6 +19,10 @@ public class ListaObj<T extends Comparable<T>> {
         size = 0;
     }
 
+    public ListaObj(T[] vetor) {
+        this.vetor = vetor;
+    }
+
     public void add(T t){
         if (size > vetor.length) {
             System.out.println("Não há mais posições disponíveis no vetor");

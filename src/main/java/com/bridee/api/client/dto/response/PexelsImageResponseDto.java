@@ -19,7 +19,7 @@ public class PexelsImageResponseDto {
     private Integer perPage;
 
     @JsonProperty("photos")
-    private ListaObj<PexelsPhotos> photos;
+    private List<PexelsPhotos> photos;
 
     @JsonProperty("next_page")
     private String nextPageUrl;
