@@ -46,3 +46,7 @@ azure:
     container:
       url: ${AZURE_DATASTORAGE_CONTAINER_URL:""}
       sasToken: ${AZURE_DATASTORAGE_CONTAINER_TOKEN:""}
+
+httpOnly:
+  cookie:
+    host: ${HTTPONLY_COOKIE_DOMAIN:localhost}
