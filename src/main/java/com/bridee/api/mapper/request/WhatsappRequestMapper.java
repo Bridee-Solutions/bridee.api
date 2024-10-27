@@ -3,6 +3,7 @@ package com.bridee.api.mapper.request;
 import com.bridee.api.client.dto.request.WhatsappRequestDto;
 import com.bridee.api.client.dto.response.WhatsappResponseDto;
 import com.bridee.api.client.enums.WhatsappClientType;
+import com.bridee.api.client.enums.WhatsappMessageType;
 import com.bridee.api.pattern.observer.dto.ConviteTopicDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -22,7 +23,7 @@ public interface WhatsappRequestMapper {
                 .messageBodyMimetype("image/png")
                 .messageBodyFilename("qrcode.png")
                 .whatsappClientType(WhatsappClientType.CONVIDADO)
-                .messageType("IMAGE")
+                .messageType(WhatsappMessageType.IMAGE.getValue())
                 .messageCaption("""
                         Olá, aqui está o seu convite para casamento de %s & %s
                         Atenciosamente, Equipe Bridee.
