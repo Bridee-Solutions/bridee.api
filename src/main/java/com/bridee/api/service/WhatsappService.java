@@ -30,10 +30,8 @@ public class WhatsappService {
     }
 
     public WhatsappResponseDto sendMessageToGuest(WhatsappRequestDto requestDto){
-        if (requestDto.getMessageType().equals(WhatsappMessageType.TEXT.getValue())){
-            requestDto.setMessageBody(generatePinCode());
-        }else if(requestDto.getMessageType().equals(WhatsappMessageType.IMAGE.getValue())){
-            requestDto.setMessageBody(generateQRCode());
+        if(requestDto.getMessageType().equals(WhatsappMessageType.IMAGE.getValue())){
+            requestDto.setMessageBody(generateQRCode(requestDto));
         }
         return whatsappSender.sendMessage(requestDto);
     }
@@ -42,15 +40,13 @@ public class WhatsappService {
         return whatsappSender.sendMessage(requestDto);
     }
 
-    public String generatePinCode() {
-        return RandomStringUtils.randomNumeric(6);
-    }
+    public String generateQRCode(WhatsappRequestDto requestDto){
 
-    public String generateQRCode(){
-        // TODO: Alterar o inviteUrl pela lógica que será utilizada pelo leitor de qrcode para validar o convidado.
         try {
-            return Base64.getEncoder().encodeToString(QRCodeUtils.gerarQRCode("http://localhost:8080", 250, 250));
+            return Base64.getEncoder().encodeToString(QRCodeUtils
+                    .gerarQRCode("%s#%s".formatted(requestDto.getPinCode(), requestDto.getContactPhoneNumber()), 250, 250));
         } catch (Exception e){
             throw new UnableToGenerateQRCode();
         }
+
     }}

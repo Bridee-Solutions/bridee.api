@@ -24,7 +24,7 @@
                 <div th:if="${isAssessor}" style="text-align:center;font-weight:700;font-size:1.25rem;line-height:1.75rem;margin:16px 0">
                     Olá, <span th:utext="${assessorName}"></span>, Estamos muito felizes por ter você na nossa plataforma! 🎉
                 </div>
-                <div th:else="${isAssessor}" style="text-align:center;font-weight:700;font-size:1.25rem;line-height:1.75rem;margin:16px 0">
+                <div th:unless="${isAssessor}" style="text-align:center;font-weight:700;font-size:1.25rem;line-height:1.75rem;margin:16px 0">
                     Olá, <span th:utext="${coupleName}"></span>, Estamos muito felizes por ter você na nossa plataforma! 🎉
                 </div>
             <p style="text-align:center;font-size:1rem;line-height:1.5rem;margin:16px 0">Você deu o primeiro passo para facilitar o planejamento do seu casamento, e estamos aqui para ajudar em cada detalhe. Para começar a aproveitar todos os recursos do bridee, só falta uma coisinha: confirmar seu cadastro.</p>

@@ -8,6 +8,10 @@ import com.bridee.api.entity.UsuarioRole;
 import com.bridee.api.entity.enums.RoleEnum;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
+import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
+import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
+import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
@@ -17,6 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -29,9 +36,36 @@ public class AssessorService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final ImagemService imagemService;
+    private final FormaPagamentoService formaPagamentoService;
+    private final AssociadoGeralResponseMapper geralResponseMapper;
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
+    }
+
+    public Page<AssociadoResponseProjection> findAssessoresDetails(Pageable pageable){
+        return assessorRepository.findAssessorDetails(pageable);
+    }
+
+    public AssociadoGeralResponseDto findAssessorInformation(Integer assessorId){
+        if (!assessorRepository.existsById(assessorId)){
+            throw new ResourceNotFoundException("Assessor não encontrado!");
+        }
+
+        AssociadoGeralResponseProjection resultProjection = assessorRepository.findFornecedorInformations(assessorId);
+        if (Objects.isNull(resultProjection)){
+            throw new ResourceNotFoundException("Não foi possível recuperar as informações do assessor");
+        }
+
+        List<String> imagensUrl = imagemService.findUrlImagensAssessor(assessorId);
+        List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(assessorId);
+
+        AssociadoGeralResponseDto geralResponseDto = geralResponseMapper.toGeralDto(resultProjection);
+        geralResponseDto.setImagens(imagensUrl);
+        geralResponseDto.setFormasPagamento(nomeFormasPagamento);
+
+        return geralResponseDto;
     }
 
     public Assessor save(Assessor assessor){

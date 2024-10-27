@@ -2,9 +2,15 @@ package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.AuthenticationRequestDto;
 import com.bridee.api.dto.response.AuthenticationResponseDto;
-import com.bridee.api.service.AuthenticationService;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.utils.CookieUtils;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,28 +18,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
-import java.util.List;
 
-@RestController
-@RequestMapping
-@RequiredArgsConstructor
-public class AuthenticationController {
+@Tag(name = "Controller de autenticação")
+public interface AuthenticationController {
 
-    private final AuthenticationService authenticationService;
-
-    @PostMapping("/authentication")
-    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody AuthenticationRequestDto authenticationRequest){
-        AuthenticationResponseDto authenticationResponse = authenticationService.authenticate(authenticationRequest);
-        HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", authenticationResponse.getAccessToken(), true, Duration.ofHours(1),"localhost");
-        HttpCookie refreshTokenCookie = CookieUtils.createCookie("refresh_token", authenticationResponse.getRefreshToken(), true, Duration.ofDays(7), "localhost");
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
-        headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-        return new ResponseEntity<>(authenticationResponse, headers, HttpStatus.OK);
-    }
+    @Operation(summary = "Autenticação de usuário",
+            description = "Autenticação do usuário e retornando um JWT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna um HttpOnly cookie com o access token"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "409", description = "Usuário de uma aplicação externa",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody @Valid AuthenticationRequestDto authenticationRequest);
 
 }

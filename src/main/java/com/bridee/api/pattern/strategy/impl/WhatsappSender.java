@@ -27,7 +27,7 @@ public class WhatsappSender implements MessageStrategy<WhatsappResponseDto, What
         requestDto.setMessageBodyMimetype("image/png");
         WhatsappResponseDto whatsappResponse = whatsappClient.sendMessage(requestDto).getBody();
         if (whatsappResponse == null){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Não foi possível realizar o envio da mensagem de whatsapp");
         }
         return whatsappResponse;
     }

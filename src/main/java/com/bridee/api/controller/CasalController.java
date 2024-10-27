@@ -3,15 +3,17 @@ package com.bridee.api.controller;
 import com.bridee.api.dto.request.CasalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
 import com.bridee.api.dto.response.CasalResponseDto;
+import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.externo.CasalExternoResponseDto;
 import com.bridee.api.entity.Casal;
-import com.bridee.api.mapper.request.CasalRequestMapper;
-import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
-import com.bridee.api.mapper.response.CasalResponseMapper;
-import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
-import com.bridee.api.service.CasalService;
 import com.bridee.api.utils.UriUtils;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,52 +22,71 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/casais")
-@RequiredArgsConstructor
-public class CasalController {
+import java.math.BigDecimal;
 
-    private final CasalService service;
-    private final CasalRequestMapper requestMapper;
-    private final CasalResponseMapper responseMapper;
-    private final CasalExternoRequestMapper externoRequestMapper;
-    private final CasalExternoResponseMapper externoResponseMapper;
+@Tag(name = "Controller de casal")
+public interface CasalController {
 
-    @GetMapping
-    public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
-        Page<CasalResponseDto> responseDto = responseMapper.toDomain(service.findAll(pageable));
-        return ResponseEntity.ok(responseDto);
+    @Operation(summary = "Busca todos os casais",
+                description = "Busca todos os casais cadastrados com paginação")
+    @ApiResponse(responseCode = "200", description = "Retorna uma lista de casais")
+    ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable);
+
+    @Operation(summary = "Busca um casal",
+            description = "Busca um casal específico pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Busca um casal pelo id"),
+            @ApiResponse(responseCode = "404", description = "Casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<CasalResponseDto> findById(@PathVariable Integer id);
+
+    @Operation(summary = "Salva um casal",
+            description = "Salva um casal na aplicação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cria um casal"),
+            @ApiResponse(responseCode = "409", description = "Email do casal já cadastrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Role de casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "422", description = "Tentativa de cadastrar um usuário externo",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     }
+    )
+    ResponseEntity<CasalResponseDto> save(@RequestBody @Valid CasalRequestDto requestDto);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CasalResponseDto> findById(@PathVariable Integer id){
-        Casal casal = service.findById(id);
-        return ResponseEntity.ok(responseMapper.toDomain(casal));
+    @Operation(summary = "Salva um casal",
+            description = "Salva um casal na aplicação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cria um casal"),
+            @ApiResponse(responseCode = "409", description = "Email do casal já cadastrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Role de casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "422", description = "Tentativa de cadastrar um usuário não externo",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     }
+    )
+    ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody @Valid CasalExternoRequestDto requestDto);
 
-    @PostMapping
-    public ResponseEntity<CasalResponseDto> save(@RequestBody CasalRequestDto requestDto){
-        Casal casal = requestMapper.toEntity(requestDto);
-        CasalResponseDto responseDto = responseMapper.toDomain(service.save(casal));
-        return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
+    @Operation(summary = "Atualiza um casal",
+            description = "Atualização um casal na aplicação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Atualiza um casal"),
+            @ApiResponse(responseCode = "404", description = "Casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
+    )
+    ResponseEntity<CasalResponseDto> update(@RequestBody @Valid CasalRequestDto requestDto, @PathVariable Integer id);
 
-    @PostMapping("/externo")
-    public ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody CasalExternoRequestDto requestDto){
-        Casal casal = externoRequestMapper.toEntity(requestDto);
-        CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(service.saveExternal(casal));
-        return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
+    @Operation(summary = "Atualiza o orcamento de um casal",
+            description = "Atualiza o orcamento de um casal pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Atualiza um casal"),
+            @ApiResponse(responseCode = "404", description = "Casal não encontrado",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CasalResponseDto> update(@RequestBody CasalRequestDto requestDto, @PathVariable Integer id){
-        Casal casal = requestMapper.toEntity(requestDto);
-        CasalResponseDto responseDto = responseMapper.toDomain(service.update(casal, id));
-        return ResponseEntity.ok(responseDto);
-    }
-
-
+    )
+    ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody BigDecimal orcamentoTotal);
 }

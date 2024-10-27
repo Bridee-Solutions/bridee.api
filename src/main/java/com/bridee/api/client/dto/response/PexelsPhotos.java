@@ -2,9 +2,12 @@ package com.bridee.api.client.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 
 @Data
-public class PexelsPhotos {
+@EqualsAndHashCode
+public class PexelsPhotos implements Comparable<PexelsPhotos> {
 
     @JsonProperty("id")
     private Long id;
@@ -19,4 +22,8 @@ public class PexelsPhotos {
     @JsonProperty("alt")
     private String altText;
 
+    @Override
+    public int compareTo(@NonNull PexelsPhotos o) {
+        return this.getPhotographer().compareTo(o.getPhotographer());
+    }
 }

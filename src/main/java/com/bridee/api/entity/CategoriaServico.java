@@ -1,7 +1,5 @@
 package com.bridee.api.entity;
 
-import com.bridee.api.entity.enums.ServicoCategoria;
-import com.bridee.api.entity.enums.CategoriaServicoEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,8 +24,8 @@ public class CategoriaServico {
       @GeneratedValue(strategy = GenerationType.IDENTITY)
       private Integer id;
 
-      @Enumerated(value = EnumType.STRING)
-      private CategoriaServicoEnum categoria;
-      private Boolean ativa;
+      private String nome;
+      private Boolean active;
+      private String imagemUrl;
   
 }

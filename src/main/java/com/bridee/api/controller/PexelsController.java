@@ -1,24 +1,26 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.client.dto.response.PexelsImageResponseDto;
-import com.bridee.api.service.PexelsService;
-import lombok.RequiredArgsConstructor;
+import com.bridee.api.dto.response.ErrorResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/pexels")
-@RestController
-@RequiredArgsConstructor
-public class PexelsController {
+@Tag(name = "Controller do pexels")
+public interface PexelsController {
 
-    private final PexelsService pexelsService;
-
-    @GetMapping("/images")
-    public ResponseEntity<PexelsImageResponseDto> findImages(@RequestParam String query){
-        return ResponseEntity.ok(pexelsService.findPexelsImages(query));
-    }
+    @Operation(summary = "Busca imagens do pexels",
+            description = "Busca imagens do pexels pelo nome")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna as imagens pesquisadas"),
+            @ApiResponse(responseCode = "404", description = "Imagem não encontrada",
+                    content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
+    })
+    ResponseEntity<PexelsImageResponseDto> findImages(@RequestParam String query);
 
 }

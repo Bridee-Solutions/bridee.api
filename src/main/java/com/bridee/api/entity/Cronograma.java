@@ -23,6 +23,6 @@ public class Cronograma {
     
     @ManyToOne
     @JoinColumn
-    private Evento evento;
+    private Casamento casamento;
     
 }

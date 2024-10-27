@@ -5,6 +5,7 @@ import com.bridee.api.dto.response.AuthenticationResponseDto;
 import com.bridee.api.dto.security.SecurityUser;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.exception.UsuarioExternoException;
 import com.bridee.api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,7 @@ public class AuthenticationService {
             throw new ResourceNotFoundException("Usuário inválido");
         }
         if (usuario.getExterno()){
-            throw new ResourceNotFoundException("Usuário não cadastro pela aplicação");
+            throw new UsuarioExternoException("Usuário não cadastro pela aplicação");
         }
         String accessToken = jwtService.generateToken(new HashMap<>(), userAuthenticated);
         String refreshToken = jwtService.generateRefreshToken(userAuthenticated);
