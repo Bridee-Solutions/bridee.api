@@ -3,6 +3,8 @@ package com.bridee.api.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.FetchType;
+import lombok.Builder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -26,20 +28,25 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Casamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private String nome;
     
     private LocalDate dataInicio;
     
     private LocalDate dataFim;
+
+    private Integer totalConvidados;
     
     @ManyToOne
     @JoinColumn
     private Casal casal;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Assessor assessor;
     

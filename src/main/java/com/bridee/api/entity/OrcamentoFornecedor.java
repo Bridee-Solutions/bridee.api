@@ -1,6 +1,7 @@
 package com.bridee.api.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,11 +27,11 @@ public class OrcamentoFornecedor {
 
     private BigDecimal preco;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "casal_id")
     private Casal casal;
 

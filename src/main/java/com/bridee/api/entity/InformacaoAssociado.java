@@ -6,10 +6,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,11 +33,18 @@ public class InformacaoAssociado {
     private Boolean casamentosCatolicos;
     private String urlSite;
     private String local;
-    @ManyToOne
+
+    @OneToOne
     @JoinColumn
     private Fornecedor fornecedor;
-    @ManyToOne
+    @OneToOne
     @JoinColumn
     private Assessor assessor;
+
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<ImagemAssociado> imagemAssociados = new ArrayList<>();
+
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<FormaPagamentoAssociado> formaPagamentoAssociados = new ArrayList<>();
 
 }

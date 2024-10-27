@@ -9,6 +9,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,4 +33,7 @@ public class Assessor extends Usuario{
     private String foto;
     private String telefoneEmpresa;
 
+    public Assessor(Integer id) {
+        this.id = id;
+    }
 }
