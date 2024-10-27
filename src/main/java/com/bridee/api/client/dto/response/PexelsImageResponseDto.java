@@ -1,5 +1,6 @@
 package com.bridee.api.client.dto.response;
 
+import com.bridee.api.utils.ListaObj;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -18,7 +19,7 @@ public class PexelsImageResponseDto {
     private Integer perPage;
 
     @JsonProperty("photos")
-    private List<PexelsPhotos> photos;
+    private ListaObj<PexelsPhotos> photos;
 
     @JsonProperty("next_page")
     private String nextPageUrl;
