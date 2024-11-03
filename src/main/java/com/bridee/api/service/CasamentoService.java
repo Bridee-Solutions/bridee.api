@@ -30,4 +30,10 @@ public class CasamentoService {
         return repository.save(casamento);
     }
 
+    public void existsById(Integer casamentoId){
+        if (!repository.existsById(casamentoId)){
+            throw new ResourceNotFoundException("Casamento não encontrado!");
+        }
+    }
+
 }
