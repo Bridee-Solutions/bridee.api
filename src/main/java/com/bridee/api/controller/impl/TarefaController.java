@@ -2,9 +2,11 @@ package com.bridee.api.controller.impl;
 
 import com.bridee.api.dto.request.TarefaRequestDto;
 import com.bridee.api.dto.response.TarefaResponseDto;
+import com.bridee.api.dto.response.TarefasResponseDto;
 import com.bridee.api.entity.Tarefa;
 import com.bridee.api.mapper.request.TarefaRequestMapper;
 import com.bridee.api.mapper.response.TarefaResponseMapper;
+import com.bridee.api.mapper.response.TarefasResponseMapper;
 import com.bridee.api.service.TarefaService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,14 +35,13 @@ public class TarefaController {
     private final TarefaService service;
     private final TarefaRequestMapper requestMapper;
     private final TarefaResponseMapper responseMapper;
+    private final TarefasResponseMapper tarefasResponseMapper;
 
     @GetMapping("/casamento/{casamentoId}")
-    public ResponseEntity<Page<TarefaResponseDto>> findAll(@PathVariable Integer casamentoId,
-                                                     @RequestParam Map<String, Object> params,
-                                                     Pageable pageable){
-        Page<Tarefa> tarefas = service.findAllByCasamentoId(casamentoId, params, pageable);
-        Page<TarefaResponseDto> responseDto = responseMapper.toDomain(tarefas);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<List<TarefasResponseDto>> findAll(@PathVariable Integer casamentoId,
+                                                            @RequestParam Map<String, Object> params){
+        List<Tarefa> tarefas = service.findAllByCasalId(casamentoId, params);
+        return ResponseEntity.ok(tarefasResponseMapper.toTarefasDto(tarefas));
     }
 
     @PostMapping("/casamento/{casamentoId}")

@@ -9,22 +9,26 @@ import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.TarefaCasalRepository;
 import com.bridee.api.repository.TarefaRepository;
 import com.bridee.api.repository.specification.TarefaFilter;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TarefaService {
 
     private final TarefaRepository repository;
     private final CasamentoService casamentoService;
     private final TarefaCasalRepository tarefaCasalRepository;
 
-    public Page<Tarefa> findAllByCasamentoId(Integer casamentoId, Map<String, Object> params, Pageable pageable){
+    public List<Tarefa> findAllByCasalId(Integer casamentoId, Map<String, Object> params){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
         params.put("casalId", casal.getId());
@@ -32,7 +36,16 @@ public class TarefaService {
         TarefaFilter tarefaFilter = new TarefaFilter();
         tarefaFilter.buildFilter(params);
 
-        return repository.findAll(tarefaFilter, pageable);
+        return repository.findAll(tarefaFilter);
+    }
+
+    public List<Tarefa> findAllByCasalId(Integer casalId){
+        Map<String, Object> filterAttributes = new HashMap<>();
+        filterAttributes.put("casalId", casalId);
+
+        TarefaFilter tarefaFilter = new TarefaFilter();
+        tarefaFilter.buildFilter(filterAttributes);
+        return repository.findAll(tarefaFilter);
     }
 
     public Tarefa save(Integer casamentoId, Tarefa tarefa){
