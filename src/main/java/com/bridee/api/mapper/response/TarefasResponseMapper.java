@@ -51,68 +51,72 @@ public interface TarefasResponseMapper{
 
     List<TarefaResponseDto> toResponseDto(List<Tarefa> tarefas);
 
+    default boolean isLateTask(Tarefa tarefa){
+        return tarefa.getDataLimite().isBefore(LocalDate.now());
+    }
+
     default List<TarefaResponseDto> tarefasJaneiro(List<Tarefa> tarefas){
-        List<Tarefa> januaryTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 1).toList();
+        List<Tarefa> januaryTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 1 && !isLateTask(tarefa)).toList();
         return toResponseDto(januaryTasks);
     }
 
     default List<TarefaResponseDto> tarefasFevereiro(List<Tarefa> tarefas){
-        List<Tarefa> februaryTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 2).toList();
+        List<Tarefa> februaryTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 2 && !isLateTask(tarefa)).toList();
         return toResponseDto(februaryTasks);
     }
 
     default List<TarefaResponseDto> tarefasMarco(List<Tarefa> tarefas){
-        List<Tarefa> marchTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 3).toList();
+        List<Tarefa> marchTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 3 && !isLateTask(tarefa)).toList();
         return toResponseDto(marchTasks);
     }
 
     default List<TarefaResponseDto> tarefasAbril(List<Tarefa> tarefas){
-        List<Tarefa> aprilTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 4).toList();
+        List<Tarefa> aprilTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 4 && !isLateTask(tarefa)).toList();
         return toResponseDto(aprilTasks);
     }
 
     default List<TarefaResponseDto> tarefasMaio(List<Tarefa> tarefas){
-        List<Tarefa> mayTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 5).toList();
+        List<Tarefa> mayTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 5 && !isLateTask(tarefa)).toList();
         return toResponseDto(mayTasks);
     }
 
     default List<TarefaResponseDto> tarefasJunho(List<Tarefa> tarefas){
-        List<Tarefa> juneTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 6).toList();
+        List<Tarefa> juneTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 6 && !isLateTask(tarefa)).toList();
         return toResponseDto(juneTasks);
     }
 
     default List<TarefaResponseDto> tarefasJulho(List<Tarefa> tarefas){
-        List<Tarefa> julyTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 7).toList();
+        List<Tarefa> julyTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 7 && !isLateTask(tarefa)).toList();
         return toResponseDto(julyTasks);
     }
 
     default List<TarefaResponseDto> tarefasAgosto(List<Tarefa> tarefas){
-        List<Tarefa> augustTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 8).toList();
+        List<Tarefa> augustTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 8 && !isLateTask(tarefa)).toList();
         return toResponseDto(augustTasks);
     }
 
     default List<TarefaResponseDto> tarefasSetembro(List<Tarefa> tarefas){
-        List<Tarefa> septemberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 9).toList();
+        List<Tarefa> septemberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 9 && !isLateTask(tarefa)).toList();
         return toResponseDto(septemberTasks);
     }
 
     default List<TarefaResponseDto> tarefasOutubro(List<Tarefa> tarefas){
-        List<Tarefa> octoberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 10).toList();
+        List<Tarefa> octoberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 10 && !isLateTask(tarefa)).toList();
         return toResponseDto(octoberTasks);
     }
 
     default List<TarefaResponseDto> tarefasNovembro(List<Tarefa> tarefas){
-        List<Tarefa> novemberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 11).toList();
+        List<Tarefa> novemberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 11 && !isLateTask(tarefa)).toList();
         return toResponseDto(novemberTasks);
     }
 
     default List<TarefaResponseDto> tarefasDezembro(List<Tarefa> tarefas){
-        List<Tarefa> decemberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 12).toList();
+        List<Tarefa> decemberTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().getMonthValue() == 12 && !isLateTask(tarefa)).toList();
         return toResponseDto(decemberTasks);
     }
 
     default List<TarefaResponseDto> tarefasAtrasadas(List<Tarefa> tarefas){
-        List<Tarefa> lateTasks = tarefas.stream().filter(tarefa -> tarefa.getDataLimite().isBefore(LocalDate.now())).toList();
+        List<Tarefa> lateTasks = tarefas.stream().filter(this::isLateTask).toList();
         return toResponseDto(lateTasks);
     }
 }
