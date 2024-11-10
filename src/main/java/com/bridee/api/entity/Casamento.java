@@ -41,7 +41,11 @@ public class Casamento {
     private LocalDate dataFim;
 
     private Integer totalConvidados;
-    
+
+    private String local;
+
+    private Boolean localReservado;
+
     @ManyToOne
     @JoinColumn
     private Casal casal;

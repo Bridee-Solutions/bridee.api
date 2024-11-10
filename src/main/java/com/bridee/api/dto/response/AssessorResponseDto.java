@@ -1,13 +1,19 @@
 package com.bridee.api.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(name = "DTO de assessor",
         description = "DTO para devolver informações dos assessores")
 public class AssessorResponseDto extends UsuarioResponseDto{

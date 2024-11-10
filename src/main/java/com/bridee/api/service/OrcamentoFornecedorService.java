@@ -21,6 +21,10 @@ public class OrcamentoFornecedorService {
         repository.findAllByCasalId(casalId);
     }
 
+    public List<OrcamentoFornecedorProjection> findAllOrcamentoFornecedorByCasalId(Integer casalId){
+        return repository.findAllByCasalId(casalId);
+    }
+
     public List<OrcamentoFornecedor> saveAll(List<OrcamentoFornecedor> orcamentoFornecedores){
         return repository.saveAll(orcamentoFornecedores);
     }

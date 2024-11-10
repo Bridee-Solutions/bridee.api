@@ -5,6 +5,7 @@ import com.bridee.api.entity.Casamento;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.CasamentoRepository;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,10 +20,13 @@ public class CasamentoService {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
     }
 
-    public Casamento save(Casal casal, Integer qtdConvidados, LocalDate dataCasamento){
+    public Casamento save(Casal casal, Integer qtdConvidados, LocalDate dataCasamento,
+                          boolean isReservado, String local){
         Casamento casamento = Casamento.builder()
                 .nome("%s e %s".formatted(casal.getNome(), casal.getNomeParceiro()))
                 .dataFim(dataCasamento)
+                .localReservado(BooleanUtils.toBoolean(isReservado))
+                .local(local)
                 .totalConvidados(qtdConvidados)
                 .casal(casal)
                 .build();

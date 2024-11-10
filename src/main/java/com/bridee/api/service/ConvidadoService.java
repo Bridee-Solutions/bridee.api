@@ -11,10 +11,10 @@ import com.bridee.api.repository.specification.ConvidadoFilter;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +27,7 @@ import java.util.Optional;
 public class ConvidadoService {
 
     private final ConvidadoRepository repository;
+    private final CasamentoService casamentoService;
 
     public List<Convidado> findAll() {
         return repository.findAll();
@@ -54,7 +55,7 @@ public class ConvidadoService {
         convidados.forEach(convidado -> convidado.setConvite(convite));
     }
 
-    public void vinculateConvidadoToMesa(List<MesaConvidadoRequestDto> mesaConvidadoDto){
+    public void vinculateConvidadosToMesa(List<MesaConvidadoRequestDto> mesaConvidadoDto){
 
         List<Integer> convidadosIds = mesaConvidadoDto.stream().map(MesaConvidadoRequestDto::getConvidadoId).toList();
         List<Convidado> convidados = repository.findAllById(convidadosIds);
@@ -83,8 +84,9 @@ public class ConvidadoService {
         repository.deleteById(id);
     }
 
-    private List<Convidado> findByCasamentoIdAndNome(Integer casamentoId, String nome){
-        //TODO: verificar se o casamento existe.
+    public List<Convidado> findByCasamentoIdAndNome(Integer casamentoId, String nome){
+        casamentoService.existsById(casamentoId);
+
         Specification<Convidado> spec = null;
         if(Objects.nonNull(nome)){
             spec = Specification
@@ -93,6 +95,7 @@ public class ConvidadoService {
             spec = Specification
                     .where(ConvidadoFilter.hasCasamentoId(casamentoId));
         }
+
         return repository.findAll(spec);
     }
 
@@ -108,7 +111,7 @@ public class ConvidadoService {
             return allConvidados;
         }
 
-        Optional<List<Convidado>> convidadosWithMesaOptional = mesas.stream().map(Mesa::getConvidados).findFirst();
+        Optional<List<Convidado>> convidadosWithMesaOptional = convidadosWithMesa(mesas);
 
         if (convidadosWithMesaOptional.isEmpty()){
             return allConvidados;
@@ -118,6 +121,10 @@ public class ConvidadoService {
 
         return allConvidados.stream().filter(convidado -> !convidadosWithMesa.contains(convidado))
                 .toList();
+    }
+
+    public Optional<List<Convidado>> convidadosWithMesa(List<Mesa> mesas){
+        return mesas.stream().map(Mesa::getConvidados).findFirst();
     }
 
     private List<Convidado> removeDuplicatedConvidados(List<Convidado> convidados){

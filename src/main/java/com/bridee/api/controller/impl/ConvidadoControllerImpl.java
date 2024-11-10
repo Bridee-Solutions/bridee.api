@@ -35,7 +35,7 @@ public class ConvidadoControllerImpl implements ConvidadoController {
 
     @PostMapping("/mesa")
     public ResponseEntity<Void> vinculateToMesa(@RequestBody @Valid List<MesaConvidadoRequestDto> requestDtoList){
-        service.vinculateConvidadoToMesa(requestDtoList);
+        service.vinculateConvidadosToMesa(requestDtoList);
         return ResponseEntity.ok().build();
     }
 
