@@ -2,6 +2,7 @@ package com.bridee.api.entity;
 
 import com.bridee.api.entity.enums.TarefaCategoriaEnum;
 import com.bridee.api.entity.enums.TarefaStatusEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -37,7 +38,7 @@ public class Tarefa {
     private TarefaStatusEnum status;
     private LocalDate dataLimite;
 
-    @OneToMany(mappedBy = "tarefa")
+    @OneToMany(mappedBy = "tarefa", cascade = CascadeType.REMOVE)
     private List<TarefaCasal> tarefaCasals;
 
 }
