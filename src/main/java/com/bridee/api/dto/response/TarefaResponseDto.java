@@ -17,5 +17,6 @@ public class TarefaResponseDto {
     private String status;
     private String categoria;
     private LocalDate dataLimite;
+    private Integer mesesAnteriores;
 
 }

@@ -23,5 +23,5 @@ public class TarefaRequestDto {
     private String status;
     @NotNull
     private LocalDate dataLimite;
-
+    private Integer mesesAnteriores;
 }
