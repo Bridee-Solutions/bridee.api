@@ -41,7 +41,7 @@ public class SecurityConfiguration {
                                         "/assessores/validate-fields").permitAll()
                                 .requestMatchers("/v3/api-docs/**",
                                         "/swagger-ui/**").permitAll()
-                                .anyRequest().authenticated();
+                                .anyRequest().permitAll();
                 })
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
