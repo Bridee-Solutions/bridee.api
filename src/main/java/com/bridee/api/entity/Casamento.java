@@ -46,14 +46,18 @@ public class Casamento {
 
     private Boolean localReservado;
 
-    @ManyToOne
-    @JoinColumn
-    private Casal casal;
-    
+    private String status;
+
+    private String mensagemConvite;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Assessor assessor;
-    
+
+    @ManyToOne
+    @JoinColumn
+    private Casal casal;
+
     @CreatedBy
     @Column(updatable = false)
     private String createdBy;

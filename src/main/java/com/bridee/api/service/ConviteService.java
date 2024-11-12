@@ -39,7 +39,7 @@ public class ConviteService {
     private final ConviteMessageMapper conviteMessageMapper;
 
     public List<Convite> findAllByCasamentoId(Map<String, Object> filter, Integer casamentoId){
-        //TODO: validar existência do casamento.
+        casamentoService.existsById(casamentoId);
         filter.put("casamentoId", casamentoId);
 
         ConviteFilter spec = new ConviteFilter();

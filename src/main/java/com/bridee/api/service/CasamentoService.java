@@ -3,6 +3,7 @@ package com.bridee.api.service;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Casamento;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.repository.CasamentoRepository;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
@@ -38,6 +39,14 @@ public class CasamentoService {
         if (!repository.existsById(casamentoId)){
             throw new ResourceNotFoundException("Casamento não encontrado!");
         }
+    }
+
+    public void updateMessage(Integer casamentoId, String message){
+        existsById(casamentoId);
+        int updatedSuccessfully = repository.updateCasamentoMessage(casamentoId, message);
+        if (updatedSuccessfully == 0){
+            throw new UnprocessableEntityException("Não foi possível atualizar a mensagem dos convites");
+        };
     }
 
 }
