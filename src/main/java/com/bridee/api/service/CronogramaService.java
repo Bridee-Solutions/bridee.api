@@ -22,7 +22,8 @@ public class CronogramaService {
 
     public List<Atividade> findAllByCasamentoId(Integer casamentoId) {
         casamentoService.existsById(casamentoId);
-        return repository.findAtividadesCronogramaByCasamentoId(casamentoId);
+        Cronograma cronogramaCasamento = repository.findAtividadesCronogramaByCasamentoId(casamentoId);
+        return cronogramaCasamento.getAtividades();
     }
 
     public Atividade saveAtividade(Atividade atividade, Integer cronogramaId){

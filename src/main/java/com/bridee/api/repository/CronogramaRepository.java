@@ -10,8 +10,8 @@ import java.util.List;
 public interface CronogramaRepository extends JpaRepository<Cronograma, Integer> {
 
     @Query("""
-            SELECT at FROM Cronograma c JOIN FETCH c.atividades at WHERE c.casamento.id = :casamentoId
+            SELECT c FROM Cronograma c JOIN FETCH c.atividades WHERE c.casamento.id = :casamentoId
             """)
-    List<Atividade> findAtividadesCronogramaByCasamentoId(Integer casamentoId);
+    Cronograma findAtividadesCronogramaByCasamentoId(Integer casamentoId);
 
 }
