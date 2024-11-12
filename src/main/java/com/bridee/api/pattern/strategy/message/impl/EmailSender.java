@@ -1,35 +1,18 @@
-package com.bridee.api.pattern.strategy.impl;
+package com.bridee.api.pattern.strategy.message.impl;
 
 import com.bridee.api.dto.request.EmailDto;
 import com.bridee.api.exception.SendEmailException;
-import com.bridee.api.pattern.strategy.MessageStrategy;
+import com.bridee.api.pattern.strategy.message.MessageStrategy;
 import com.bridee.api.utils.EmailProperties;
-import com.bridee.api.utils.QRCodeUtils;
-import com.google.zxing.WriterException;
-import jakarta.activation.DataHandler;
-import jakarta.activation.DataSource;
-import jakarta.activation.FileDataSource;
-import jakarta.mail.BodyPart;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.flywaydb.core.internal.util.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Properties;
 
 @Configuration

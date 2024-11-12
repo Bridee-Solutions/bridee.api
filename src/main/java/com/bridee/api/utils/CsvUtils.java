@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,8 @@ public class CsvUtils {
         writer.close();
 
         InputStream inputStream = new FileInputStream(filename);
+
+        Files.delete(Path.of(filename));
 
         return inputStream.readAllBytes();
     }

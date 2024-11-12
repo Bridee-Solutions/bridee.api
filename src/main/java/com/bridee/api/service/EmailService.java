@@ -11,7 +11,7 @@ import com.bridee.api.entity.enums.email.fields.CadastroEmailFields;
 import com.bridee.api.entity.enums.email.fields.EmailFields;
 import com.bridee.api.entity.enums.email.fields.OrcamentoEmailFields;
 import com.bridee.api.entity.enums.email.template.EmailTemplate;
-import com.bridee.api.pattern.strategy.impl.EmailSender;
+import com.bridee.api.pattern.strategy.message.impl.EmailSender;
 import com.bridee.api.utils.AzureBlobStorageProperties;
 import com.bridee.api.utils.EmailTemplateBuilder;
 import lombok.RequiredArgsConstructor;
