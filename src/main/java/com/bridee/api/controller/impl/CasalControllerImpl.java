@@ -10,6 +10,7 @@ import com.bridee.api.mapper.request.CasalRequestMapper;
 import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
+import com.bridee.api.pattern.strategy.blobstorage.impl.AzureBlobStorageImpl;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.service.CasamentoService;
 import com.bridee.api.utils.UriUtils;
@@ -17,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +26,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -39,6 +43,7 @@ public class CasalControllerImpl implements CasalController {
     private final CasalExternoRequestMapper externoRequestMapper;
     private final CasalExternoResponseMapper externoResponseMapper;
     private final CasamentoService casamentoService;
+    private final AzureBlobStorageImpl azureBlobStorage;
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
@@ -70,6 +75,12 @@ public class CasalControllerImpl implements CasalController {
                 requestDto.isLocalReservado(), requestDto.getLocal());
         CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(casal);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
+    }
+
+    @PostMapping(value = "/imagem-perfil/{casalId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadImage(@RequestPart("file") MultipartFile file){
+        azureBlobStorage.uploadFile(file);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
