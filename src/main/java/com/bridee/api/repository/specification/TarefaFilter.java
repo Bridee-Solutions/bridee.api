@@ -57,7 +57,7 @@ public class TarefaFilter implements Specification<Tarefa> {
         }
 
         if (Objects.nonNull(mes)){
-            LocalDate localDate = LocalDate.now();
+            LocalDate localDate = LocalDate.of(LocalDate.now().getYear(), mes, LocalDate.now().getDayOfMonth());
             LocalDate dataInicioMesAtual = LocalDate.of(LocalDate.now().getYear(), mes,
                     localDate.with(TemporalAdjusters.firstDayOfMonth()).getDayOfMonth());
             LocalDate dataFimMesAtual = LocalDate.of(LocalDate.now().getYear(), mes,
