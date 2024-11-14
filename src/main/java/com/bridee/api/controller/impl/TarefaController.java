@@ -53,11 +53,12 @@ public class TarefaController {
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TarefaResponseDto> update(@PathVariable Integer id,
+    @PutMapping("/casamento/{casamentoId}/tarefa/{tarefaId}")
+    public ResponseEntity<TarefaResponseDto> update(@PathVariable Integer casamentoId,
+                                                    @PathVariable Integer tarefaId,
                                                     @RequestBody @Valid TarefaRequestDto requestDto){
         Tarefa tarefa = requestMapper.toEntity(requestDto);
-        tarefa = service.update(tarefa, id);
+        tarefa = service.update(tarefa, tarefaId, casamentoId);
         TarefaResponseDto responseDto = responseMapper.toDomain(tarefa);
         return ResponseEntity.ok(responseDto);
     }

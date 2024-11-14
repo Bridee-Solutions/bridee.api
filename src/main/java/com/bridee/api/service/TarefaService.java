@@ -65,11 +65,13 @@ public class TarefaService {
         return tarefa;
     }
 
-    public Tarefa update(Tarefa tarefa, Integer id){
-        if (!repository.existsById(id)){
+    public Tarefa update(Tarefa tarefa, Integer tarefaId, Integer casamentoId){
+        if (!repository.existsById(tarefaId)){
             throw new ResourceNotFoundException("Tarefa não encontrada");
         }
-        tarefa.setId(id);
+        Casamento casamento = casamentoService.findById(casamentoId);
+        tarefa.setMesesAnteriores(casamento.getDataFim().getMonthValue() - tarefa.getDataLimite().getMonthValue());
+        tarefa.setId(tarefaId);
         return repository.save(tarefa);
     }
 
