@@ -36,8 +36,8 @@ public class TarefaFilter implements Specification<Tarefa> {
 
     @Override
     public Predicate toPredicate(Root<Tarefa> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
-
+        List<Predicate> andPrecidates = new ArrayList<>();
+        List<Predicate> orPredicates = new ArrayList<>();
         Join<Tarefa, TarefaCasal> tarefaCasal = null;
         if (query.getResultType() == Long.class){
             tarefaCasal = root.join("tarefaCasals");
@@ -48,32 +48,35 @@ public class TarefaFilter implements Specification<Tarefa> {
 
         if (Objects.nonNull(categoria) && CollectionsUtils.hasItems(categoria)){
             categoria.forEach(cat -> {
-                predicates.add(criteriaBuilder.like(criteriaBuilder
+                orPredicates.add(criteriaBuilder.like(criteriaBuilder
                         .upper(root.get("categoria")), "%" + cat + "%"));
             });
         }
 
         if (Objects.nonNull(status) && StringUtils.isNotBlank(status.getValue())){
-            predicates.add(criteriaBuilder.like(criteriaBuilder
+            andPrecidates.add(criteriaBuilder.like(criteriaBuilder
                     .upper(root.get("status")), "%" + status + "%"));
         }
 
         if (StringUtils.isNotBlank(nome)){
-            predicates.add(criteriaBuilder.like(criteriaBuilder
+            andPrecidates.add(criteriaBuilder.like(criteriaBuilder
                     .upper(root.get("nome")), "%" + nome.toUpperCase() + "%"));
         }
 
         if (Objects.nonNull(mes)){
             filterDate().forEach((date) -> {
-                predicates.add(criteriaBuilder.between(root.get("dataLimite"), date.getDataInicio(), date.getDataFim()));
+                orPredicates.add(criteriaBuilder.between(root.get("dataLimite"), date.getDataInicio(), date.getDataFim()));
             } );
         }
 
         if (Objects.nonNull(casalId)){
-            predicates.add(criteriaBuilder.equal(tarefaCasal.get("casal").get("id"), casalId));
+            andPrecidates.add(criteriaBuilder.equal(tarefaCasal.get("casal").get("id"), casalId));
         }
 
-        return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        Predicate andPredicate = criteriaBuilder.and(andPrecidates.toArray(Predicate[]::new));
+        Predicate orPredicate = criteriaBuilder.or(orPredicates.toArray(Predicate[]::new));
+
+        return criteriaBuilder.and(andPredicate, orPredicate);
     }
 
     public void buildFilter(Map<String, Object> params){
