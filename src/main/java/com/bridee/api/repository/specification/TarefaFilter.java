@@ -76,6 +76,10 @@ public class TarefaFilter implements Specification<Tarefa> {
         Predicate andPredicate = criteriaBuilder.and(andPrecidates.toArray(Predicate[]::new));
         Predicate orPredicate = criteriaBuilder.or(orPredicates.toArray(Predicate[]::new));
 
+        if(orPredicates.isEmpty()){
+            return andPredicate;
+        }
+
         return criteriaBuilder.and(andPredicate, orPredicate);
     }
 
