@@ -1,8 +1,7 @@
 package com.bridee.api.mapper.response;
 
 import com.bridee.api.dto.response.OrcamentoFornecedorResponseDto;
-import com.bridee.api.projection.orcamento.OrcamentoFornecedorProjection;
-import com.bridee.api.projection.orcamento.OrcamentoProjection;
+import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

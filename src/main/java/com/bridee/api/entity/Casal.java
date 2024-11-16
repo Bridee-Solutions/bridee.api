@@ -26,6 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
 public class Casal extends Usuario {
 
     @Id
