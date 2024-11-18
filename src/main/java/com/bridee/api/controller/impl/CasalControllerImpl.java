@@ -2,6 +2,7 @@ package com.bridee.api.controller.impl;
 
 import com.bridee.api.controller.CasalController;
 import com.bridee.api.dto.request.CasalRequestDto;
+import com.bridee.api.dto.request.OrcamentoTotalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
 import com.bridee.api.dto.response.CasalResponseDto;
 import com.bridee.api.dto.response.externo.CasalExternoResponseDto;
@@ -10,6 +11,7 @@ import com.bridee.api.mapper.request.CasalRequestMapper;
 import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
+import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.pattern.strategy.blobstorage.impl.AzureBlobStorageImpl;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.service.CasamentoService;
@@ -43,7 +45,7 @@ public class CasalControllerImpl implements CasalController {
     private final CasalExternoRequestMapper externoRequestMapper;
     private final CasalExternoResponseMapper externoResponseMapper;
     private final CasamentoService casamentoService;
-    private final AzureBlobStorageImpl azureBlobStorage;
+    private final BlobStorageStrategy blobStorageStrategy;
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
@@ -79,7 +81,7 @@ public class CasalControllerImpl implements CasalController {
 
     @PostMapping(value = "/imagem-perfil/{casalId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadImage(@RequestPart("file") MultipartFile file){
-        azureBlobStorage.uploadFile(file);
+        blobStorageStrategy.uploadFile(file);
         return ResponseEntity.ok().build();
     }
 
@@ -91,8 +93,8 @@ public class CasalControllerImpl implements CasalController {
     }
 
     @PutMapping("/orcamento-total/{id}")
-    public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody BigDecimal orcamentoTotal){
-        Casal casal = service.updateOrcamentoTotal(id, orcamentoTotal);
+    public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody @Valid OrcamentoTotalRequestDto orcamentoTotal){
+        Casal casal = service.updateOrcamentoTotal(id, orcamentoTotal.getOrcamentoTotal());
         return ResponseEntity.ok(responseMapper.toDomain(casal));
     }
 
