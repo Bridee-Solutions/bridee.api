@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface FornecedorOrcamentoResponseMapper{
 
-    OrcamentoFornecedorResponseDto toProjection(OrcamentoFornecedorProjection projection);
-    List<OrcamentoFornecedorResponseDto> toProjection(List<OrcamentoFornecedorProjection> projection);
+    OrcamentoFornecedorResponseDto fromProjection(OrcamentoFornecedorProjection projection);
+    List<OrcamentoFornecedorResponseDto> fromProjection(List<OrcamentoFornecedorProjection> projection);
 
 }

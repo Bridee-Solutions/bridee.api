@@ -4,10 +4,14 @@ import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
+import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
+import com.bridee.api.pattern.strategy.blobstorage.impl.AzureBlobStorageImpl;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.FornecedorRepository;
+import com.bridee.api.utils.PageUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,8 +31,10 @@ public class FornecedorService {
     private final SubcategoriaServicoService subcategoriaServicoService;
     private final CategoriaServicoService categoriaServicoService;
     private final ImagemService imagemService;
+    private final TipoCasamentoService tipoCasamentoService;
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
+    private final BlobStorageStrategy blobStorageStrategy;
 
     public Page<Fornecedor> findAll(Pageable pageable){
         subcategoriaServicoService.findAll();
@@ -39,14 +45,24 @@ public class FornecedorService {
         return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Page<AssociadoResponseProjection> findFornecedorDetails(Integer subcategoriaId, Pageable pageable){
+    public Page<AssociadoResponseDto> findFornecedorDetails(Integer subcategoriaId, Pageable pageable){
         subcategoriaServicoService.existsById(subcategoriaId);
-        return repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);
+        Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);
+
+        List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
+        associadoResponseDto.forEach(associado -> associado.setImagem(blobStorageStrategy.downloadFile(associado.getNome())));
+        return PageUtils.collectionToPage(associadoResponseDto,
+                fornecedorDetailsPage.getPageable());
     }
 
-    public Page<AssociadoResponseProjection> findFornecedorDetailsByCategoria(Integer categoriaId, Pageable pageable){
+    public Page<AssociadoResponseDto> findFornecedorDetailsByCategoria(Integer categoriaId,String nome, Pageable pageable){
         categoriaServicoService.existsById(categoriaId);
-        return repository.findFornecedorDetailsByCategoria(categoriaId, pageable);
+        Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsByCategoriaAndNome(categoriaId, nome,pageable);
+
+        List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
+        associadoResponseDto.forEach(associado -> associado.setImagem(blobStorageStrategy.downloadFile(associado.getNome())));
+        return PageUtils.collectionToPage(associadoResponseDto,
+                fornecedorDetailsPage.getPageable());
     }
 
     public AssociadoGeralResponseDto findFornecedorInformations(Integer id){
@@ -58,12 +74,15 @@ public class FornecedorService {
         if (Objects.isNull(resultProjection)){
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do fornecedor");
         }
-        List<String> imagesUrl = imagemService.findUrlImagensFornecedor(id);
+
+        List<byte[]> imagesUrl = imagemService.findUrlImagensFornecedor(id);
         List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoFornecedor(id);
+        List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoFornecedor(id);
 
         AssociadoGeralResponseDto geralDto = geralResponseMapper.toGeralDto(resultProjection);
         geralDto.setImagens(imagesUrl);
         geralDto.setFormasPagamento(nomeFormasPagamento);
+        geralDto.setTiposCasamento(tiposCasamento);
 
         return geralDto;
     }
