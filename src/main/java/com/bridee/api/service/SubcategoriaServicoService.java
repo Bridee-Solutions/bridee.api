@@ -26,7 +26,12 @@ public class SubcategoriaServicoService {
 
     public Page<SubcategoriaServico> findAllByCategoria(Integer categoriaId, Pageable pageable) {
         categoriaServicoService.existsById(categoriaId);
-        return subcategoriaServicoRepository.findAllByCategoriaNome(categoriaId, pageable);
+        return subcategoriaServicoRepository.findAllByCategoriaId(categoriaId, pageable);
+    }
+
+    public List<SubcategoriaServico> findAllByCategoria(Integer categoriaId){
+        categoriaServicoService.existsById(categoriaId);
+        return subcategoriaServicoRepository.findAllByCategoriaId(categoriaId);
     }
 
     public void existsById(Integer id){

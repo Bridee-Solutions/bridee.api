@@ -14,7 +14,12 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
     @Query("""
             SELECT s FROM SubcategoriaServico s WHERE s.categoriaServico.id = :categoriaId
             """)
-    Page<SubcategoriaServico> findAllByCategoriaNome(Integer categoriaId, Pageable pageable);
+    Page<SubcategoriaServico> findAllByCategoriaId(Integer categoriaId, Pageable pageable);
+
+    @Query("""
+            SELECT s FROM SubcategoriaServico s WHERE s.categoriaServico.id = :categoriaId
+            """)
+    List<SubcategoriaServico> findAllByCategoriaId(Integer categoriaId);
 
     @Query("""
             SELECT s FROM SubcategoriaServico s
