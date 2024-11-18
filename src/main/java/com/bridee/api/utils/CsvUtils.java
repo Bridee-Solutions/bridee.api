@@ -63,7 +63,7 @@ public class CsvUtils {
 
         if (Objects.nonNull(orcamentoProjection.getOrcamentoFornecedores())){
             orcamentoProjection.getOrcamentoFornecedores().forEach(orcamentoFornecedor -> {
-                stringBuilder.append(";%s".formatted(orcamentoFornecedor.getFornecedor().getNome()));
+                stringBuilder.append(";%s".formatted(orcamentoFornecedor.getFornecedor().getSubcategoriaServico().getNome()));
             });
         }
 
