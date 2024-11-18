@@ -54,7 +54,7 @@ public class OrcamentoFornecedorService {
                                                                        List<OrcamentoFornecedor> orcamentoFornecedores) {
         List<Integer> allOrcamentoFornecedoresId = allOrcamentoFornecedores.stream().map(OrcamentoFornecedor::getId).toList();
         List<Integer> orcamentoFornecedoresId = allOrcamentoFornecedores.stream().map(OrcamentoFornecedor::getId).toList();
-        return allOrcamentoFornecedoresId.stream().filter(id -> !orcamentoFornecedoresId.contains(id)).toList();
+        return allOrcamentoFornecedoresId.stream().filter((id) -> !orcamentoFornecedoresId.contains(id)).toList();
     }
 
 }

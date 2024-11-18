@@ -32,7 +32,8 @@ public class InformacaoAssociado {
     private String tamanhoCasamento;
     private Boolean casamentosCatolicos;
     private String urlSite;
-    private String local;
+    private String cidade;
+    private String bairro;
 
     @OneToOne
     @JoinColumn
