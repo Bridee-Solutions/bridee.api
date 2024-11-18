@@ -30,6 +30,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class Casamento {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -49,6 +50,8 @@ public class Casamento {
     private String status;
 
     private String mensagemConvite;
+
+    private String tamanhoCasamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
