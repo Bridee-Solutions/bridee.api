@@ -9,12 +9,15 @@ import com.bridee.api.entity.enums.RoleEnum;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
+import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
+import com.bridee.api.utils.PageUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,15 +40,20 @@ public class AssessorService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final ImagemService imagemService;
+    private final TipoCasamentoService tipoCasamentoService;
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
+    private final BlobStorageStrategy blobStorageStrategy;
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
     }
 
-    public Page<AssociadoResponseProjection> findAssessoresDetails(Pageable pageable){
-        return assessorRepository.findAssessorDetails(pageable);
+    public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
+        Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
+        List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
+        associadoResponse.forEach(associado -> associado.setImagem(blobStorageStrategy.downloadFile(associado.getNome())));
+        return PageUtils.collectionToPage(associadoResponse, assessorDetails.getPageable());
     }
 
     public AssociadoGeralResponseDto findAssessorInformation(Integer assessorId){
@@ -58,12 +66,14 @@ public class AssessorService {
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do assessor");
         }
 
-        List<String> imagensUrl = imagemService.findUrlImagensAssessor(assessorId);
+        List<byte[]> imagensUrl = imagemService.findUrlImagensAssessor(assessorId);
         List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(assessorId);
+        List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoAssessor(assessorId);
 
         AssociadoGeralResponseDto geralResponseDto = geralResponseMapper.toGeralDto(resultProjection);
         geralResponseDto.setImagens(imagensUrl);
         geralResponseDto.setFormasPagamento(nomeFormasPagamento);
+        geralResponseDto.setTiposCasamento(tiposCasamento);
 
         return geralResponseDto;
     }

@@ -14,7 +14,7 @@ import com.bridee.api.mapper.request.externo.AssessorExternoRequestMapper;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.mapper.response.externo.AssessorExternoResponseMapper;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
-import com.bridee.api.projection.associado.AssociadoResponseProjection;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.service.AssessorService;
 import com.bridee.api.service.EmailService;
 import com.bridee.api.utils.UriUtils;
@@ -56,7 +56,7 @@ public class AssessorControllerImpl implements AssessorController {
     }
 
     @GetMapping("/details")
-    public ResponseEntity<Page<AssociadoResponseProjection>> findAssessoresDetails(Pageable pageable){
+    public ResponseEntity<Page<AssociadoResponseDto>> findAssessoresDetails(Pageable pageable){
         return ResponseEntity.ok(service.findAssessoresDetails(pageable));
     }
 

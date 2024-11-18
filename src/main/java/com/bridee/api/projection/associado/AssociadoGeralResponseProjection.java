@@ -6,5 +6,6 @@ public interface AssociadoGeralResponseProjection extends AssociadoResponseProje
     String getServicosFornecidos();
     String getFormaDeTrabalho();
     String getQtdConvidados();
+    Boolean getIsCasamentoCatolico();
 
 }

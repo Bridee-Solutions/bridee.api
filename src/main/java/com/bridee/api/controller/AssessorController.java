@@ -9,7 +9,7 @@ import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.dto.response.externo.AssessorExternoResponseDto;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
-import com.bridee.api.projection.associado.AssociadoResponseProjection;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,7 +49,7 @@ public interface AssessorController {
             @ApiResponse(responseCode = "200", description = "Lista de assessores"),
     }
     )
-    ResponseEntity<Page<AssociadoResponseProjection>> findAssessoresDetails(Pageable pageable);
+    ResponseEntity<Page<AssociadoResponseDto>> findAssessoresDetails(Pageable pageable);
 
     @Operation(summary = "Retorna todas as informações sobre um assessor e seus serviços",
             description = "Retorna todas as informações sobre um assessor e seus serviços")

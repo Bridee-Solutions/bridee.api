@@ -19,13 +19,15 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             SELECT ifs.assessor.nome as nome,
             ifs.assessor.id as id,
             ifs.visaoGeral as visaoGeral,
-            ifs.local as local,
+            ifs.cidade as cidade,
+            ifs.bairro as bairro,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.assessor.id = :id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.assessor.id = :id) as totalAvaliacoes,
             ifs.urlSite as siteUrl,
             ifs.servicosOferecidos as servicosFornecidos,
             ifs.formaDeTrabalho as formaDeTrabalho,
-            ifs.tamanhoCasamento as qtdConvidados
+            ifs.tamanhoCasamento as qtdConvidados,
+            ifs.casamentosCatolicos as isCasamentoCatolico
             FROM InformacaoAssociado ifs WHERE ifs.assessor.id = :id
             """)
     AssociadoGeralResponseProjection findFornecedorInformations(Integer id);
@@ -34,7 +36,8 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             SELECT ifs.assessor.nome as nome,
             ifs.assessor.id as id,
             ifs.visaoGeral as visaoGeral,
-            ifs.local as local,
+            ifs.cidade as cidade,
+            ifs.bairro as bairro,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.assessor.id = ifs.assessor.id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.assessor.id = ifs.assessor.id) as totalAvaliacoes
             FROM InformacaoAssociado ifs
