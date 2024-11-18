@@ -58,9 +58,10 @@ public class DashboardResponseDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DashboardCasamento{
-        private Integer quantidadeConvidados;
+        private String quantidadeConvidados;
         private LocalDate dataCasamento;
         private String local;
+        private CasalResponseDto casal;
     }
 
 }
