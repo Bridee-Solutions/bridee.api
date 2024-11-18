@@ -4,6 +4,7 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobProperties;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import jakarta.annotation.PostConstruct;
@@ -36,8 +37,14 @@ public class AzureBlobStorageImpl implements BlobStorageStrategy {
 
     @Override
     public byte[] downloadFile(String filename) {
+        byte[] binaries = null;
         BlobClient blobClient = blobServiceClient.getBlobContainerClient(azureContainerName).getBlobClient(filename);
-        return blobClient.downloadContent().toBytes();
+        try{
+            binaries = blobClient.downloadContent().toBytes();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return binaries;
     }
 
     @Override
