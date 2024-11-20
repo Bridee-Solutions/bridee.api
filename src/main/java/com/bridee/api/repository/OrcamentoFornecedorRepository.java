@@ -32,4 +32,9 @@ public interface OrcamentoFornecedorRepository extends JpaRepository<OrcamentoFo
             """)
     List<FornecedorBaseProjection> findFornecedoresBaseProjectionByCasalId(Integer casalId);
 
+    @Query("""
+            SELECT of FROM OrcamentoFornecedor of WHERE of.fornecedor.subcategoriaServico.id = :subcategoriaId
+            AND of.casal.id = :casalId
+            """)
+    List<OrcamentoFornecedor> findAllByCasalIdAndSubcategoriaId(Integer casalId, Integer subcategoriaId);
 }

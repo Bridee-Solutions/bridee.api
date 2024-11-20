@@ -20,7 +20,4 @@ public interface OrcamentoFornecedorResponseMapper extends BaseMapper<OrcamentoF
                 .build()).toList();
     };
 
-    @Override
-    @Mapping(target = "fornecedor", ignore = true)
-    OrcamentoFornecedorResponseDto toDomain(OrcamentoFornecedor entity);
 }

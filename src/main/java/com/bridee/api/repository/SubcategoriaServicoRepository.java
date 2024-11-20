@@ -25,4 +25,9 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
             SELECT s FROM SubcategoriaServico s
             """)
     List<SubcategoriaProjection> findAllProjections();
+
+    @Query("""
+            SELECT f.subcategoriaServico FROM Fornecedor f WHERE f.id = :id
+            """)
+    SubcategoriaServico findByFornecedorId(Integer id);
 }

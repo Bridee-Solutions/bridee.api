@@ -6,6 +6,7 @@ import com.bridee.api.entity.OrcamentoFornecedor;
 import com.bridee.api.mapper.request.OrcamentoFornecedorRequestMapper;
 import com.bridee.api.mapper.response.OrcamentoFornecedorResponseMapper;
 import com.bridee.api.service.OrcamentoFornecedorService;
+import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,19 @@ public class OrcamentoFornecedorControllerImpl {
     private final OrcamentoFornecedorResponseMapper responseMapper;
 
     @PostMapping
-    public ResponseEntity<List<OrcamentoFornecedorResponseDto>> associateFornecedorCasal(@RequestBody @Valid List<OrcamentoFornecedorRequestDto> requestDto){
+    public ResponseEntity<List<OrcamentoFornecedorResponseDto>> associateFornecedoresCasal(@RequestBody @Valid List<OrcamentoFornecedorRequestDto> requestDto){
         List<OrcamentoFornecedor> orcamentoFornecedores = requestMapper.toEntity(requestDto);
         orcamentoFornecedores = service.saveAll(orcamentoFornecedores);
         List<OrcamentoFornecedorResponseDto> responseDto = responseMapper.toDomain(orcamentoFornecedores);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/categoria/{categoriaId}")
+    public ResponseEntity<OrcamentoFornecedorResponseDto> saveOrcamentoFornecedorCasal(@RequestBody @Valid OrcamentoFornecedorRequestDto requestDto,
+                                                                                       @PathVariable Integer categoriaId){
+        OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto);
+        orcamentoFornecedor = service.saveOrcamentoFornecedorCasal(orcamentoFornecedor, categoriaId);
+        OrcamentoFornecedorResponseDto responseDto = responseMapper.toDomain(orcamentoFornecedor);
+        return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 }
