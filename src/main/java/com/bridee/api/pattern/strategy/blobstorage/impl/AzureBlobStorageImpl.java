@@ -58,4 +58,17 @@ public class AzureBlobStorageImpl implements BlobStorageStrategy {
             throw new UnprocessableEntityException("Não foi possível realizar o upload da imagem.");
         }
     }
+
+    @Override
+    public void uploadFile(MultipartFile multipartFile, String filename) {
+
+        BlobClient blobClient = blobServiceClient.getBlobContainerClient(azureContainerName).getBlobClient(filename);
+        try {
+            blobClient.upload(multipartFile.getInputStream(), multipartFile.getSize(), true);
+        } catch (IOException e) {
+            throw new UnprocessableEntityException("Não foi possível realizar o upload da imagem.");
+        }
+
+    }
+
 }

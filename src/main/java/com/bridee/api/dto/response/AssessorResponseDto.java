@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "DTO de assessor",
@@ -20,8 +19,8 @@ public class AssessorResponseDto extends UsuarioResponseDto{
 
     @Schema(description = "Cnpj do assessor", example = "17215584000115")
     private String cnpj;
-    @Schema(description = "Valor do serviço", example = "3000.0")
-    private BigDecimal preco;
+    private String emailEmpresa;
+    private String telefoneEmpresa;
     @Schema(example = "true")
     private Boolean premium;
 

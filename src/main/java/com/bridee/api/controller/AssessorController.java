@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Controller de assessor")
 public interface AssessorController {
@@ -31,7 +32,7 @@ public interface AssessorController {
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "Retorna uma lista de assessores")
     )
-    ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable);
+    ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable, @RequestParam(defaultValue = "") String nome);
 
     @Operation(summary = "Encontra um assessor específico",
             description = "Encontra um assessor específico pelo id")

@@ -6,26 +6,32 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class Pin {
+@NoArgsConstructor
+@AllArgsConstructor
+public class CasamentoAssessorado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
+    private BigDecimal preco;
+
+    @OneToOne
+    @JoinColumn(name = "casamento_id")
+    private Casamento casamento;
+
     @ManyToOne
-    @JoinColumn
-    private Casal casal;
-    
-    @ManyToOne
-    @JoinColumn
-    private Imagem imagem;
+    private Assessor assessor;
+
 }

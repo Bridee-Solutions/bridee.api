@@ -6,7 +6,10 @@ import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.math.BigDecimal;
 
 public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
 
@@ -44,4 +47,8 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             """)
     Page<AssociadoResponseProjection> findAssessorDetails(Pageable pageable);
 
+    @Query("""
+            SELECT a FROM Assessor a WHERE UPPER(nome) LIKE UPPER(concat('%',:nome,'%'))
+            """)
+    Page<Assessor> findAllByNome(String nome, Pageable pageable);
 }

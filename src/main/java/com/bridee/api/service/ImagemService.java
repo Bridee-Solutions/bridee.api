@@ -1,9 +1,12 @@
 package com.bridee.api.service;
 
+import com.bridee.api.dto.request.ImageMetadata;
+import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.repository.AssessorRepository;
+import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.ImagemRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ public class ImagemService {
     private final FornecedorRepository fornecedorRepository;
     private final AssessorRepository assessorRepository;
     private final BlobStorageStrategy blobStorageStrategy;
+    private final CasalRepository casalRepository;
 
     public List<byte[]> findUrlImagensFornecedor(Integer fornecedorId){
         return findImagensFornecedor(fornecedorId).stream()
@@ -44,4 +48,7 @@ public class ImagemService {
         return repository.findByAssessorId(assessorId);
     }
 
+    public Imagem save(Imagem imagem) {
+        return repository.save(imagem);
+    }
 }

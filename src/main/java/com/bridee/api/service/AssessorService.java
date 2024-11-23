@@ -19,12 +19,15 @@ import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.utils.PageUtils;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +50,10 @@ public class AssessorService {
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
+    }
+
+    public Page<Assessor> findAllByNome(String nome, Pageable pageable) {
+        return assessorRepository.findAllByNome(nome, pageable);
     }
 
     public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
@@ -122,5 +129,4 @@ public class AssessorService {
                 .emailEmpresaExists(existsByEmailEmpresa)
                 .build();
     }
-
 }

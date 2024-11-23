@@ -2,20 +2,25 @@ package com.bridee.api.controller.impl;
 
 import com.bridee.api.controller.AssessorController;
 import com.bridee.api.dto.request.AssessorRequestDto;
+import com.bridee.api.dto.request.AssociadoPrecoRequestDto;
 import com.bridee.api.dto.request.SolicitacaoOrcamentoRequestDto;
 import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
 import com.bridee.api.dto.request.externo.AssessorExternoRequestDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
+import com.bridee.api.dto.response.CasamentoResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.dto.response.externo.AssessorExternoResponseDto;
 import com.bridee.api.entity.Assessor;
+import com.bridee.api.entity.Casamento;
 import com.bridee.api.mapper.request.AssessorRequestMapper;
 import com.bridee.api.mapper.request.externo.AssessorExternoRequestMapper;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
+import com.bridee.api.mapper.response.CasamentoResponseMapper;
 import com.bridee.api.mapper.response.externo.AssessorExternoResponseMapper;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.service.AssessorService;
+import com.bridee.api.service.CasamentoAssessoradoService;
 import com.bridee.api.service.EmailService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
@@ -40,14 +45,16 @@ public class AssessorControllerImpl implements AssessorController {
 
     private final AssessorService service;
     private final EmailService emailService;
+    private final CasamentoAssessoradoService casamentoAssessoradoService;
+    private final CasamentoResponseMapper casamentoResponseMapper;
     private final AssessorRequestMapper requestMapper;
     private final AssessorResponseMapper responseMapper;
     private final AssessorExternoRequestMapper externoRequestMapper;
     private final AssessorExternoResponseMapper externoResponseMapper;
 
     @GetMapping
-    public ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable){
-        return ResponseEntity.ok(responseMapper.toDomain(service.findAll(pageable)));
+    public ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable, String nome){
+        return ResponseEntity.ok(responseMapper.toDomain(service.findAllByNome(nome, pageable)));
     }
 
     @GetMapping("/{id}")
@@ -63,6 +70,14 @@ public class AssessorControllerImpl implements AssessorController {
     @GetMapping("/information/{id}")
     public ResponseEntity<AssociadoGeralResponseDto> findAssessorInformation(@PathVariable Integer id){
         return ResponseEntity.ok(service.findAssessorInformation(id));
+    }
+
+    @GetMapping("/{assessorId}/casais/pendentes")
+    public ResponseEntity<Page<CasamentoResponseDto>> findAllCasaisPendentes(@PathVariable Integer assessorId,
+                                                                             Pageable pageable){
+        Page<Casamento> casais = casamentoAssessoradoService.findCasamentosPendenteByAssessorId(assessorId, pageable);
+        Page<CasamentoResponseDto> response = casamentoResponseMapper.toDomain(casais);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/solicitar-orcamento")
@@ -96,6 +111,15 @@ public class AssessorControllerImpl implements AssessorController {
     public ResponseEntity<AssessorResponseDto> update(@RequestBody @Valid AssessorRequestDto requestDto, @PathVariable Integer id){
         Assessor assessor = service.update(requestMapper.toEntity(requestDto), id);
         return ResponseEntity.ok(responseMapper.toDomain(assessor));
+    }
+
+    @PutMapping("/{assessorId}/casamento/{casamentoId}")
+    public ResponseEntity<Void> updateAssessorPreco(@PathVariable Integer assessorId,
+                                                    @PathVariable Integer casamentoId,
+                                                    @RequestBody @Valid AssociadoPrecoRequestDto requestDto
+                                                    ){
+        casamentoAssessoradoService.updatePrecoCasamentoAssessor(assessorId, casamentoId, requestDto.getPreco());
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
