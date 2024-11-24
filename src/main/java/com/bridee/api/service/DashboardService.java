@@ -7,6 +7,7 @@ import com.bridee.api.dto.response.TarefaResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Casamento;
+import com.bridee.api.entity.CasamentoAssessorado;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.entity.Tarefa;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -39,6 +41,8 @@ public class DashboardService {
     private final TarefaService tarefaService;
     private final ItemOrcamentoService itemOrcamentoService;
     private final SubcategoriaServicoService subcategoriaServicoService;
+    private final CasamentoAssessoradoService casamentoAssessoradoService;
+    private final ImagemCasalService imagemCasalService;
     private final FornecedorOrcamentoResponseMapper fornecedorOrcamentoResponseMapper;
     private final AssessorResponseMapper assessorResponseMapper;
     private final TarefaResponseMapper tarefaResponseMapper;
@@ -51,7 +55,8 @@ public class DashboardService {
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
         CasalResponseDto casalResponseDto =  casalResponseMapper.toDomain(casal);
-        Assessor assessor = casamento.getAssessor();
+        CasamentoAssessorado casamentoAssessorado = casamentoAssessoradoService.findByCasamentoId(casamentoId);
+        Assessor assessor = Objects.nonNull(casamentoAssessorado) ? casamentoAssessorado.getAssessor() : null;
 
         itemOrcamentoService.findAllByCasalId(casal.getId());
         orcamentoFornecedorService.findByCasalId(casal.getId());
@@ -60,6 +65,7 @@ public class DashboardService {
         BigDecimal totalGasto = orcamentoService.calculateTotalOrcamento(casal);
         var orcamentoFornecedoresProjections = orcamentoFornecedorService.findAllOrcamentoFornecedorByCasalId(casal.getId());
         var orcamentoFornecedores = fornecedorOrcamentoResponseMapper.fromProjection(orcamentoFornecedoresProjections);
+
         AssessorResponseDto assessorResponseDto = assessorResponseMapper.toDomain(assessor);
         List<Mesa> mesasCasamento = mesaService.findAllByCasamentoId(casamentoId);
         Integer totalAssentos = mesasCasamento.size();
@@ -81,6 +87,9 @@ public class DashboardService {
         tarefasCasal.sort(tarefaComparator::compare);
         List<TarefaResponseDto> last3Tarefas = tarefasCasal.stream().map(tarefaResponseMapper::toDomain).limit(3).toList();
 
+        BigDecimal precoAssessor = Objects.nonNull(casamentoAssessorado) ? casamentoAssessorado.getPreco() : null;
+        String casalImage = imagemCasalService.casalImage64Encoded(casal.getId());
+
         return DashboardResponseDto.builder()
                 .assentosResumo(DashboardResponseDto.DashboardAssentos.builder()
                         .convidadosSentados(convidadosWithMesa.size())
@@ -97,8 +106,12 @@ public class DashboardService {
                         .dataCasamento(dataCasamento)
                         .quantidadeConvidados(totalConvidados)
                         .casal(casalResponseDto)
+                        .image(casalImage)
                         .build())
-                .assessorResponseDto(assessorResponseDto)
+                .assessorResponseDto(DashboardResponseDto.DashboardAssessor.builder()
+                        .assessor(assessorResponseDto)
+                        .preco(precoAssessor)
+                        .build())
                 .orcamentoFornecedorResponse(orcamentoFornecedores)
                 .orcamento(DashboardResponseDto.DashboardOrcamento.builder()
                         .orcamentoGasto(totalGasto)

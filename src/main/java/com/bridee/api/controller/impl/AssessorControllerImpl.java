@@ -80,9 +80,10 @@ public class AssessorControllerImpl implements AssessorController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/solicitar-orcamento")
-    public ResponseEntity<Void> sendOrcamentoEmail(@RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto){
-        emailService.sendOrcamentoEmail(requestDto);
+    @PostMapping("/solicitar-orcamento/{assessorId}")
+    public ResponseEntity<Void> sendOrcamentoEmail(@PathVariable Integer assessorId,
+                                                   @RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto){
+        emailService.sendOrcamentoEmail(requestDto, assessorId);
         return ResponseEntity.noContent().build();
     }
 

@@ -30,4 +30,9 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
             SELECT f.subcategoriaServico FROM Fornecedor f WHERE f.id = :id
             """)
     SubcategoriaServico findByFornecedorId(Integer id);
+
+    @Query("""
+            SELECT s FROM SubcategoriaServico s WHERE UPPER(s.categoriaServico.nome) like UPPER(concat('%',:nome,'%'))
+            """)
+    Page<SubcategoriaServico> findAllByCategoriaNome(String nome, Pageable pageable);
 }

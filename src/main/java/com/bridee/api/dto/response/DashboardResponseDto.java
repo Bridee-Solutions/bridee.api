@@ -16,7 +16,7 @@ import java.util.List;
 public class DashboardResponseDto {
 
     private List<OrcamentoFornecedorResponseDto> orcamentoFornecedorResponse;
-    private AssessorResponseDto assessorResponseDto;
+    private DashboardAssessor assessorResponseDto;
     private DashboardAssentos assentosResumo;
     private DashboardOrcamento orcamento;
     private DashboardTarefa tarefas;
@@ -61,7 +61,17 @@ public class DashboardResponseDto {
         private String quantidadeConvidados;
         private LocalDate dataCasamento;
         private String local;
+        private String image;
         private CasalResponseDto casal;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DashboardAssessor{
+        AssessorResponseDto assessor;
+        BigDecimal preco;
     }
 
 }

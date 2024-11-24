@@ -1,7 +1,10 @@
 package com.bridee.api.service;
 
+import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Casamento;
+import com.bridee.api.entity.CasamentoAssessorado;
+import com.bridee.api.entity.enums.CasamentoStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.repository.CasamentoRepository;
@@ -16,6 +19,8 @@ import java.time.LocalDate;
 public class CasamentoService {
 
     private final CasamentoRepository repository;
+    private final AssessorService assessorService;
+    private final CasamentoAssessoradoService casamentoAssessoradoService;
 
     public Casamento findById(Integer id){
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
@@ -49,4 +54,11 @@ public class CasamentoService {
         };
     }
 
+    public Assessor vinculateAssessorToWedding(Integer casamentoId, Integer assessorId) {
+        Casamento casamento = findById(casamentoId);
+        Assessor assessor = assessorService.findById(assessorId);
+        CasamentoAssessorado casamentoAssessorado = new CasamentoAssessorado(null, null, casamento, assessor);
+        casamentoAssessorado = casamentoAssessoradoService.save(casamentoAssessorado);
+        return casamentoAssessorado.getAssessor();
+    }
 }

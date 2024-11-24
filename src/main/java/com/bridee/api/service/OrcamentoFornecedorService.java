@@ -9,9 +9,12 @@ import com.bridee.api.mapper.response.OrcamentoFornecedorResponseMapper;
 import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,5 +102,12 @@ public class OrcamentoFornecedorService {
         List<Integer> orcamentosFornecedoresCadastradosIds = orcamentoFornecedores.stream()
                 .map(OrcamentoFornecedor::getId).toList();
         repository.deleteAllById(orcamentosFornecedoresCadastradosIds);
+    }
+
+    public void updateOrcamentoFornecedorPreco(Integer id,BigDecimal preco) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Orcamento não encontrado para o fornecedor");
+        }
+        repository.updateOrcamentoFornecedorPreco(id, preco);
     }
 }

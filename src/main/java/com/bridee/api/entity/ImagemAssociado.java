@@ -30,4 +30,6 @@ public class ImagemAssociado {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private InformacaoAssociado informacaoAssociado;
+
+    private String tipo;
 }

@@ -66,7 +66,8 @@ public interface AssessorController {
             @ApiResponse(responseCode = "200", description = "E-mail enviado com sucesso")
         }
     )
-    ResponseEntity<Void> sendOrcamentoEmail(@RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto);
+    ResponseEntity<Void> sendOrcamentoEmail(@PathVariable Integer assessorId,
+                                            @RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto);
 
     @Operation(summary = "Cria um assessor",
             description = "Cria um assessor a partir do fluxo da nossa aplicação")

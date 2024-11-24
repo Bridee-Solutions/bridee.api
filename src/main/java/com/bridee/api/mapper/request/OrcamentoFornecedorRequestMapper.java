@@ -28,9 +28,7 @@ public interface OrcamentoFornecedorRequestMapper extends BaseMapper<OrcamentoFo
     };
 
     default Casal generateCasal(Integer casalId){
-        return Casal.builder()
-                .id(casalId)
-                .build();
+        return new Casal(casalId);
     }
 
     default Fornecedor generateFornecedor(Integer fornecedorId){

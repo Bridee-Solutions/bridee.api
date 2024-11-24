@@ -16,6 +16,7 @@ import com.bridee.api.utils.AzureBlobStorageProperties;
 import com.bridee.api.utils.EmailTemplateBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-@RequiredArgsConstructor
 public class EmailService {
 
     @Value("${email.register.url}")
@@ -32,7 +32,16 @@ public class EmailService {
     private final AzureBlobStorageProperties azureBlobStorageProperties;
     private final EmailSender emailSender;
     private final VerificationTokenService verificationTokenService;
+    private final AssessorService assessorService;
     private final OrcamentoService orcamentoService;
+
+    public EmailService(AzureBlobStorageProperties azureBlobStorageProperties, EmailSender emailSender, VerificationTokenService verificationTokenService, @Lazy AssessorService assessorService, OrcamentoService orcamentoService) {
+        this.azureBlobStorageProperties = azureBlobStorageProperties;
+        this.emailSender = emailSender;
+        this.verificationTokenService = verificationTokenService;
+        this.assessorService = assessorService;
+        this.orcamentoService = orcamentoService;
+    }
 
     public String sendEmail(EmailDto emailDto){
             return emailSender.sendMessage(emailDto);
@@ -85,9 +94,10 @@ public class EmailService {
         return emailFields;
     }
 
-    public void sendOrcamentoEmail(SolicitacaoOrcamentoRequestDto requestDto){
+    public void sendOrcamentoEmail(SolicitacaoOrcamentoRequestDto requestDto, Integer assessorId){
 
-        orcamentoService.validateSolicitacaoOrcamento(requestDto);
+        Assessor assessor = assessorService.findById(assessorId);
+        orcamentoService.validateSolicitacaoOrcamento(requestDto, assessor);
 
         var emailFields = buildEmailOrcamentoFields(requestDto);
 
@@ -97,7 +107,7 @@ public class EmailService {
             EmailDto emailDto = EmailDto.builder()
                     .isHTML(true)
                     .subject("Solicitação de orçamento")
-                    .to(requestDto.getEmailEmpresaAssessor())
+                    .to(assessor.getEmailEmpresa())
                     .message(html)
                     .build();
             sendEmail(emailDto);

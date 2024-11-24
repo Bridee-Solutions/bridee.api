@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.request.SolicitacaoOrcamentoRequestDto;
+import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Custo;
 import com.bridee.api.entity.ItemOrcamento;
@@ -96,9 +97,9 @@ public class OrcamentoService {
         }
     }
 
-    public void validateSolicitacaoOrcamento(SolicitacaoOrcamentoRequestDto requestDto){
+    public void validateSolicitacaoOrcamento(SolicitacaoOrcamentoRequestDto requestDto, Assessor assessor){
 
-        String emailAssessorEmpresa = requestDto.getEmailEmpresaAssessor();
+        String emailAssessorEmpresa = assessor.getEmailEmpresa();
         if (!assessorRepository.existsByEmailEmpresa(emailAssessorEmpresa)){
             throw new ResourceNotFoundException("Não existe assessor com esse e-mail");
         }

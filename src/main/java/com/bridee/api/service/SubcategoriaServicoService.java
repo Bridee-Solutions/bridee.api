@@ -48,4 +48,8 @@ public class SubcategoriaServicoService {
         }
         return subcategoriaServicoRepository.findByFornecedorId(id);
     }
+
+    public Page<SubcategoriaServico> findAllByCategoriaName(String nome, Pageable pageable) {
+        return subcategoriaServicoRepository.findAllByCategoriaNome(nome, pageable);
+    }
 }

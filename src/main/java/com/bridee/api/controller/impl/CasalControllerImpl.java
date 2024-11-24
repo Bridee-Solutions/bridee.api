@@ -2,6 +2,7 @@ package com.bridee.api.controller.impl;
 
 import com.bridee.api.controller.CasalController;
 import com.bridee.api.dto.request.CasalRequestDto;
+import com.bridee.api.dto.request.ImageMetadata;
 import com.bridee.api.dto.request.OrcamentoTotalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
 import com.bridee.api.dto.response.CasalResponseDto;
@@ -15,7 +16,10 @@ import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.pattern.strategy.blobstorage.impl.AzureBlobStorageImpl;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.service.CasamentoService;
+import com.bridee.api.service.ImagemCasalService;
 import com.bridee.api.utils.UriUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,7 +50,7 @@ public class CasalControllerImpl implements CasalController {
     private final CasalExternoRequestMapper externoRequestMapper;
     private final CasalExternoResponseMapper externoResponseMapper;
     private final CasamentoService casamentoService;
-    private final BlobStorageStrategy blobStorageStrategy;
+    private final ImagemCasalService imagemCasalService;
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
@@ -80,8 +85,12 @@ public class CasalControllerImpl implements CasalController {
     }
 
     @PostMapping(value = "/imagem-perfil/{casalId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> uploadImage(@RequestPart("file") MultipartFile file){
-        blobStorageStrategy.uploadFile(file);
+    public ResponseEntity<Void> uploadImage(@PathVariable Integer casalId,
+                                            @RequestParam(value = "metadata") String metadataJson,
+                                            @RequestPart("file") MultipartFile file) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ImageMetadata imageMetadata = objectMapper.readValue(metadataJson, ImageMetadata.class);
+        imagemCasalService.uploadCasalImage(casalId, imageMetadata, file);
         return ResponseEntity.ok().build();
     }
 

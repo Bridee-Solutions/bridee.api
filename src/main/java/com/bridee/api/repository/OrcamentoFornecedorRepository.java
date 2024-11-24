@@ -6,8 +6,10 @@ import com.bridee.api.projection.orcamento.fornecedor.FornecedorBaseProjection;
 import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorBaseProjection;
 import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrcamentoFornecedorRepository extends JpaRepository<OrcamentoFornecedor, Integer> {
@@ -37,4 +39,10 @@ public interface OrcamentoFornecedorRepository extends JpaRepository<OrcamentoFo
             AND of.casal.id = :casalId
             """)
     List<OrcamentoFornecedor> findAllByCasalIdAndSubcategoriaId(Integer casalId, Integer subcategoriaId);
+
+    @Query("""
+            UPDATE OrcamentoFornecedor of SET of.preco = :preco WHERE of.id = :id
+            """)
+    @Modifying
+    void updateOrcamentoFornecedorPreco(Integer id, BigDecimal preco);
 }
