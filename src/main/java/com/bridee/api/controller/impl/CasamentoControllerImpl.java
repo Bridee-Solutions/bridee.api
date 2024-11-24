@@ -1,9 +1,11 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.dto.request.UpdateCasalMessageDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.service.CasamentoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +32,8 @@ public class CasamentoControllerImpl {
 
     @PutMapping("/{casamentoId}")
     public ResponseEntity<Void> updateCasamentoMessage(@PathVariable Integer casamentoId,
-                                                       @RequestBody String message){
-        casamentoService.updateMessage(casamentoId, message);
+                                                       @RequestBody @Valid UpdateCasalMessageDto request){
+        casamentoService.updateMessage(casamentoId, request.getMessage());
         return ResponseEntity.ok().build();
     }
 

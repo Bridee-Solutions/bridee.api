@@ -8,6 +8,7 @@ import com.bridee.api.entity.enums.CasamentoStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.repository.CasamentoRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class CasamentoService {
 
     private final CasamentoRepository repository;
@@ -59,6 +61,8 @@ public class CasamentoService {
         Assessor assessor = assessorService.findById(assessorId);
         CasamentoAssessorado casamentoAssessorado = new CasamentoAssessorado(null, null, casamento, assessor);
         casamentoAssessorado = casamentoAssessoradoService.save(casamentoAssessorado);
+        casamento.setStatus(CasamentoStatusEnum.PENDENTE_APROVACAO);
+        repository.save(casamento);
         return casamentoAssessorado.getAssessor();
     }
 }
