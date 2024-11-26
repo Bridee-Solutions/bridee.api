@@ -12,5 +12,5 @@ public class CasamentoResponseDto {
     private LocalDate dataFim;
     private String tamanhoCasamento;
     private String local;
-
+    private Boolean localReservado;
 }
