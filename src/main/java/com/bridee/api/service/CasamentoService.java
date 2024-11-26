@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -78,5 +79,11 @@ public class CasamentoService {
         long totalPriceItens = custoRepository.totalPriceItens(casal.getId());
         long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casal.getId());
         return new BigDecimal(totalPriceItens + totalPriceOrcamento);
+    }
+
+    public void denyWedding(Integer casamentoId, Integer assessorId) {
+        casamentoAssessoradoService
+                .denyWedding(casamentoId, assessorId);
+
     }
 }

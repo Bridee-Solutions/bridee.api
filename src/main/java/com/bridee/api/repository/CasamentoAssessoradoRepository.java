@@ -38,4 +38,6 @@ public interface CasamentoAssessoradoRepository extends JpaRepository<CasamentoA
             """)
     @Modifying
     int updatePreco(Integer assessorId, Integer casamentoId, BigDecimal preco);
+
+    Optional<CasamentoAssessorado> findByCasamentoIdAndAssessorId(Integer casamentoId, Integer assessorId);
 }
