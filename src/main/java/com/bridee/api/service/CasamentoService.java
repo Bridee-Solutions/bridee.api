@@ -7,12 +7,16 @@ import com.bridee.api.entity.CasamentoAssessorado;
 import com.bridee.api.entity.enums.CasamentoStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
+import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.CasamentoRepository;
+import com.bridee.api.repository.CustoRepository;
+import com.bridee.api.repository.OrcamentoFornecedorRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Service
@@ -22,6 +26,8 @@ public class CasamentoService {
 
     private final CasamentoRepository repository;
     private final AssessorService assessorService;
+    private final OrcamentoFornecedorRepository orcamentoFornecedorRepository;
+    private final CustoRepository custoRepository;
     private final CasamentoAssessoradoService casamentoAssessoradoService;
 
     public Casamento findById(Integer id){
@@ -64,5 +70,13 @@ public class CasamentoService {
         casamento.setStatus(CasamentoStatusEnum.PENDENTE_APROVACAO);
         repository.save(casamento);
         return casamentoAssessorado.getAssessor();
+    }
+
+    public BigDecimal calculateOrcamento(Integer casamentoId) {
+        Casamento casamento = findById(casamentoId);
+        Casal casal = casamento.getCasal();
+        long totalPriceItens = custoRepository.totalPriceItens(casal.getId());
+        long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casal.getId());
+        return new BigDecimal(totalPriceItens + totalPriceOrcamento);
     }
 }

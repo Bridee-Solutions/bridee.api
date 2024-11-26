@@ -45,4 +45,9 @@ public interface OrcamentoFornecedorRepository extends JpaRepository<OrcamentoFo
             """)
     @Modifying
     void updateOrcamentoFornecedorPreco(Integer id, BigDecimal preco);
+
+    @Query("""
+            SELECT SUM(of.preco) FROM OrcamentoFornecedor of WHERE of.casal.id = :casalId
+            """)
+    long totalOrcamentoFornecedorPrice(Integer casalId);
 }

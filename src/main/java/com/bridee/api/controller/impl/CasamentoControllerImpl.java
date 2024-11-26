@@ -8,11 +8,14 @@ import com.bridee.api.service.CasamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/casamentos")
@@ -21,6 +24,11 @@ public class CasamentoControllerImpl {
 
     private final CasamentoService casamentoService;
     private final AssessorResponseMapper responseMapper;
+
+    @GetMapping("/{casamentoId}/orcamento")
+    public ResponseEntity<BigDecimal> calculateCasamentoOrcamento(@PathVariable Integer casamentoId){
+        return ResponseEntity.ok(casamentoService.calculateOrcamento(casamentoId));
+    }
 
     @PutMapping("/{casamentoId}/assessor/{assessorId}")
     public ResponseEntity<AssessorResponseDto> vinculateAssessorToWedding(@PathVariable Integer casamentoId,
