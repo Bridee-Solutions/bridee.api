@@ -36,7 +36,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/assessores")
@@ -73,11 +76,21 @@ public class AssessorControllerImpl implements AssessorController {
     }
 
     @GetMapping("/{assessorId}/casais/pendentes")
-    public ResponseEntity<Page<CasamentoResponseDto>> findAllCasaisPendentes(@PathVariable Integer assessorId,
+    public ResponseEntity<Page<CasamentoResponseDto>> findAllCasamentosPendentes(@PathVariable Integer assessorId,
                                                                              Pageable pageable){
         Page<Casamento> casais = casamentoAssessoradoService.findCasamentosPendenteByAssessorId(assessorId, pageable);
         Page<CasamentoResponseDto> response = casamentoResponseMapper.toDomain(casais);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{assessorId}/casamentos/assessorados")
+    public ResponseEntity<List<CasamentoResponseDto>> findAllCasamentosAssessorados(@RequestParam Integer mes,
+                                                                                    @RequestParam Integer ano,
+                                                                                    @PathVariable Integer assessorId){
+        List<Casamento> casamentos = casamentoAssessoradoService
+                .findCasamentosAssessoradosByAssessorId(assessorId, mes, ano);
+        List<CasamentoResponseDto> responseDto = casamentoResponseMapper.toDomain(casamentos);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/solicitar-orcamento/{assessorId}")

@@ -8,13 +8,17 @@ import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.repository.CasamentoAssessoradoRepository;
 import com.bridee.api.repository.CasamentoRepository;
+import com.bridee.api.repository.specification.CasamentoAssessoradoFilter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -103,5 +107,14 @@ public class CasamentoAssessoradoService {
         if (!casamento.getStatus().equals(CasamentoStatusEnum.ASSESSORADO)){
             throw new UnprocessableEntityException("Não foi possível realizar a operação, status do casamento inválido!");
         }
+    }
+
+    public List<Casamento> findCasamentosAssessoradosByAssessorId(Integer assessorId, Integer mes, Integer ano) {
+        LocalDate dateToBeFiltered = LocalDate.of(ano, mes, LocalDate.now().getDayOfMonth());
+        Specification<CasamentoAssessorado> specification = CasamentoAssessoradoFilter.findByAssessorId(assessorId)
+                .and(CasamentoAssessoradoFilter.findByCasamentoStatus(CasamentoStatusEnum.ASSESSORADO)
+                .and(CasamentoAssessoradoFilter.findByDate(dateToBeFiltered)));
+        return repository.findAll(specification).stream()
+                .map(CasamentoAssessorado::getCasamento).toList();
     }
 }

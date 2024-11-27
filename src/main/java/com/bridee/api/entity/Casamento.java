@@ -51,7 +51,7 @@ public class Casamento {
     private Boolean localReservado;
 
     @Enumerated(EnumType.STRING)
-    private CasamentoStatusEnum status;
+    private CasamentoStatusEnum status = CasamentoStatusEnum.NAO_ASSESSORADO;
 
     private String mensagemConvite;
 
