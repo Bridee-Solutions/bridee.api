@@ -90,4 +90,8 @@ public class CasamentoService {
     public void acceptWedding(Integer casamentoId, Integer assessorId) {
         casamentoAssessoradoService.acceptWedding(casamentoId, assessorId);
     }
+
+    public void removeWeddingAdvise(Integer casamentoId, Integer assessorId) {
+        casamentoAssessoradoService.removeWeddingAdvise(casamentoId, assessorId);
+    }
 }

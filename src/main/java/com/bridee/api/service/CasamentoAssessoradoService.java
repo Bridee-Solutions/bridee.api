@@ -50,13 +50,14 @@ public class CasamentoAssessoradoService {
     public void denyWedding(Integer casamentoId, Integer assessorId) {
         CasamentoAssessorado casamentoAssessorado = findCasamentoAssessorado(casamentoId, assessorId);
         Casamento casamento = casamentoAssessorado.getCasamento();
-        denyWedding(casamento);
+        denyWedding(casamento, casamentoAssessorado);
     }
 
-    private void denyWedding(Casamento casamento) {
+    private void denyWedding(Casamento casamento, CasamentoAssessorado casamentoAssessorado) {
         validatePendingStatusWedding(casamento);
         casamento.setStatus(CasamentoStatusEnum.NAO_ASSESSORADO);
         casamentoRepository.save(casamento);
+        repository.delete(casamentoAssessorado);
     }
 
     public void acceptWedding(Integer casamentoId, Integer assessorId) {
@@ -71,6 +72,19 @@ public class CasamentoAssessoradoService {
         casamentoRepository.save(casamento);
     }
 
+    public void removeWeddingAdvise(Integer casamentoId, Integer assessorId) {
+        CasamentoAssessorado casamentoAssessorado = findCasamentoAssessorado(casamentoId, assessorId);
+        Casamento casamento = casamentoAssessorado.getCasamento();
+        removeWeddingAdvise(casamento, casamentoAssessorado);
+    }
+
+    private void removeWeddingAdvise(Casamento casamento, CasamentoAssessorado casamentoAssessorado) {
+        validateAdvisedStatusWedding(casamento);
+        casamento.setStatus(CasamentoStatusEnum.NAO_ASSESSORADO);
+        casamentoRepository.save(casamento);
+        repository.delete(casamentoAssessorado);
+    }
+
     private CasamentoAssessorado findCasamentoAssessorado(Integer casamentoId, Integer assessorId){
         Optional<CasamentoAssessorado> casamentoAssessoradoOpt = repository.findByCasamentoIdAndAssessorId(casamentoId, assessorId);
         if (casamentoAssessoradoOpt.isEmpty()){
@@ -81,6 +95,12 @@ public class CasamentoAssessoradoService {
 
     private void validatePendingStatusWedding(Casamento casamento){
         if (!casamento.getStatus().equals(CasamentoStatusEnum.PENDENTE_APROVACAO)){
+            throw new UnprocessableEntityException("Não foi possível realizar a operação, status do casamento inválido!");
+        }
+    }
+
+    private void validateAdvisedStatusWedding(Casamento casamento){
+        if (!casamento.getStatus().equals(CasamentoStatusEnum.ASSESSORADO)){
             throw new UnprocessableEntityException("Não foi possível realizar a operação, status do casamento inválido!");
         }
     }

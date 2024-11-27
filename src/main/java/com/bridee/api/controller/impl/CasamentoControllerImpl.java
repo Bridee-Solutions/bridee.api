@@ -52,6 +52,13 @@ public class CasamentoControllerImpl {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{casamentoId}/assessor/{assessorId}/remover-proposta")
+    public ResponseEntity<Void> removeWeddingAdvise(@PathVariable Integer casamentoId,
+                                            @PathVariable Integer assessorId){
+        casamentoService.removeWeddingAdvise(casamentoId, assessorId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{casamentoId}")
     public ResponseEntity<Void> updateCasamentoMessage(@PathVariable Integer casamentoId,
                                                        @RequestBody @Valid UpdateCasalMessageDto request){
