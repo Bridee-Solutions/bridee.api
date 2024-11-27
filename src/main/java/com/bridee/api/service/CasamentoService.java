@@ -86,4 +86,8 @@ public class CasamentoService {
                 .denyWedding(casamentoId, assessorId);
 
     }
+
+    public void acceptWedding(Integer casamentoId, Integer assessorId) {
+        casamentoAssessoradoService.acceptWedding(casamentoId, assessorId);
+    }
 }

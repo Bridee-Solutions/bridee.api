@@ -38,6 +38,13 @@ public class CasamentoControllerImpl {
         return ResponseEntity.ok(responseDto);
     }
 
+    @PutMapping("/{casamentoId}/assessor/{assessorId}/aceitar-proposta")
+    public ResponseEntity<Void> acceptWedding(@PathVariable Integer casamentoId,
+                                            @PathVariable Integer assessorId){
+        casamentoService.acceptWedding(casamentoId, assessorId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{casamentoId}/assessor/{assessorId}/recusar-proposta")
     public ResponseEntity<Void> denyWedding(@PathVariable Integer casamentoId,
                                             @PathVariable Integer assessorId){

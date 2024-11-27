@@ -54,10 +54,20 @@ public class CasamentoAssessoradoService {
     }
 
     private void denyWedding(Casamento casamento) {
-        if (!casamento.getStatus().equals(CasamentoStatusEnum.PENDENTE_APROVACAO)){
-            throw new UnprocessableEntityException("Não foi possível negar a solicitação de assessoria, status do casamento inválido!");
-        }
+        validatePendingStatusWedding(casamento);
         casamento.setStatus(CasamentoStatusEnum.NAO_ASSESSORADO);
+        casamentoRepository.save(casamento);
+    }
+
+    public void acceptWedding(Integer casamentoId, Integer assessorId) {
+        CasamentoAssessorado casamentoAssessorado = findCasamentoAssessorado(casamentoId, assessorId);
+        Casamento casamento = casamentoAssessorado.getCasamento();
+        acceptWedding(casamento);
+    }
+
+    private void acceptWedding(Casamento casamento) {
+        validatePendingStatusWedding(casamento);
+        casamento.setStatus(CasamentoStatusEnum.ASSESSORADO);
         casamentoRepository.save(casamento);
     }
 
@@ -66,6 +76,12 @@ public class CasamentoAssessoradoService {
         if (casamentoAssessoradoOpt.isEmpty()){
             throw new ResourceNotFoundException("Casamento assessorado não encontrado!");
         }
-       return casamentoAssessoradoOpt.get();
+        return casamentoAssessoradoOpt.get();
+    }
+
+    private void validatePendingStatusWedding(Casamento casamento){
+        if (!casamento.getStatus().equals(CasamentoStatusEnum.PENDENTE_APROVACAO)){
+            throw new UnprocessableEntityException("Não foi possível realizar a operação, status do casamento inválido!");
+        }
     }
 }
