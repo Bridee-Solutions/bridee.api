@@ -30,8 +30,9 @@ public class InformacaoAssociado {
     private String servicosOferecidos;
     private String formaDeTrabalho;
     private String tamanhoCasamento;
-    private Boolean casamentosCatolicos;
+    // private Boolean casamentosCatolicos;
     private String urlSite;
+    private String email;
     private String cidade;
     private String bairro;
 

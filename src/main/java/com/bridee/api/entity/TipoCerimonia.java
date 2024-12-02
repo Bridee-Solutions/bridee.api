@@ -10,10 +10,11 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class TipoCasamento {
+public class TipoCerimonia{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
+
 }
