@@ -18,11 +18,13 @@ public class ConvidadoRequestDto {
     @NotBlank
     @Schema(description = "Telefone do convidado", example = "+xx (xx) xxxxxxxxx")
     private String telefone;
-    @NotBlank
-    @Schema(description = "Categoria do convidado", example = "Familia da Noiva")
-    private String categoria;
+    private String tipo;
+    private String status;
     @NotBlank
     @Schema(description = "Faixa etaria do convidado", example = "ADULTO")
     private String faixaEtaria;
 
+    private Integer mesaId;
+    private Integer conviteId;
+    private CategoriaConvidadoRequestDto categoriaConvidado;
 }

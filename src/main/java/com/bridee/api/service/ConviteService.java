@@ -1,18 +1,27 @@
 package com.bridee.api.service;
 
 import com.bridee.api.dto.request.ConviteMessageDto;
+import com.bridee.api.dto.response.CategoriaConvidadoResumoDto;
+import com.bridee.api.dto.response.ConviteResumoResponseDto;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Casamento;
+import com.bridee.api.entity.CategoriaConvidado;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
+import com.bridee.api.entity.enums.CategoriaConvidadoEnum;
 import com.bridee.api.entity.enums.TipoConvidado;
 import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.ConviteMessageMapper;
+import com.bridee.api.mapper.response.CategoriaConvidadoResponseMapper;
+import com.bridee.api.mapper.response.ConviteResponseMapper;
 import com.bridee.api.pattern.observer.dto.ConviteTopicDto;
 import com.bridee.api.pattern.observer.impl.ConviteTopic;
+import com.bridee.api.projection.convite.CategoriaConvidadoProjection;
+import com.bridee.api.projection.convite.ConviteResumoProjection;
 import com.bridee.api.projection.orcamento.RelatorioProjection;
+import com.bridee.api.repository.ConvidadoRepository;
 import com.bridee.api.repository.ConviteRepository;
 import com.bridee.api.repository.specification.ConviteFilter;
 import jakarta.transaction.Transactional;
@@ -34,9 +43,13 @@ public class ConviteService {
 
     private final ConviteRepository repository;
     private final ConvidadoService convidadoService;
+    private final ConvidadoRepository convidadoRepository;
     private final ConviteTopic conviteTopic;
     private final CasamentoService casamentoService;
     private final ConviteMessageMapper conviteMessageMapper;
+    private final CategoriaConvidadoResponseMapper categoriaConvidadoMapper;
+    private final ConviteResponseMapper conviteResponseMapper;
+    private final CategoriaConvidadoService categoriaConvidadoService;
 
     public List<Convite> findAllByCasamentoId(Map<String, Object> filter, Integer casamentoId){
         casamentoService.existsById(casamentoId);
@@ -73,24 +86,34 @@ public class ConviteService {
 
         Optional<Convidado> optionalConvidado = convite.getConvidados().stream()
                 .filter(convidado -> convidado.getTelefone().equals(telefoneTitular)).findFirst();
+        convite.getConvidados().forEach(convidado -> convidado.setTipo(TipoConvidado.NAO_TITULAR));
         if (optionalConvidado.isEmpty()){
             throw new ResourceNotFoundException("Titular não foi adicionado para o convite!");
         }
         optionalConvidado.get().setTipo(TipoConvidado.TITULAR);
 
         convite.setPin(generatePinCode(casamentoId));
+        List<Convidado> savedGuests = convidadoService.saveAll(convite.getConvidados());
+        convite.setConvidados(savedGuests);
         convite = repository.save(convite);
-        convidadoService.saveAll(convite.getConvidados(), convite);
+        convidadoService.saveAllInvites(convite.getConvidados(), convite);
         return convite;
     }
 
     @Transactional
-    public Convite update(Convite convite, Integer id){
+    public Convite update(Convite convite, String telefoneTitular,Integer id){
         if (!repository.existsById(id)){
             throw new ResourceNotFoundException("Convite não encontrado!");
         }
+        Convidado titular = findTitularByConviteId(id);
+        titular.setTelefone(telefoneTitular);
+        convidadoRepository.save(titular);
         convite.setId(id);
         return repository.save(convite);
+    }
+
+    private Convidado findTitularByConviteId(Integer conviteId) {
+        return repository.findTitularConvite(conviteId, TipoConvidado.TITULAR);
     }
 
     @Transactional
@@ -111,6 +134,23 @@ public class ConviteService {
             throw new ResourceNotFoundException("Não há dados para gerar o relátorio do casal");
         }
         return projection;
+    }
+
+    public ConviteResumoResponseDto inviteResume(Integer casamentoId){
+        ConviteResumoProjection conviteResumoProjection = repository.resumoCasamentoInvites(casamentoId);
+        List<CategoriaConvidado> categoriaConvidados = categoriaConvidadoService.findAll();
+        List<CategoriaConvidadoResumoDto> categoriasResumo = generateCategoriaResumo(categoriaConvidados, casamentoId);
+        ConviteResumoResponseDto resumo = conviteResponseMapper.fromProjection(conviteResumoProjection);
+        resumo.setResumoCategorias(categoriasResumo);
+        return resumo;
+    }
+
+    private List<CategoriaConvidadoResumoDto> generateCategoriaResumo(List<CategoriaConvidado> categoriaConvidado, Integer casamentoId){
+        return categoriaConvidado.stream()
+                .map((categoria) -> {
+                    var projection = repository.resumoCategoriaInvite(casamentoId, categoria.getNome());
+                    return categoriaConvidadoMapper.fromProjection(projection, categoria.getNome());
+                }).toList();
     }
 
     public String generatePinCode(Integer casamentoId) {
@@ -148,4 +188,8 @@ public class ConviteService {
 
     }
 
+    public void deleteAllWeddingInvites(Integer casamentoId) {
+        List<Convite> convites = repository.findAllByCasamentoId(casamentoId);
+        repository.deleteAll(convites);
+    }
 }

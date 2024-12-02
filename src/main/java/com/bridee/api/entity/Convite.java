@@ -1,5 +1,6 @@
 package com.bridee.api.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +35,6 @@ public class Convite {
     @JoinColumn
     private Casamento casamento;
 
-    @OneToMany(mappedBy = "convite")
+    @OneToMany(mappedBy = "convite", cascade = {CascadeType.REMOVE})
     private List<Convidado> convidados = new ArrayList<>();
 }

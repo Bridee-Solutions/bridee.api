@@ -4,6 +4,7 @@ import com.bridee.api.dto.request.MesaConvidadoRequestDto;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.entity.Mesa;
+import com.bridee.api.entity.enums.TipoConvidado;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.ConvidadoRepository;
@@ -39,6 +40,9 @@ public class ConvidadoService {
 
     public Convidado save(Convidado convidado, Integer conviteId) {
         validateConvidadoConvite(convidado, conviteId);
+        convidado.setConvite(Convite.builder()
+                .id(conviteId)
+                .build());
         return repository.save(convidado);
     }
 
@@ -50,9 +54,14 @@ public class ConvidadoService {
         return repository.save(convidado);
     }
 
-    public void saveAll(List<Convidado> convidados, Convite convite){
-        convidados = removeDuplicatedConvidados(convidados);
+    public void saveAllInvites(List<Convidado> convidados, Convite convite){
         convidados.forEach(convidado -> convidado.setConvite(convite));
+        saveAll(convidados);
+    }
+
+    public List<Convidado> saveAll(List<Convidado> convidados){
+        removeDuplicatedConvidados(convidados);
+        return repository.saveAll(convidados);
     }
 
     public void vinculateConvidadosToMesa(List<MesaConvidadoRequestDto> mesaConvidadoDto){
