@@ -3,9 +3,6 @@ package com.bridee.api.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.bridee.api.entity.enums.CasamentoStatusEnum;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import lombok.Builder;
 import org.springframework.data.annotation.CreatedBy;
@@ -20,7 +17,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,9 +45,6 @@ public class Casamento {
     private String local;
 
     private Boolean localReservado;
-
-    @Enumerated(EnumType.STRING)
-    private CasamentoStatusEnum status = CasamentoStatusEnum.NAO_ASSESSORADO;
 
     private String mensagemConvite;
 

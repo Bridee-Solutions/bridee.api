@@ -14,4 +14,8 @@ public interface CasamentoRepository extends JpaRepository<Casamento, Integer> {
             """)
     int updateCasamentoMessage(Integer casamentoId, String message);
 
+    @Query("""
+            SELECT ca.id FROM Casamento ca WHERE ca.casal.id = :casalId
+            """)
+    int findCasamentoIdByCasalId(Integer casalId);
 }

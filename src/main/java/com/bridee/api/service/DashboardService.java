@@ -7,7 +7,7 @@ import com.bridee.api.dto.response.TarefaResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Casamento;
-import com.bridee.api.entity.CasamentoAssessorado;
+import com.bridee.api.entity.PedidoAssessoria;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.entity.Tarefa;
@@ -41,7 +41,7 @@ public class DashboardService {
     private final TarefaService tarefaService;
     private final ItemOrcamentoService itemOrcamentoService;
     private final SubcategoriaServicoService subcategoriaServicoService;
-    private final CasamentoAssessoradoService casamentoAssessoradoService;
+    private final PedidoAssessoriaService pedidoAssessoriaService;
     private final ImagemCasalService imagemCasalService;
     private final FornecedorOrcamentoResponseMapper fornecedorOrcamentoResponseMapper;
     private final AssessorResponseMapper assessorResponseMapper;
@@ -55,8 +55,8 @@ public class DashboardService {
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
         CasalResponseDto casalResponseDto =  casalResponseMapper.toDomain(casal);
-        CasamentoAssessorado casamentoAssessorado = casamentoAssessoradoService.findByCasamentoId(casamentoId);
-        Assessor assessor = Objects.nonNull(casamentoAssessorado) ? casamentoAssessorado.getAssessor() : null;
+        PedidoAssessoria pedidoAssessoria = pedidoAssessoriaService.findByCasamentoId(casamentoId);
+        Assessor assessor = Objects.nonNull(pedidoAssessoria) ? pedidoAssessoria.getAssessor() : null;
 
         itemOrcamentoService.findAllByCasalId(casal.getId());
         orcamentoFornecedorService.findByCasalId(casal.getId());
@@ -87,7 +87,7 @@ public class DashboardService {
         tarefasCasal.sort(tarefaComparator::compare);
         List<TarefaResponseDto> last3Tarefas = tarefasCasal.stream().map(tarefaResponseMapper::toDomain).limit(3).toList();
 
-        BigDecimal precoAssessor = Objects.nonNull(casamentoAssessorado) ? casamentoAssessorado.getPreco() : null;
+        BigDecimal precoAssessor = Objects.nonNull(pedidoAssessoria) ? pedidoAssessoria.getPreco() : null;
         String casalImage = imagemCasalService.casalImage64Encoded(casal.getId());
 
         return DashboardResponseDto.builder()

@@ -20,7 +20,7 @@ import com.bridee.api.mapper.response.externo.AssessorExternoResponseMapper;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.service.AssessorService;
-import com.bridee.api.service.CasamentoAssessoradoService;
+import com.bridee.api.service.PedidoAssessoriaService;
 import com.bridee.api.service.EmailService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
@@ -48,7 +48,7 @@ public class AssessorControllerImpl implements AssessorController {
 
     private final AssessorService service;
     private final EmailService emailService;
-    private final CasamentoAssessoradoService casamentoAssessoradoService;
+    private final PedidoAssessoriaService pedidoAssessoriaService;
     private final CasamentoResponseMapper casamentoResponseMapper;
     private final AssessorRequestMapper requestMapper;
     private final AssessorResponseMapper responseMapper;
@@ -78,7 +78,7 @@ public class AssessorControllerImpl implements AssessorController {
     @GetMapping("/{assessorId}/casais/pendentes")
     public ResponseEntity<Page<CasamentoResponseDto>> findAllCasamentosPendentes(@PathVariable Integer assessorId,
                                                                              Pageable pageable){
-        Page<Casamento> casais = casamentoAssessoradoService.findCasamentosPendenteByAssessorId(assessorId, pageable);
+        Page<Casamento> casais = pedidoAssessoriaService.findCasamentosPendenteByAssessorId(assessorId, pageable);
         Page<CasamentoResponseDto> response = casamentoResponseMapper.toDomain(casais);
         return ResponseEntity.ok(response);
     }
@@ -87,7 +87,7 @@ public class AssessorControllerImpl implements AssessorController {
     public ResponseEntity<List<CasamentoResponseDto>> findAllCasamentosAssessorados(@RequestParam Integer mes,
                                                                                     @RequestParam Integer ano,
                                                                                     @PathVariable Integer assessorId){
-        List<Casamento> casamentos = casamentoAssessoradoService
+        List<Casamento> casamentos = pedidoAssessoriaService
                 .findCasamentosAssessoradosByAssessorId(assessorId, mes, ano);
         List<CasamentoResponseDto> responseDto = casamentoResponseMapper.toDomain(casamentos);
         return ResponseEntity.ok(responseDto);
@@ -132,7 +132,7 @@ public class AssessorControllerImpl implements AssessorController {
                                                     @PathVariable Integer casamentoId,
                                                     @RequestBody @Valid AssociadoPrecoRequestDto requestDto
                                                     ){
-        casamentoAssessoradoService.updatePrecoCasamentoAssessor(assessorId, casamentoId, requestDto.getPreco());
+        pedidoAssessoriaService.updatePrecoCasamentoAssessor(assessorId, casamentoId, requestDto.getPreco());
         return ResponseEntity.noContent().build();
     }
 

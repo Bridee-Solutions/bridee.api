@@ -1,6 +1,9 @@
 package com.bridee.api.entity;
 
+import com.bridee.api.entity.enums.PedidoAssessoriaStatusEnum;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,13 +22,16 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CasamentoAssessorado {
+public class PedidoAssessoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private BigDecimal preco;
+
+    @Enumerated(EnumType.STRING)
+    private PedidoAssessoriaStatusEnum status;
 
     @OneToOne
     @JoinColumn(name = "casamento_id")
@@ -34,4 +40,9 @@ public class CasamentoAssessorado {
     @ManyToOne
     private Assessor assessor;
 
+    public PedidoAssessoria(PedidoAssessoriaStatusEnum status, Casamento casamento, Assessor assessor) {
+        this.status = status;
+        this.casamento = casamento;
+        this.assessor = assessor;
+    }
 }
