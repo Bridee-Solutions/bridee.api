@@ -1,6 +1,5 @@
 package com.bridee.api.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bridee.api.entity.FormaPagamento;
 import com.bridee.api.entity.FormaPagamentoAssociado;
 import com.bridee.api.entity.InformacaoAssociado;
+import com.bridee.api.entity.TipoCasamentoAssociado;
 import com.bridee.api.repository.FormaPagamentoAssociadoRepository;
 import com.bridee.api.repository.FormaPagamentoRepository;
 
@@ -21,7 +21,7 @@ public class FormaPagamentoAssociadoService {
     private final FormaPagamentoAssociadoRepository repository;
     
     private final FormaPagamentoRepository formaPagamentoRepository; 
-
+    
     public List<FormaPagamentoAssociado> update(List<Integer> formaPagamentoAssociado, InformacaoAssociado associado){
         List<FormaPagamentoAssociado> registrosExistentes = repository.findAllByInformacaoAssociadoId(associado.getId());
         
@@ -51,9 +51,19 @@ public class FormaPagamentoAssociadoService {
             return novoRegistro;
         })
         .toList();
-
+        
         repository.saveAll(registrosParaInserir);
         
         return repository.findAllByInformacaoAssociadoId(associado.getId());
+    }
+    
+    public List<FormaPagamento> findAllByInformacaoAssociadoId(InformacaoAssociado associado) {
+        List<FormaPagamentoAssociado> formaPagamentoAssociados = repository.findAllByInformacaoAssociadoId(associado.getId());
+        
+        List<Integer> formaPagamentoIds = formaPagamentoAssociados.stream()
+        .map(formaPagamentoAssociado -> formaPagamentoAssociado.getFormaPagamento().getId())
+        .toList();
+        
+        return formaPagamentoRepository.findAllById(formaPagamentoIds);
     }
 }

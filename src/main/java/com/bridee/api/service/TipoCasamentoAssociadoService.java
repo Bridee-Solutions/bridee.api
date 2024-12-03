@@ -51,9 +51,19 @@ public class TipoCasamentoAssociadoService {
             return novoRegistro;
         })
         .toList();
-
+        
         repository.saveAll(registrosParaInserir);
         
         return repository.findAllByInformacaoAssociadoId(associado.getId());
+    }
+    
+    public List<TipoCasamento> findAllByInformacaoAssociadoId(InformacaoAssociado associado) {
+        List<TipoCasamentoAssociado> tiposCasamentoAssociados = repository.findAllByInformacaoAssociadoId(associado.getId());
+        
+        List<Integer> tipoCasamentoIds = tiposCasamentoAssociados.stream()
+        .map(tipoCasamentoAssociado -> tipoCasamentoAssociado.getTipoCasamento().getId())
+        .toList();
+
+        return tipoCasamentoRepository.findAllById(tipoCasamentoIds);
     }
 }
