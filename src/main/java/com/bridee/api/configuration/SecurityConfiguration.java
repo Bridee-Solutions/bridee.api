@@ -24,9 +24,9 @@ import java.util.Arrays;
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtFilter;
+    private final CustomJwtConverter jwtConverter;
 
     @Bean
-    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -41,13 +41,21 @@ public class SecurityConfiguration {
                                         "/assessores/validate-fields").permitAll()
                                 .requestMatchers("/v3/api-docs/**",
                                         "/swagger-ui/**").permitAll()
+                                .requestMatchers("/casais/**", "/convidados/**",
+                                        "/convites/**", "/dashboards/**", "/itens-orcamento/**",
+                                        "/mesas/**", "/orcamentos/**", "/orcamento-fornecedor/**").hasRole("CASAL")
+                                .requestMatchers("/assessores/**").hasRole("ASSESSOR")
+                                .requestMatchers("/tarefas/**").hasAnyRole("CASAL", "ASSESSOR")
                                 .anyRequest().permitAll();
                 })
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(resourceServer -> {
-                    resourceServer.jwt(jwt -> jwt.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs"));
+                    resourceServer.jwt(jwt -> {
+                        jwt.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                                .jwtAuthenticationConverter(jwtConverter);
+                    });
                 })
                 .build();
     }
