@@ -6,7 +6,9 @@ import com.bridee.api.dto.security.SecurityUser;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.enums.UsuarioEnum;
+import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.exception.UnauthorizedUserException;
 import com.bridee.api.exception.UsuarioExternoException;
 import com.bridee.api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +67,22 @@ public class AuthenticationService {
             return UsuarioEnum.CASAL;
         }
         return UsuarioEnum.ASSESSOR;
+    }
+
+    public String generateNewAccessToken(String refreshToken){
+        UserDetails userDetails = createUserDetails(refreshToken);
+        boolean isTokenValid = jwtService.isTokenValid(refreshToken, userDetails);
+        if (!isTokenValid){
+            throw new UnauthorizedUserException("Refresh Token inválido");
+        }
+        return jwtService.generateToken(new HashMap<>(), userDetails);
+    }
+
+    private UserDetails createUserDetails(String refreshToken){
+        String username = jwtService.extractUsername(refreshToken);
+        Usuario usuario = usuarioRepository.findByEmail(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado!"));
+        return new SecurityUser(usuario);
     }
 
 }
