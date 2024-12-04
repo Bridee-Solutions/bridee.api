@@ -44,7 +44,7 @@ public class ItemOrcamentoControllerImpl {
     }
 
     @DeleteMapping("/custo/{id}")
-    public ResponseEntity<Void> deleCustoById(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteCustoById(@PathVariable Integer id){
         custoService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
