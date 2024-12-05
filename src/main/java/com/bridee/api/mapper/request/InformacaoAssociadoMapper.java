@@ -25,11 +25,17 @@ import java.util.Objects;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociadoRequestDto, InformacaoAssociado> {
 
-    @Mapping(target = "tipoCasamentoAssociados", expression = "java(convertToTipos(domain))")
-    @Mapping(target = "formaPagamentoAssociados", expression = "java(convertToFormaPagamentos(domain))")
-    @Mapping(target = "tipoCerimoniaAssociados", expression = "java(convertToCerimonias(domain))")
-    @Mapping(target = "imagemAssociados", expression = "java(convertToImage(domain))")
-    InformacaoAssociado toEntity(InformacaoAssociadoDto domain);
+    default InformacaoAssociado toEntity(InformacaoAssociadoDto domain){
+        if(domain == null){
+            return null;
+        }
+        InformacaoAssociado informacaoAssociado = toEntity(domain.getInformacaoAssociado());
+        informacaoAssociado.setTipoCasamentoAssociados(convertToTipos(domain));
+        informacaoAssociado.setTipoCerimoniaAssociados(convertToCerimonias(domain));
+        informacaoAssociado.setImagemAssociados(convertToImage(domain));
+        informacaoAssociado.setFormaPagamentoAssociados(convertToFormaPagamentos(domain));
+        return informacaoAssociado;
+    }
 
     default List<TipoCasamentoAssociado> convertToTipos(InformacaoAssociadoDto domain){
         List<Integer> tipoCasamentoIds = domain.getTiposCasamento();

@@ -37,7 +37,7 @@ public class InformacaoAssociadoControllerImpl {
     
     @PostMapping("/{id}/perfil")
     public ResponseEntity<Void> save(@PathVariable Integer id, @RequestBody @Valid InformacaoAssociadoDto informacaoDto){
-        InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoDto.getInformacaoAssociado());
+        InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoDto);
         InformacaoAssociado info = service.save(informacaoAssociado, id);
         tipoCasamentoAssociadoService.update(informacaoDto.getTiposCasamento(), info);
         tipoCerimoniaAssociadoService.update(informacaoDto.getTiposCerimonia(), info);

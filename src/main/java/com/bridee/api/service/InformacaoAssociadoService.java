@@ -22,16 +22,24 @@ public class InformacaoAssociadoService {
     private final ImagemAssociadoService imagemAssociadoService;
 
     public InformacaoAssociado save(InformacaoAssociado informacaoAssociado, Integer assessorId){
+        vinculateAssessorToInformation(informacaoAssociado, assessorId);
+        saveInformacaoAssociadoImages(informacaoAssociado);
+        return repository.save(informacaoAssociado);
+    }
+
+    private void vinculateAssessorToInformation(InformacaoAssociado informacaoAssociado, Integer assessorId){
         assessorService.existsById(assessorId);
         Assessor assessor = new Assessor(assessorId);
         informacaoAssociado.setAssessor(assessor);
+    }
+
+    private void saveInformacaoAssociadoImages(InformacaoAssociado informacaoAssociado){
         informacaoAssociado.getImagemAssociados().forEach(imagemAssociado -> {
             imagemAssociado.setImagem(imagemService.save(imagemAssociado.getImagem()));
         });
         InformacaoAssociado savedInformacaoAssociado = repository.save(informacaoAssociado);
         informacaoAssociado.getImagemAssociados().forEach(imagemAssociado -> imagemAssociado.setInformacaoAssociado(savedInformacaoAssociado));
         imagemAssociadoService.saveAll(informacaoAssociado.getImagemAssociados());
-        return repository.save(informacaoAssociado);
     }
 
     public InformacaoAssociado update(InformacaoAssociado info, Integer id) {
