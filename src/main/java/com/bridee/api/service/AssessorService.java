@@ -121,6 +121,12 @@ public class AssessorService {
         assessorRepository.deleteById(id);
     }
 
+    public void existsById(Integer id){
+        if(!assessorRepository.existsById(id)){
+            throw new ResourceNotFoundException("Assessor não encontrado!");
+        }
+    }
+
     public ValidateAssessorFieldsResponseDto validateAssessorFields(ValidateAssessorFieldsRequestDto requestDto) {
         boolean existsByCnpj = assessorRepository.existsByCnpj(requestDto.getCnpj());
         boolean existsByEmailEmpresa = assessorRepository.existsByEmailEmpresa(requestDto.getEmailEmpresa());

@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "DTO de configurações do assessor",
         description = "DTO para atualizar e receber e atualizar dados do assessor")
 public class InformacaoAssociadoRequestDto {
+
+    private Integer id;
+
     @NotBlank
     @Schema(description = "Visão geral do negócio do assessor")
     private String visaoGeral;

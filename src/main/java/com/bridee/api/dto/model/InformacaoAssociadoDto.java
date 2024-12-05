@@ -2,6 +2,8 @@ package com.bridee.api.dto.model;
 
 import java.util.List;
 
+import com.bridee.api.dto.request.ImageMetadata;
+import com.bridee.api.dto.request.ImagemAssociadoRequestDto;
 import com.bridee.api.dto.request.InformacaoAssociadoRequestDto;
 
 import jakarta.validation.constraints.NotNull;
@@ -12,8 +14,8 @@ public class InformacaoAssociadoDto {
     @NotNull
     private InformacaoAssociadoRequestDto informacaoAssociado;
 
-    // @NotNull
-    // private List<ImagemAssociadoRequestDto> imagem;
+     @NotNull
+     private List<ImageMetadata> imagem;
 
     @NotNull
     private List<Integer> formasPagamento;

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,12 +35,10 @@ public class InformacaoAssociadoControllerImpl {
     private final InformacaoAssociadoResponseMapper responseMapper;
     
     
-    @PutMapping("/{id}/perfil")
-    public ResponseEntity<Void> update(@PathVariable Integer id,
-    @RequestBody @Valid InformacaoAssociadoDto informacaoDto
-    ){
-        InformacaoAssociado info = service.update(requestMapper.toEntity(informacaoDto.getInformacaoAssociado()), id);
-        InformacaoAssociadoResponseDto response = null;
+    @PostMapping("/{id}/perfil")
+    public ResponseEntity<Void> save(@PathVariable Integer id, @RequestBody @Valid InformacaoAssociadoDto informacaoDto){
+        InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoDto.getInformacaoAssociado());
+        InformacaoAssociado info = service.save(informacaoAssociado, id);
         tipoCasamentoAssociadoService.update(informacaoDto.getTiposCasamento(), info);
         tipoCerimoniaAssociadoService.update(informacaoDto.getTiposCerimonia(), info);
         formaPagamentoAssociadoService.update(informacaoDto.getFormasPagamento(), info);
@@ -56,8 +55,6 @@ public class InformacaoAssociadoControllerImpl {
         response.setTiposCasamento(tipoCasamentoAssociadoService.findAllByInformacaoAssociadoId(info));
         response.setTiposCerimonia(tipoCerimoniaAssociadoService.findAllByInformacaoAssociadoId(info));
         response.setFormasPagamento(formaPagamentoAssociadoService.findAllByInformacaoAssociadoId(info));
-
-        
         return ResponseEntity.ok().body(response);
     }
 }

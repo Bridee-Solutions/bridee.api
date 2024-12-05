@@ -1,7 +1,5 @@
 package com.bridee.api.service;
 
-import com.bridee.api.dto.request.ImageMetadata;
-import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;

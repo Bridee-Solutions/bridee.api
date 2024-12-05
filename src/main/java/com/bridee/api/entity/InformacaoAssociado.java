@@ -49,4 +49,10 @@ public class InformacaoAssociado {
     @OneToMany(mappedBy = "informacaoAssociado")
     private List<FormaPagamentoAssociado> formaPagamentoAssociados = new ArrayList<>();
 
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<TipoCerimoniaAssociado> tipoCerimoniaAssociados = new ArrayList<>();
+
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<TipoCasamentoAssociado> tipoCasamentoAssociados = new ArrayList<>();
+
 }
