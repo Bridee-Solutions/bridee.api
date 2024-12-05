@@ -6,7 +6,6 @@ import com.bridee.api.entity.enums.PedidoAssessoriaStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.repository.PedidoAssessoriaRepository;
-import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.specification.PedidoAssessoriaFilter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,20 +30,34 @@ public class PedidoAssessoriaService {
         return repository.findAllCasamentoPendente(assessorId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO, pageable);
     }
 
-    public PedidoAssessoria findByCasamentoId(Integer casamentoId) {
-        return repository.findAssessorByCasamentoId(casamentoId);
+    public PedidoAssessoria findPedidoAssessorado(Integer casamentoId) {
+        return repository.findPedidoByStatus(casamentoId, PedidoAssessoriaStatusEnum.ASSESSORADO).orElse(null);
     }
 
     public PedidoAssessoria save(PedidoAssessoria pedidoAssessoria){
-        validatePedidoAssessoria(pedidoAssessoria);
+        pedidoAssessoria = validatePedidoAssessoria(pedidoAssessoria);
+        pedidoAssessoria.setStatus(PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO);
         return repository.save(pedidoAssessoria);
     }
 
-    private void validatePedidoAssessoria(PedidoAssessoria pedidoAssessoria){
+    private PedidoAssessoria validatePedidoAssessoria(PedidoAssessoria pedidoAssessoria){
         Integer assessorId = pedidoAssessoria.getAssessor().getId();
         Integer casamentoId = pedidoAssessoria.getCasamento().getId();
-        if (isCasamentoAssessorado(assessorId, casamentoId)){
-            throw new UnprocessableEntityException("Casamento já assessorado.");
+        Optional<PedidoAssessoria> pedidoAssessoriaOptional = repository.findByCasamentoAndAssessor(casamentoId, assessorId);
+        if (pedidoAssessoriaOptional.isEmpty()){
+            return pedidoAssessoria;
+        }
+        pedidoAssessoria = pedidoAssessoriaOptional.get();
+        validatePedidoAssessoriaStatus(pedidoAssessoria);
+        return pedidoAssessoria;
+    }
+
+    private void validatePedidoAssessoriaStatus(PedidoAssessoria pedidoAssessoria){
+        if (pedidoAssessoria.getStatus().equals(PedidoAssessoriaStatusEnum.ASSESSORADO)){
+            throw new UnprocessableEntityException("Casamento já assessorado!");
+        }
+        if (pedidoAssessoria.getStatus().equals(PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO)){
+            throw new UnprocessableEntityException("Casamento em análise pelo assessor");
         }
     }
 
@@ -56,56 +69,39 @@ public class PedidoAssessoriaService {
     }
 
     public void denyWedding(Integer casamentoId, Integer assessorId) {
-        PedidoAssessoria pedidoAssessoria = findCasamentoAssessorado(casamentoId, assessorId);
-        denyWedding(pedidoAssessoria);
-    }
-
-    private void denyWedding(PedidoAssessoria pedidoAssessoria) {
-        validatePendingStatusWedding(pedidoAssessoria);
+        PedidoAssessoria pedidoAssessoria = findCasamentoPendente(casamentoId, assessorId);
         pedidoAssessoria.setStatus(PedidoAssessoriaStatusEnum.NAO_ASSESSORADO);
         repository.save(pedidoAssessoria);
     }
 
     public void acceptWedding(Integer casamentoId, Integer assessorId) {
-        PedidoAssessoria pedidoAssessoria = findCasamentoAssessorado(casamentoId, assessorId);
-        acceptWedding(pedidoAssessoria);
-    }
-
-    private void acceptWedding(PedidoAssessoria pedidoAssessoria) {
-        validatePendingStatusWedding(pedidoAssessoria);
+        PedidoAssessoria pedidoAssessoria = findCasamentoPendente(casamentoId, assessorId);
         pedidoAssessoria.setStatus(PedidoAssessoriaStatusEnum.ASSESSORADO);
         repository.save(pedidoAssessoria);
     }
 
     public void removeWeddingAdvise(Integer casamentoId, Integer assessorId) {
         PedidoAssessoria pedidoAssessoria = findCasamentoAssessorado(casamentoId, assessorId);
-        removeWeddingAdvise(pedidoAssessoria);
-    }
-
-    private void removeWeddingAdvise(PedidoAssessoria pedidoAssessoria) {
-        validateAdvisedStatusWedding(pedidoAssessoria);
         pedidoAssessoria.setStatus(PedidoAssessoriaStatusEnum.NAO_ASSESSORADO);
         repository.save(pedidoAssessoria);
     }
 
     private PedidoAssessoria findCasamentoAssessorado(Integer casamentoId, Integer assessorId){
-        Optional<PedidoAssessoria> casamentoAssessoradoOpt = repository.findByCasamentoIdAndAssessorId(casamentoId, assessorId);
+        Optional<PedidoAssessoria> casamentoAssessoradoOpt = repository
+                .findPedidoCasamentoByStatus(casamentoId, assessorId, PedidoAssessoriaStatusEnum.ASSESSORADO);
         if (casamentoAssessoradoOpt.isEmpty()){
-            throw new ResourceNotFoundException("Casamento assessorado não encontrado!");
+            throw new ResourceNotFoundException("Casamento não assessorado");
         }
         return casamentoAssessoradoOpt.get();
     }
 
-    private void validatePendingStatusWedding(PedidoAssessoria pedidoAssessoria){
-        if (!pedidoAssessoria.getStatus().equals(PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO)){
-            throw new UnprocessableEntityException("Não foi possível realizar a operação, status do casamento inválido!");
+    private PedidoAssessoria findCasamentoPendente(Integer casamentoId, Integer assessorId){
+        Optional<PedidoAssessoria> casamentoAssessoradoOpt = repository
+                .findPedidoCasamentoByStatus(casamentoId, assessorId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO);
+        if (casamentoAssessoradoOpt.isEmpty()){
+            throw new ResourceNotFoundException("Casamento Pendente de aprovacao não encontrado!");
         }
-    }
-
-    private void validateAdvisedStatusWedding(PedidoAssessoria pedidoAssessoria){
-        if (!pedidoAssessoria.getStatus().equals(PedidoAssessoriaStatusEnum.ASSESSORADO)){
-            throw new UnprocessableEntityException("Não foi possível realizar a operação, status do casamento inválido!");
-        }
+        return casamentoAssessoradoOpt.get();
     }
 
     private boolean isCasamentoAssessorado(Integer assessorId, Integer casamentoId){
@@ -113,10 +109,10 @@ public class PedidoAssessoriaService {
                 PedidoAssessoriaStatusEnum.ASSESSORADO);
     }
 
-    public List<Casamento> findCasamentosAssessoradosByAssessorId(Integer assessorId, Integer mes, Integer ano) {
+    public List<Casamento> findCasamentosAssessorados(Integer assessorId, Integer mes, Integer ano) {
         LocalDate dateToBeFiltered = LocalDate.of(ano, mes, LocalDate.now().getDayOfMonth());
         Specification<PedidoAssessoria> specification = PedidoAssessoriaFilter.findByAssessorId(assessorId)
-                .and(PedidoAssessoriaFilter.findByCasamentoStatus(PedidoAssessoriaStatusEnum.ASSESSORADO)
+                .and(PedidoAssessoriaFilter.findByPedidoAssessoradoStatus(PedidoAssessoriaStatusEnum.ASSESSORADO)
                 .and(PedidoAssessoriaFilter.findByDate(dateToBeFiltered)));
         return repository.findAll(specification).stream()
                 .map(PedidoAssessoria::getCasamento).toList();

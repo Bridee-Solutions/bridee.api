@@ -88,7 +88,7 @@ public class AssessorControllerImpl implements AssessorController {
                                                                                     @RequestParam Integer ano,
                                                                                     @PathVariable Integer assessorId){
         List<Casamento> casamentos = pedidoAssessoriaService
-                .findCasamentosAssessoradosByAssessorId(assessorId, mes, ano);
+                .findCasamentosAssessorados(assessorId, mes, ano);
         List<CasamentoResponseDto> responseDto = casamentoResponseMapper.toDomain(casamentos);
         return ResponseEntity.ok(responseDto);
     }

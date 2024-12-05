@@ -36,11 +36,8 @@ public class PedidoAssessoriaFilter {
         };
     }
 
-    public static Specification<PedidoAssessoria> findByCasamentoStatus(PedidoAssessoriaStatusEnum pedidoAssessoriaStatusEnum){
-        return (root, query, criteriaBuilder) -> {
-            Join<PedidoAssessoria, Casamento> casamentoJoin = root.join("casamento");
-            return criteriaBuilder.equal(casamentoJoin.get("status"), PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO.name());
-        };
+    public static Specification<PedidoAssessoria> findByPedidoAssessoradoStatus(PedidoAssessoriaStatusEnum pedidoAssessoriaStatusEnum){
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), pedidoAssessoriaStatusEnum);
     }
 
 }

@@ -55,7 +55,7 @@ public class DashboardService {
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
         CasalResponseDto casalResponseDto =  casalResponseMapper.toDomain(casal);
-        PedidoAssessoria pedidoAssessoria = pedidoAssessoriaService.findByCasamentoId(casamentoId);
+        PedidoAssessoria pedidoAssessoria = pedidoAssessoriaService.findPedidoAssessorado(casamentoId);
         Assessor assessor = Objects.nonNull(pedidoAssessoria) ? pedidoAssessoria.getAssessor() : null;
 
         itemOrcamentoService.findAllByCasalId(casal.getId());

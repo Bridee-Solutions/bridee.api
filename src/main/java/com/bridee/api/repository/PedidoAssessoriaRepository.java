@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,14 +23,25 @@ public interface PedidoAssessoriaRepository extends JpaRepository<PedidoAssessor
     Page<Casamento> findAllCasamentoPendente(Integer assessorId, PedidoAssessoriaStatusEnum status, Pageable pageable);
 
     @Query("""
-            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId
+            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId AND pa.status = :status
             """)
-    PedidoAssessoria findAssessorByCasamentoId(Integer casamentoId);
+    List<PedidoAssessoria> findAllPedidosCasamentoByStatus(Integer casamentoId, PedidoAssessoriaStatusEnum status);
 
     @Query("""
-            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId
+            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId AND pa.assessor.id = :assessorId AND pa.status = :status
             """)
-    List<PedidoAssessoria> findByCasamentoId(Integer casamentoId);
+    Optional<PedidoAssessoria> findPedidoCasamentoByStatus(Integer casamentoId, Integer assessorId,PedidoAssessoriaStatusEnum status);
+
+    @Query("""
+            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId AND pa.status = :status
+            """)
+    Optional<PedidoAssessoria> findPedidoByStatus(Integer casamentoId, PedidoAssessoriaStatusEnum status);
+
+
+    @Query("""
+            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId AND pa.assessor.id = :assessorId
+            """)
+    Optional<PedidoAssessoria> findByCasamentoAndAssessor(Integer casamentoId, Integer assessorId);
 
     boolean existsByAssessorIdAndCasamentoIdAndStatus(Integer assessorId, Integer casamentoId, PedidoAssessoriaStatusEnum status);
 
@@ -40,5 +52,4 @@ public interface PedidoAssessoriaRepository extends JpaRepository<PedidoAssessor
     @Modifying
     int updatePreco(Integer assessorId, Integer casamentoId, BigDecimal preco);
 
-    Optional<PedidoAssessoria> findByCasamentoIdAndAssessorId(Integer casamentoId, Integer assessorId);
 }
