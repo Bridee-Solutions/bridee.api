@@ -9,7 +9,6 @@ public class ImageMetadata {
 
     private Integer id;
     private String nome;
-    private LocalDateTime dataCriacao;
     private String tipo;
     private String extensao;
 

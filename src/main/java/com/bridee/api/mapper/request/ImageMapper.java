@@ -13,12 +13,20 @@ import java.time.LocalDateTime;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ImageMapper {
 
-    @Mapping(target = "nome", expression = "java(buildImagemName(imageMetadata))")
-    @Mapping(target = "dataCriacao", qualifiedByName = "generateDataCriacao")
-    Imagem fromMetadata(ImageMetadata imageMetadata);
+    default Imagem fromMetadata(ImageMetadata imageMetadata){
+        if (imageMetadata == null){
+            return null;
+        }
+        return Imagem.builder()
+                .id(imageMetadata.getId())
+                .nome(buildImagemName(imageMetadata))
+                .tipo(imageMetadata.getTipo())
+                .extensao(imageMetadata.getExtensao())
+                .dataCriacao(LocalDateTime.now())
+                .build();
+    };
 
-    @Named("generateDataCriacao")
-    default LocalDateTime generateDataCriacao(LocalDateTime localDateTime){
+    default LocalDateTime generateDataCriacao(){
         return LocalDateTime.now();
     }
 

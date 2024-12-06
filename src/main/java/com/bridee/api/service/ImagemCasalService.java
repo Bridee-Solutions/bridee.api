@@ -30,13 +30,13 @@ public class ImagemCasalService {
 
     private byte[] downloadCasalImage(Integer casalId){
         Imagem casalImage = repository.findImageByCasalId(casalId);
-        return blobStorageStrategy.downloadFile(casalImage.getNome());
+        return imagemService.downloadImage(casalImage.getNome());
     }
 
     public void uploadCasalImage(Integer casalId, ImageMetadata imageMetadata,
                                  MultipartFile multipartFile){
         Imagem imagem = buildCasalImage(casalId, imageMetadata);
-        blobStorageStrategy.uploadFile(multipartFile, imagem.getNome());
+        imagemService.uploadImage(multipartFile, imagem.getNome());
     }
 
     private Imagem buildCasalImage(Integer casalId, ImageMetadata imageMetadata){

@@ -1,6 +1,7 @@
 package com.bridee.api.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,10 +25,7 @@ public class TipoCerimoniaAssociado {
     private Integer id;
     @ManyToOne
     private TipoCerimonia tipoCerimonia;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private InformacaoAssociado informacaoAssociado;
 
-    public TipoCerimoniaAssociado(Integer id) {
-        this.id = id;
-    }
 }

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 @Component
 public class AzureBlobStorageImpl implements BlobStorageStrategy {
@@ -38,6 +39,9 @@ public class AzureBlobStorageImpl implements BlobStorageStrategy {
     @Override
     public byte[] downloadFile(String filename) {
         byte[] binaries = null;
+        if (Objects.isNull(filename)){
+            return null;
+        }
         BlobClient blobClient = blobServiceClient.getBlobContainerClient(azureContainerName).getBlobClient(filename);
         try{
             binaries = blobClient.downloadContent().toBytes();

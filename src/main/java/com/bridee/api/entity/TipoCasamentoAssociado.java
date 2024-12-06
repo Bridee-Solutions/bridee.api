@@ -2,6 +2,7 @@ package com.bridee.api.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ public class TipoCasamentoAssociado {
     private Integer id;
     @ManyToOne
     private TipoCasamento tipoCasamento;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "informacao_associado_id")
     private InformacaoAssociado informacaoAssociado;
     

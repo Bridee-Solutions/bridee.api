@@ -1,6 +1,6 @@
 package com.bridee.api.mapper.request;
 
-import com.bridee.api.dto.model.InformacaoAssociadoDto;
+import com.bridee.api.dto.request.InformacaoAssociadoDto;
 import com.bridee.api.dto.request.ImageMetadata;
 import com.bridee.api.dto.request.InformacaoAssociadoRequestDto;
 import com.bridee.api.entity.FormaPagamento;
@@ -12,11 +12,10 @@ import com.bridee.api.entity.TipoCasamento;
 import com.bridee.api.entity.TipoCasamentoAssociado;
 import com.bridee.api.entity.TipoCerimonia;
 import com.bridee.api.entity.TipoCerimoniaAssociado;
+import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
 import com.bridee.api.mapper.BaseMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.Named;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +60,7 @@ public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociad
 
     default List<FormaPagamentoAssociado> convertToFormaPagamentos(InformacaoAssociadoDto domain){
         List<Integer> idsFormaPagamento = domain.getFormasPagamento();
+
         if (idsFormaPagamento == null){
             return null;
         }
@@ -110,7 +110,7 @@ public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociad
             imagemAssociados.add(ImagemAssociado.builder()
                     .imagem(image)
                     .informacaoAssociado(toEntity(domain.getInformacaoAssociado()))
-                    .tipo(image.getTipo())
+                    .tipo(TipoImagemAssociadoEnum.valueOf(image.getTipo()))
                     .build());
         });
         return imagemAssociados;
