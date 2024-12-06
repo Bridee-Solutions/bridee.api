@@ -25,5 +25,5 @@ public class InformacaoAssociadoResponseDto {
     private List<TipoCasamento> tiposCasamento;
     private List<TipoCerimonia> tiposCerimonia;
     private ImagemResponseDto imagemPrimaria;
-    private ImagemResponseDto imagensSecundarias;;
+    private List<ImagemResponseDto> imagensSecundarias;;
 }

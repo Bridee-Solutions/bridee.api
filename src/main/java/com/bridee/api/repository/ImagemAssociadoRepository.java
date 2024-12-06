@@ -16,7 +16,7 @@ public interface ImagemAssociadoRepository extends JpaRepository<ImagemAssociado
     ImagemAssociadoProjection findImagemAssociadoByTipo(Integer informacaoId, TipoImagemAssociadoEnum tipo);
 
     @Query("""
-            SELECT ima.imagem.nome FROM ImagemAssociado ima WHERE ima.informacaoAssociado.id = :informacaoId AND ima.tipo = :tipo
+            SELECT ima.imagem.id as id, ima.imagem.nome as nome FROM ImagemAssociado ima WHERE ima.informacaoAssociado.id = :informacaoId AND ima.tipo = :tipo
             """)
-    List<String> findImagensAssociadoByTipo(Integer informacaoId, TipoImagemAssociadoEnum tipo);
+    List<ImagemAssociadoProjection> findImagensAssociadoByTipo(Integer informacaoId, TipoImagemAssociadoEnum tipo);
 }

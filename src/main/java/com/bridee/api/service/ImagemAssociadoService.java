@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.ImagemAssociado;
 import com.bridee.api.entity.InformacaoAssociado;
 import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
@@ -23,20 +24,24 @@ public class ImagemAssociadoService {
         return repository.saveAll(imagens);
     }
 
-    public String findImagemPrincipalBase64(InformacaoAssociado informacaoAssociado){
+    public ImagemResponseDto findImagemPrincipalBase64(InformacaoAssociado informacaoAssociado){
         Integer id = informacaoAssociado.getId();
-        ImagemAssociadoProjection nomeImagemPrincipal = repository.findImagemAssociadoByTipo(id, TipoImagemAssociadoEnum.PRINCIPAL);
-        byte[] imagem = imagemService.downloadImage(nomeImagemPrincipal.getNome());
+        ImagemAssociadoProjection imagemPrincipal = repository.findImagemAssociadoByTipo(id, TipoImagemAssociadoEnum.PRINCIPAL);
+        byte[] imagem = imagemService.downloadImage(imagemPrincipal.getNome());
         if (imagem == null){
             return null;
         }
-        return Base64.getEncoder().encodeToString(imagem);
+        String data = Base64.getEncoder().encodeToString(imagem);
+        return new ImagemResponseDto(imagemPrincipal.getId(), data);
     }
 
-    public List<String> findImagensSecundarias(InformacaoAssociado info) {
+    public List<ImagemResponseDto> findImagensSecundarias(InformacaoAssociado info) {
         Integer id = info.getId();
-        List<String> nomeImagensSecundarias = repository.findImagensAssociadoByTipo(id, TipoImagemAssociadoEnum.SECUNDARIA);
-        return nomeImagensSecundarias.stream().map(imagem -> Base64.getEncoder()
-                .encodeToString(imagemService.downloadImage(imagem))).toList();
+        List<ImagemAssociadoProjection> nomeImagensSecundarias = repository.findImagensAssociadoByTipo(id, TipoImagemAssociadoEnum.SECUNDARIA);
+        return nomeImagensSecundarias.stream().map(imagem -> {
+            String data = Base64.getEncoder()
+                    .encodeToString(imagemService.downloadImage(imagem.getNome()));
+            return new ImagemResponseDto(imagem.getId(), data);
+        }).toList();
     }
 }
