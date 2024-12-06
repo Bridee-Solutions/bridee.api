@@ -5,6 +5,7 @@ import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.entity.ImagemAssociado;
 import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
+import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.mapper.request.InformacaoAssociadoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,9 @@ public class InformacaoAssociadoService {
 
     public InformacaoAssociado save(InformacaoAssociadoPerfilDto informacaoAssociadoPerfil, Integer assessorId){
         InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoAssociadoPerfil.getInformacaoAssociado());
+        if (repository.existsByAssessorId(assessorId) && Objects.isNull(informacaoAssociado.getId())){
+            throw new BadRequestEntityException("Não foi possível cadastrar uma nova informação associado, assessor já possui uma ");
+        }
         vinculateAssessorToInformation(informacaoAssociado, assessorId);
         List<Imagem> imagens = saveInformacaoAssociadoImages(informacaoAssociado);
         uploadAssociadoImages(informacaoAssociadoPerfil, imagens);
