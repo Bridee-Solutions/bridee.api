@@ -2,6 +2,7 @@ package com.bridee.api.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import jakarta.persistence.FetchType;
 import lombok.Builder;
@@ -39,6 +40,8 @@ public class Casamento {
     private LocalDate dataInicio;
     
     private LocalDate dataFim;
+
+    private LocalTime horario;
 
     private Integer totalConvidados;
 
