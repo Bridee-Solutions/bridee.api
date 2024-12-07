@@ -1,6 +1,7 @@
 package com.bridee.api.service;
 
 import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
+import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Role;
@@ -9,19 +10,25 @@ import com.bridee.api.entity.enums.RoleEnum;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
+import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
+import com.bridee.api.utils.PageUtils;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,15 +44,30 @@ public class AssessorService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final ImagemService imagemService;
+    private final TipoCasamentoService tipoCasamentoService;
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
+    private final BlobStorageStrategy blobStorageStrategy;
+    private final InformacaoAssociadoService informacaoAssociadoService;
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
     }
 
-    public Page<AssociadoResponseProjection> findAssessoresDetails(Pageable pageable){
-        return assessorRepository.findAssessorDetails(pageable);
+    public Page<Assessor> findAllByNome(String nome, Pageable pageable) {
+        return assessorRepository.findAllByNome(nome, pageable);
+    }
+
+    public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
+        Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
+        List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
+        associadoResponse.forEach(associado -> {
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getId());
+            if (Objects.nonNull(imagemPrincipal)){
+                associado.setImagemPrincipal(imagemPrincipal.getData());
+            }
+        });
+        return PageUtils.collectionToPage(associadoResponse, assessorDetails.getPageable());
     }
 
     public AssociadoGeralResponseDto findAssessorInformation(Integer assessorId){
@@ -58,12 +80,14 @@ public class AssessorService {
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do assessor");
         }
 
-        List<String> imagensUrl = imagemService.findUrlImagensAssessor(assessorId);
+        List<String> imagensUrl = imagemService.findBase64UrlImagensAssessor(assessorId);
         List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(assessorId);
+        List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoAssessor(assessorId);
 
         AssociadoGeralResponseDto geralResponseDto = geralResponseMapper.toGeralDto(resultProjection);
         geralResponseDto.setImagens(imagensUrl);
         geralResponseDto.setFormasPagamento(nomeFormasPagamento);
+        geralResponseDto.setTiposCasamento(tiposCasamento);
 
         return geralResponseDto;
     }
@@ -104,6 +128,12 @@ public class AssessorService {
         assessorRepository.deleteById(id);
     }
 
+    public void existsById(Integer id){
+        if(!assessorRepository.existsById(id)){
+            throw new ResourceNotFoundException("Assessor não encontrado!");
+        }
+    }
+
     public ValidateAssessorFieldsResponseDto validateAssessorFields(ValidateAssessorFieldsRequestDto requestDto) {
         boolean existsByCnpj = assessorRepository.existsByCnpj(requestDto.getCnpj());
         boolean existsByEmailEmpresa = assessorRepository.existsByEmailEmpresa(requestDto.getEmailEmpresa());
@@ -112,5 +142,4 @@ public class AssessorService {
                 .emailEmpresaExists(existsByEmailEmpresa)
                 .build();
     }
-
 }

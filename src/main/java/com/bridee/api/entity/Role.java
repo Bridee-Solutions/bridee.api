@@ -24,4 +24,8 @@ public class Role {
     private Integer id;
     @Enumerated(value = EnumType.STRING)
     private RoleEnum nome;
+
+    public String roleName(){
+        return nome.name();
+    }
 }

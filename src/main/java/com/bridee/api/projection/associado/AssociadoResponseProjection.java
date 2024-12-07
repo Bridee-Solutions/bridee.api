@@ -5,7 +5,8 @@ public interface AssociadoResponseProjection {
     Integer getId();
     String getNome();
     String getVisaoGeral();
-    String getLocal();
+    String getCidade();
+    String getBairro();
     Double getNotaMedia();
     Double getTotalAvaliacoes();
 }

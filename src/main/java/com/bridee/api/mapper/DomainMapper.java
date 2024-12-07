@@ -15,10 +15,6 @@ public interface DomainMapper<D, E> {
         return new PageImpl<>(toDomain(entity.getContent()), entity.getPageable(), entity.getTotalElements());
     }
 
-    default Page<D> toPage(List<D> domain, Pageable pageable){
-        return PageUtils.collectionToPage(domain, pageable);
-    }
-
     default Page<D> toDomainPage(List<E> entity, Pageable pageable){
         return PageUtils.collectionToPage(toDomain(entity), pageable);
     }

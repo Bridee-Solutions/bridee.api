@@ -22,6 +22,8 @@ public class CasalExternoRequestDto extends UsuarioExternoRequestDto {
     private Integer quantidadeConvidados;
     private LocalDate dataCasamento;
     private String endereco;
+    private boolean isLocalReservado;
+    private String local;
     @Size(min = 8, max = 8)
     private String cep;
 

@@ -13,5 +13,6 @@ public class ConviteResponseDto {
     private String nome;
     @Schema(description = "Pin do convite", example = "556611")
     private String pin;
+    private String telefoneTitular;
 
 }

@@ -21,7 +21,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<UsuarioRole> usuarioRoles = usuarioRoleRepository.findByUsuario(usuario);
+        List<UsuarioRole> usuarioRoles = usuarioRoleRepository.findByUsuarioEmail(usuario.getEmail());
         return SecurityRole.findAllUserRoles(usuarioRoles);
     }
 
