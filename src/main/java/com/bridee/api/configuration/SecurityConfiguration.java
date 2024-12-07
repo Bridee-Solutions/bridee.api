@@ -24,9 +24,9 @@ import java.util.Arrays;
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtFilter;
+    private final CustomJwtConverter jwtConverter;
 
     @Bean
-    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -41,13 +41,21 @@ public class SecurityConfiguration {
                                         "/assessores/validate-fields").permitAll()
                                 .requestMatchers("/v3/api-docs/**",
                                         "/swagger-ui/**").permitAll()
+                                .requestMatchers("/casais/**", "/convidados/**",
+                                        "/convites/**", "/dashboards/**", "/itens-orcamento/**",
+                                        "/mesas/**", "/orcamentos/**", "/orcamento-fornecedor/**").hasRole("CASAL")
+                                .requestMatchers("/assessores/**").hasRole("ASSESSOR")
+                                .requestMatchers("/tarefas/**").hasAnyRole("CASAL", "ASSESSOR")
                                 .anyRequest().authenticated();
                 })
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(resourceServer -> {
-                    resourceServer.jwt(jwt -> jwt.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs"));
+                    resourceServer.jwt(jwt -> {
+                        jwt.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                                .jwtAuthenticationConverter(jwtConverter);
+                    });
                 })
                 .build();
     }
@@ -61,7 +69,7 @@ public class SecurityConfiguration {
         config.addAllowedOriginPattern("*");
         config.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
                 "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+                "Access-Control-Request-Method", "Access-Control-Request-Headers")  );
         config.setAllowedMethods(Arrays.asList("DELETE", "GET", "PUT", "POST", "OPTIONS"));
         source.registerCorsConfiguration("/**", config);
 

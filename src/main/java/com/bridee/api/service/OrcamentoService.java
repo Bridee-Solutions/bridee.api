@@ -2,8 +2,9 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.request.SolicitacaoOrcamentoRequestDto;
-import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
+import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
+import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Custo;
 import com.bridee.api.entity.ItemOrcamento;
 import com.bridee.api.entity.OrcamentoFornecedor;
@@ -11,11 +12,10 @@ import com.bridee.api.exception.CsvDownloadErro;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.FornecedorOrcamentoRequestMapper;
 import com.bridee.api.mapper.request.ItemOrcamentoRequestMapper;
-import com.bridee.api.projection.orcamento.OrcamentoFornecedorProjection;
 import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.CasalRepository;
-import com.bridee.api.repository.OrcamentoFornecedorRepository;
+import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.utils.CsvUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,16 +39,25 @@ public class OrcamentoService {
     private final FornecedorOrcamentoRequestMapper orcamentoRequestMapper;
     private final OrcamentoFornecedorService orcamentoFornecedorService;
     private final SubcategoriaServicoService subcategoriaServicoService;
+    private final CasamentoRepository casamentoRepository;
 
     @Transactional
-    public OrcamentoProjection findCasalOrcamento(Integer casalId){
-        if (!casalRepository.existsById(casalId)){
-            throw new ResourceNotFoundException("Casal não encontrado!");
-        }
+    public OrcamentoProjection findCasamentoOrcamento(Integer casamentoId){
+        Integer casalId = extractCasalId(casamentoId);
         orcamentoFornecedorService.findByCasalId(casalId);
         subcategoriaServicoService.findAll();
         itemOrcamentoService.findAllByCasalId(casalId);
         return casalRepository.findOrcamentoByCasalId(casalId);
+    }
+
+    public Integer extractCasalId(Integer casamentoId){
+        Casamento casamento = casamentoRepository.findById(casamentoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado"));
+        Integer casalId = casamento.getId();
+        if (!casalRepository.existsById(casalId)){
+            throw new ResourceNotFoundException("Casal não encontrado!");
+        }
+        return casalId;
     }
 
     @Transactional
@@ -99,9 +108,9 @@ public class OrcamentoService {
         }
     }
 
-    public void validateSolicitacaoOrcamento(SolicitacaoOrcamentoRequestDto requestDto){
+    public void validateSolicitacaoOrcamento(SolicitacaoOrcamentoRequestDto requestDto, Assessor assessor){
 
-        String emailAssessorEmpresa = requestDto.getEmailEmpresaAssessor();
+        String emailAssessorEmpresa = assessor.getEmailEmpresa();
         if (!assessorRepository.existsByEmailEmpresa(emailAssessorEmpresa)){
             throw new ResourceNotFoundException("Não existe assessor com esse e-mail");
         }
@@ -134,7 +143,7 @@ public class OrcamentoService {
 
     public byte[] generateCsvFile(Integer id) {
 
-        OrcamentoProjection orcamentoProjection = findCasalOrcamento(id);
+        OrcamentoProjection orcamentoProjection = findCasamentoOrcamento(id);
 
         byte[] csv = null;
         try {

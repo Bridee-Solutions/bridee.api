@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,8 @@ public class CsvUtils {
 
         InputStream inputStream = new FileInputStream(filename);
 
+        Files.delete(Path.of(filename));
+
         return inputStream.readAllBytes();
     }
 
@@ -59,7 +63,7 @@ public class CsvUtils {
 
         if (Objects.nonNull(orcamentoProjection.getOrcamentoFornecedores())){
             orcamentoProjection.getOrcamentoFornecedores().forEach(orcamentoFornecedor -> {
-                stringBuilder.append(";%s".formatted(orcamentoFornecedor.getFornecedor().getNome()));
+                stringBuilder.append(";%s".formatted(orcamentoFornecedor.getFornecedor().getSubcategoriaServico().getNome()));
             });
         }
 

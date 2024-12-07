@@ -3,6 +3,7 @@ package com.bridee.api.controller.impl;
 import com.bridee.api.controller.ConviteController;
 import com.bridee.api.dto.request.ConviteRequestDto;
 import com.bridee.api.dto.response.ConviteResponseDto;
+import com.bridee.api.dto.response.ConviteResumoResponseDto;
 import com.bridee.api.dto.response.ConvitesResponseDto;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.mapper.request.ConviteRequestMapper;
@@ -45,7 +46,8 @@ public class ConviteControllerImpl implements ConviteController {
     }
 
     @GetMapping("/casamento/{casamentoId}")
-    public ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter, @PathVariable Integer casamentoId){
+    public ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter,
+                                                                    @PathVariable Integer casamentoId){
         List<Convite> convites = conviteService.findAllByCasamentoId(filter, casamentoId);
         Pageable pageable = PageUtils.buildPageable(filter);
         return ResponseEntity.ok(responseMapper.toDomainPage(convites, pageable));
@@ -54,6 +56,11 @@ public class ConviteControllerImpl implements ConviteController {
     @GetMapping("/casamento/{casamentoId}/relatorio")
     public ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@PathVariable Integer casamentoId){
         return ResponseEntity.ok(conviteService.gerarRelatorioCasamento(casamentoId));
+    }
+
+    @GetMapping("/casamento/{casamentoId}/resumo")
+    public ResponseEntity<ConviteResumoResponseDto> resumo(@PathVariable Integer casamentoId){
+        return ResponseEntity.ok(conviteService.inviteResume(casamentoId));
     }
 
     @PostMapping
@@ -68,13 +75,21 @@ public class ConviteControllerImpl implements ConviteController {
     public ResponseEntity<ConviteResponseDto> update(@RequestBody @Valid ConviteRequestDto requestDto,
                                                      @PathVariable Integer id){
         Convite convite = requestMapper.toEntity(requestDto);
-        convite = conviteService.update(convite, id);
-        return ResponseEntity.ok(responseMapper.toConviteResponse(convite));
+        convite = conviteService.update(convite, requestDto.getTelefoneTitular(), id);
+        ConviteResponseDto responseDto = responseMapper.toConviteResponse(convite);
+        responseDto.setTelefoneTitular(requestDto.getTelefoneTitular());
+        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         conviteService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/casamento/{casamentoId}")
+    public ResponseEntity<Void> deleteAll(@PathVariable Integer casamentoId){
+        conviteService.deleteAllWeddingInvites(casamentoId);
         return ResponseEntity.noContent().build();
     }
 

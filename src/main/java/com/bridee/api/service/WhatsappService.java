@@ -5,10 +5,9 @@ import com.bridee.api.client.dto.response.WhatsappResponseDto;
 import com.bridee.api.client.enums.WhatsappClientType;
 import com.bridee.api.client.enums.WhatsappMessageType;
 import com.bridee.api.exception.UnableToGenerateQRCode;
-import com.bridee.api.pattern.strategy.impl.WhatsappSender;
+import com.bridee.api.pattern.strategy.message.impl.WhatsappSender;
 import com.bridee.api.utils.QRCodeUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;

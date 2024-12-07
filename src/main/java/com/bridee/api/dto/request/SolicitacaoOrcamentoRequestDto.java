@@ -37,9 +37,5 @@ public class SolicitacaoOrcamentoRequestDto{
     @Email
     @Schema(description = "Email do casal")
     private String emailCasal;
-    @Email
-    @NotBlank
-    @Schema(description = "Email da empresa do assessor", example = "assessoriaxpto@example.com")
-    private String emailEmpresaAssessor;
 
 }

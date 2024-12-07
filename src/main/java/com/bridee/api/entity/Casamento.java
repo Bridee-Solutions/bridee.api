@@ -2,6 +2,7 @@ package com.bridee.api.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import jakarta.persistence.FetchType;
 import lombok.Builder;
@@ -17,7 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +30,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class Casamento {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -40,16 +41,26 @@ public class Casamento {
     
     private LocalDate dataFim;
 
+    private LocalTime horario;
+
     private Integer totalConvidados;
-    
-    @ManyToOne
-    @JoinColumn
-    private Casal casal;
-    
+
+    private String local;
+
+    private Boolean localReservado;
+
+    private String mensagemConvite;
+
+    private String tamanhoCasamento;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Assessor assessor;
-    
+
+    @ManyToOne
+    @JoinColumn
+    private Casal casal;
+
     @CreatedBy
     @Column(updatable = false)
     private String createdBy;

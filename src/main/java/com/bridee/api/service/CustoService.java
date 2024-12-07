@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.entity.Custo;
 import com.bridee.api.exception.ResourceAlreadyExists;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.CustoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class CustoService {
         return custoRepository.save(custo);
     }
 
+    @Transactional
     private void validateCusto(Custo custo){
         Integer itemOrcamentoId = Objects.nonNull(custo.getItemOrcamento()) ? custo.getItemOrcamento().getId() : null;
         if (itemOrcamentoId == null){
@@ -37,4 +39,19 @@ public class CustoService {
         return custoRepository.saveAll(custos);
     }
 
+    @Transactional
+    public List<Custo> findAllByItemOrcamentoId(Integer itemOrcamento){
+        return custoRepository.findAllByItemOrcamentoId(itemOrcamento);
+    }
+
+    public void deleteAllByIds(List<Integer> custosToBeDeleted) {
+        custoRepository.deleteAllById(custosToBeDeleted);
+    }
+
+    public void deleteById(Integer id) {
+        if (!custoRepository.existsById(id)){
+            throw new ResourceNotFoundException("Curso não encontrado!");
+        }
+        custoRepository.deleteById(id);
+    }
 }
