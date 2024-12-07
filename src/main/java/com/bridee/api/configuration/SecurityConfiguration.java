@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                                         "/mesas/**", "/orcamentos/**", "/orcamento-fornecedor/**").hasRole("CASAL")
                                 .requestMatchers("/assessores/**").hasRole("ASSESSOR")
                                 .requestMatchers("/tarefas/**").hasAnyRole("CASAL", "ASSESSOR")
-                                .anyRequest().permitAll();
+                                .anyRequest().authenticated();
                 })
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
