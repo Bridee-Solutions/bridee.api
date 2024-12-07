@@ -9,7 +9,7 @@ import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.dto.response.externo.AssessorExternoResponseDto;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
-import com.bridee.api.projection.associado.AssociadoResponseProjection;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Controller de assessor")
 public interface AssessorController {
@@ -31,7 +32,7 @@ public interface AssessorController {
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "Retorna uma lista de assessores")
     )
-    ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable);
+    ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable, @RequestParam(defaultValue = "") String nome);
 
     @Operation(summary = "Encontra um assessor específico",
             description = "Encontra um assessor específico pelo id")
@@ -49,7 +50,7 @@ public interface AssessorController {
             @ApiResponse(responseCode = "200", description = "Lista de assessores"),
     }
     )
-    ResponseEntity<Page<AssociadoResponseProjection>> findAssessoresDetails(Pageable pageable);
+    ResponseEntity<Page<AssociadoResponseDto>> findAssessoresDetails(Pageable pageable);
 
     @Operation(summary = "Retorna todas as informações sobre um assessor e seus serviços",
             description = "Retorna todas as informações sobre um assessor e seus serviços")
@@ -65,7 +66,8 @@ public interface AssessorController {
             @ApiResponse(responseCode = "200", description = "E-mail enviado com sucesso")
         }
     )
-    ResponseEntity<Void> sendOrcamentoEmail(@RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto);
+    ResponseEntity<Void> sendOrcamentoEmail(@PathVariable Integer assessorId,
+                                            @RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto);
 
     @Operation(summary = "Cria um assessor",
             description = "Cria um assessor a partir do fluxo da nossa aplicação")

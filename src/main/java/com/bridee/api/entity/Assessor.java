@@ -27,7 +27,6 @@ public class Assessor extends Usuario{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String cnpj;
-    private BigDecimal preco;
     private Boolean premium;
     private String emailEmpresa;
     private String foto;

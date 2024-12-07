@@ -1,5 +1,6 @@
 package com.bridee.api.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class ItemOrcamento {
     @JoinColumn
     private Casal casal;
 
-    @OneToMany(mappedBy = "itemOrcamento", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemOrcamento", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Custo> custos = new ArrayList<>();
 
 }

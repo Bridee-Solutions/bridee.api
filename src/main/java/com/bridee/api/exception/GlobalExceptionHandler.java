@@ -90,4 +90,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(errorResponseDto);
     }
 
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<ErrorResponseDto> userUnauthorized(UnauthorizedUserException e, HttpServletResponse response){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        errorResponseDto.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDto);
+    }
+
 }

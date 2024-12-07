@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,11 +23,18 @@ public class SubcategoriaServicoControllerImpl implements SubcategoriaServicoCon
     private final SubcategoriaServicoService subcategoriaServicoService;
     private final SubcategoriaServicoResponseMapper responseMapper;
 
-    @GetMapping("/{categoriaId}")
+    @GetMapping("/categoria/{categoriaId}")
     public ResponseEntity<Page<SubcategoriaServicoResponseDto>> findAllByCategoria(@PathVariable Integer categoriaId,  Pageable pageable){
         Page<SubcategoriaServico> subcategoriaServicos = subcategoriaServicoService.findAllByCategoria(categoriaId, pageable);
         Page<SubcategoriaServicoResponseDto> responseDtoPage = responseMapper.toDomain(subcategoriaServicos);
         return ResponseEntity.ok(responseDtoPage);
+    }
+
+    @GetMapping("/categoria/nome/{nome}")
+    public ResponseEntity<Page<SubcategoriaServicoResponseDto>> findAllByCategoriaName(@PathVariable String nome, Pageable pageable){
+        Page<SubcategoriaServico> subcategorias = subcategoriaServicoService.findAllByCategoriaName(nome, pageable);
+        Page<SubcategoriaServicoResponseDto> response = responseMapper.toDomain(subcategorias);
+        return ResponseEntity.ok(response);
     }
 
 }

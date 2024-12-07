@@ -38,11 +38,6 @@ public class Casal extends Usuario {
     private String foto;
     private BigDecimal orcamentoTotal;
 
-    // TODO: Deletar esse relacionamento, completamente redundante, já existe na tabela casamento.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Assessor assessor;
-
     @OneToMany(mappedBy = "casal")
     private List<ItemOrcamento> itemOrcamentos = new ArrayList<>();
 

@@ -1,10 +1,10 @@
 package com.bridee.api.projection.orcamento;
 
+import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
-import java.util.List;
 
 public interface OrcamentoProjection {
 

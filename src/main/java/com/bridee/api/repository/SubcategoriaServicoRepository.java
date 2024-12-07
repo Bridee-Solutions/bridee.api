@@ -14,10 +14,25 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
     @Query("""
             SELECT s FROM SubcategoriaServico s WHERE s.categoriaServico.id = :categoriaId
             """)
-    Page<SubcategoriaServico> findAllByCategoriaNome(Integer categoriaId, Pageable pageable);
+    Page<SubcategoriaServico> findAllByCategoriaId(Integer categoriaId, Pageable pageable);
+
+    @Query("""
+            SELECT s FROM SubcategoriaServico s WHERE s.categoriaServico.id = :categoriaId
+            """)
+    List<SubcategoriaServico> findAllByCategoriaId(Integer categoriaId);
 
     @Query("""
             SELECT s FROM SubcategoriaServico s
             """)
     List<SubcategoriaProjection> findAllProjections();
+
+    @Query("""
+            SELECT f.subcategoriaServico FROM Fornecedor f WHERE f.id = :id
+            """)
+    SubcategoriaServico findByFornecedorId(Integer id);
+
+    @Query("""
+            SELECT s FROM SubcategoriaServico s WHERE UPPER(s.categoriaServico.nome) like UPPER(concat('%',:nome,'%'))
+            """)
+    Page<SubcategoriaServico> findAllByCategoriaNome(String nome, Pageable pageable);
 }

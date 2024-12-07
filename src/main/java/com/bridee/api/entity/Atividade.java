@@ -25,8 +25,4 @@ public class Atividade {
     private String nome;
     private LocalDateTime inicio;
     private LocalDateTime fim;
-
-    @ManyToOne
-    @JoinColumn
-    private Cronograma cronograma;
 }

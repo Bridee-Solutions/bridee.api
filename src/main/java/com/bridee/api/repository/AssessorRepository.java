@@ -6,7 +6,10 @@ import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.math.BigDecimal;
 
 public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
 
@@ -19,7 +22,8 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             SELECT ifs.assessor.nome as nome,
             ifs.assessor.id as id,
             ifs.visaoGeral as visaoGeral,
-            ifs.local as local,
+            ifs.cidade as cidade,
+            ifs.bairro as bairro,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.assessor.id = :id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.assessor.id = :id) as totalAvaliacoes,
             ifs.urlSite as siteUrl,
@@ -34,11 +38,16 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             SELECT ifs.assessor.nome as nome,
             ifs.assessor.id as id,
             ifs.visaoGeral as visaoGeral,
-            ifs.local as local,
+            ifs.cidade as cidade,
+            ifs.bairro as bairro,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.assessor.id = ifs.assessor.id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.assessor.id = ifs.assessor.id) as totalAvaliacoes
             FROM InformacaoAssociado ifs
             """)
     Page<AssociadoResponseProjection> findAssessorDetails(Pageable pageable);
 
+    @Query("""
+            SELECT a FROM Assessor a WHERE UPPER(nome) LIKE UPPER(concat('%',:nome,'%'))
+            """)
+    Page<Assessor> findAllByNome(String nome, Pageable pageable);
 }

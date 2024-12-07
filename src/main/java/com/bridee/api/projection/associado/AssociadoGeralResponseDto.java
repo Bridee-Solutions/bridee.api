@@ -10,7 +10,8 @@ public class AssociadoGeralResponseDto {
     private Integer id;
     private String nome;
     private String visaoGeral;
-    private String local;
+    private String cidade;
+    private String bairro;
     private Double notaMedia;
     private Double totalAvaliacoes;
     private String siteUrl;
@@ -19,5 +20,6 @@ public class AssociadoGeralResponseDto {
     private String qtdConvidados;
     private List<String> imagens;
     private List<String> formasPagamento;
+    private List<String> tiposCasamento;
 
 }

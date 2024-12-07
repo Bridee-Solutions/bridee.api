@@ -1,4 +1,4 @@
-package com.bridee.api.pattern.strategy;
+package com.bridee.api.pattern.strategy.message;
 
 import com.google.zxing.WriterException;
 

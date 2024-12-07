@@ -12,7 +12,7 @@ public class CookieUtils {
                 .secure(secure)
                 .maxAge(maxAge)
                 .domain(domain)
-                .path("/")
+                .path("/api")
                 .httpOnly(true)
                 .build();
     }
@@ -22,7 +22,7 @@ public class CookieUtils {
                 .httpOnly(true)
                 .maxAge(1)
                 .domain(domain)
-                .path("/")
+                .path("/api")
                 .build();
     }
 }

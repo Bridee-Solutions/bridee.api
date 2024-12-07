@@ -1,5 +1,6 @@
 package com.bridee.api.repository.specification;
 
+import com.bridee.api.entity.CategoriaConvidado;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -31,14 +32,6 @@ public class ConviteFilter implements Specification<Convite> {
     public ConviteFilter() {
     }
 
-    public ConviteFilter(String status, String faixaEtaria, String categoria, String convidado, String convite) {
-        this.status = status;
-        this.faixaEtaria = faixaEtaria;
-        this.categoria = categoria;
-        this.convidado = convidado;
-        this.convite = convite;
-    }
-
     @Override
     public Predicate toPredicate(Root<Convite> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 
@@ -55,19 +48,20 @@ public class ConviteFilter implements Specification<Convite> {
             predicates.add(criteriaBuilder.equal(root.get("casamento").get("id"), casamentoId));
         }
         if (StringUtils.isNotBlank(status)){
-            predicates.add(criteriaBuilder.equal(convidado.get("status"), status));
+            predicates.add(criteriaBuilder.equal(convidado.get("status"), status.trim()));
         }
         if (StringUtils.isNotBlank(faixaEtaria)){
-            predicates.add(criteriaBuilder.equal(convidado.get("faixaEtaria"), faixaEtaria));
+            predicates.add(criteriaBuilder.equal(convidado.get("faixaEtaria"), faixaEtaria.trim()));
         }
         if (StringUtils.isNotBlank(categoria)){
-            predicates.add(criteriaBuilder.equal(convidado.get("categoria"), categoria));
+            Join<Convidado, CategoriaConvidado> categoriaConvidado = convidado.join("categoriaConvidado");
+            predicates.add(criteriaBuilder.equal(categoriaConvidado.get("nome"), categoria.trim()));
         }
         if (StringUtils.isNotBlank(convite)){
-            predicates.add(criteriaBuilder.like(criteriaBuilder.upper(root.get("nome")), "%"+convite.toUpperCase()+"%"));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.upper(root.get("nome")), "%"+convite.toUpperCase().trim()+"%"));
         }
         if (StringUtils.isNotBlank(this.convidado)){
-            predicates.add(criteriaBuilder.like(criteriaBuilder.upper(convidado.get("nome")), "%"+this.convidado.toUpperCase()+"%"));
+            predicates.add(criteriaBuilder.like(criteriaBuilder.upper(convidado.get("nome")), "%"+this.convidado.toUpperCase().trim()+"%"));
         }
 
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));

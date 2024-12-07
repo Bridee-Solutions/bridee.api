@@ -16,9 +16,10 @@ import java.util.List;
 public class MesaService {
 
     private final MesaRepository repository;
+    private final CasamentoService casamentoService;
 
     public List<Mesa> findAllByCasamentoId(Integer casamentoId){
-        //TODO: validar se o casamento existe
+        casamentoService.existsById(casamentoId);
         return repository.findAllByCasamentoId(casamentoId);
     }
 
