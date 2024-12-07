@@ -1,6 +1,9 @@
 package com.bridee.api.entity;
 
+import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +21,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ImagemAssociado {
 
     @Id
@@ -31,5 +36,7 @@ public class ImagemAssociado {
     @JoinColumn
     private InformacaoAssociado informacaoAssociado;
 
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    private TipoImagemAssociadoEnum tipo;
+
 }

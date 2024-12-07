@@ -47,8 +47,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
             ifs.urlSite as siteUrl,
             ifs.servicosOferecidos as servicosFornecidos,
             ifs.formaDeTrabalho as formaDeTrabalho,
-            ifs.tamanhoCasamento as qtdConvidados,
-            ifs.casamentosCatolicos as isCasamentoCatolico
+            ifs.tamanhoCasamento as qtdConvidados
             FROM InformacaoAssociado ifs WHERE ifs.fornecedor.id = :id
             """)
     AssociadoGeralResponseProjection findFornecedorInformations(Integer id);

@@ -29,8 +29,7 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             ifs.urlSite as siteUrl,
             ifs.servicosOferecidos as servicosFornecidos,
             ifs.formaDeTrabalho as formaDeTrabalho,
-            ifs.tamanhoCasamento as qtdConvidados,
-            ifs.casamentosCatolicos as isCasamentoCatolico
+            ifs.tamanhoCasamento as qtdConvidados
             FROM InformacaoAssociado ifs WHERE ifs.assessor.id = :id
             """)
     AssociadoGeralResponseProjection findFornecedorInformations(Integer id);

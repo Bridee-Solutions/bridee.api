@@ -12,7 +12,6 @@ public class AssociadoGeralResponseDto {
     private String visaoGeral;
     private String cidade;
     private String bairro;
-    private Boolean isCasamentoCatolico;
     private Double notaMedia;
     private Double totalAvaliacoes;
     private String siteUrl;

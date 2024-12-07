@@ -30,8 +30,9 @@ public class InformacaoAssociado {
     private String servicosOferecidos;
     private String formaDeTrabalho;
     private String tamanhoCasamento;
-    private Boolean casamentosCatolicos;
+    // private Boolean casamentosCatolicos;
     private String urlSite;
+    private String email;
     private String cidade;
     private String bairro;
 
@@ -47,5 +48,11 @@ public class InformacaoAssociado {
 
     @OneToMany(mappedBy = "informacaoAssociado")
     private List<FormaPagamentoAssociado> formaPagamentoAssociados = new ArrayList<>();
+
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<TipoCerimoniaAssociado> tipoCerimoniaAssociados = new ArrayList<>();
+
+    @OneToMany(mappedBy = "informacaoAssociado")
+    private List<TipoCasamentoAssociado> tipoCasamentoAssociados = new ArrayList<>();
 
 }

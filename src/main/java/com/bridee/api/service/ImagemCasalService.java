@@ -43,7 +43,7 @@ public class ImagemCasalService {
     public void uploadCasalImage(Integer casalId, ImageMetadata imageMetadata,
                                  MultipartFile multipartFile){
         Imagem imagem = buildCasalImage(casalId, imageMetadata);
-        blobStorageStrategy.uploadFile(multipartFile, imagem.getNome());
+        imagemService.uploadImage(multipartFile, imagem.getNome());
     }
 
     private Imagem buildCasalImage(Integer casalId, ImageMetadata imageMetadata){
