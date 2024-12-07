@@ -28,13 +28,13 @@ public class OrcamentoControllerImpl implements OrcamentoController {
     private final CasalOrcamentoResponseMapper casalOrcamentoResponseMapper;
     private final OrcamentoService orcamentoService;
 
-    @GetMapping("/casal/{id}")
+    @GetMapping("/casamento/{id}")
     public ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@PathVariable Integer id){
-        OrcamentoProjection projection = orcamentoService.findCasalOrcamento(id);
+        OrcamentoProjection projection = orcamentoService.findCasamentoOrcamento(id);
         return ResponseEntity.ok(projection);
     }
 
-    @GetMapping(value = "/csv/casal/{id}", produces = "text/plain")
+    @GetMapping(value = "/csv/casamento/{id}", produces = "text/plain")
     public ResponseEntity<byte[]> downloadOrcamentoCsv(@PathVariable Integer id){
 
         HttpHeaders httpHeaders = new HttpHeaders();

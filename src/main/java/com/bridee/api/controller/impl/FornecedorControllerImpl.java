@@ -7,6 +7,7 @@ import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.mapper.request.FornecedorRequestMapper;
 import com.bridee.api.mapper.response.FornecedorResponseMapper;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.service.FornecedorService;
 import com.bridee.api.utils.UriUtils;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -44,12 +46,14 @@ public class FornecedorControllerImpl implements FornecedorController {
     }
 
     @GetMapping("/details/categoria/{categoriaId}")
-    public ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId, Pageable pageable){
-        return ResponseEntity.ok(fornecedorService.findFornecedorDetailsByCategoria(categoriaId, pageable));
+    public ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId,
+                                                                                       @RequestParam(defaultValue = "") String nome,
+                                                                                       Pageable pageable){
+        return ResponseEntity.ok(fornecedorService.findFornecedorDetailsByCategoria(categoriaId, nome, pageable));
     }
 
     @GetMapping("/details/subcategoria/{subcategoriaId}")
-    public ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable){
+    public ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable){
         return ResponseEntity.ok(fornecedorService.findFornecedorDetails(subcategoriaId, pageable));
     }
 

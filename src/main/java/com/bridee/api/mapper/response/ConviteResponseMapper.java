@@ -2,10 +2,12 @@ package com.bridee.api.mapper.response;
 
 import com.bridee.api.dto.response.ConvidadoResponseDto;
 import com.bridee.api.dto.response.ConviteResponseDto;
+import com.bridee.api.dto.response.ConviteResumoResponseDto;
 import com.bridee.api.dto.response.ConvitesResponseDto;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.mapper.BaseMapper;
+import com.bridee.api.projection.convite.ConviteResumoProjection;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
@@ -20,6 +22,19 @@ public interface ConviteResponseMapper extends BaseMapper<ConvitesResponseDto, C
 
     default List<ConvidadoResponseDto> convidadosToConvidadosResponseDto(List<Convidado> convidados){
         return convidados.stream().map(ConvidadoResponseDto::new).toList();
+    }
+
+    default ConviteResumoResponseDto fromProjection(ConviteResumoProjection projection){
+        if(projection == null){
+            return null;
+        }
+        return ConviteResumoResponseDto.builder()
+                .totalConvites(projection.getTotalConvites())
+                .totalConfirmado(projection.getTotalConfirmado())
+                .totalConvidados(projection.getTotalConvidados())
+                .totalCriancas(projection.getTotalCriancas())
+                .totalAdultos(projection.getTotalAdultos())
+                .build();
     }
 
 }

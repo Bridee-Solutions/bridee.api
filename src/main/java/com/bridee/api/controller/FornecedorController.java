@@ -5,6 +5,7 @@ import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.utils.UriUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Controller de fornecedor")
 public interface FornecedorController {
@@ -44,12 +46,14 @@ public interface FornecedorController {
     @Operation(summary = "Busca os detalhes do fornecedor",
             description = "Busca os detalhes de um fornecedor pela categoria")
     @ApiResponse(responseCode = "200", description = "Retorna os detalhes do fornecedor")
-    ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId, Pageable pageable);
+    ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId,
+                                                                                @RequestParam String nome,
+                                                                                Pageable pageable);
 
     @Operation(summary = "Busca os detalhes do fornecedor",
             description = "Busca os detalhes de um fornecedor pela subcategoria")
     @ApiResponse(responseCode = "200", description = "Retorna os detalhes do fornecedor")
-    ResponseEntity<Page<AssociadoResponseProjection>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable);
+    ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable);
 
     @Operation(summary = "Busca as informações do fornecedor",
             description = "Busca as informações de um fornecedor")

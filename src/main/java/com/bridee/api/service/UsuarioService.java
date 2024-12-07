@@ -24,7 +24,8 @@ public class UsuarioService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new SecurityUser(repository.findByEmail(username).orElseThrow(ResourceNotFoundException::new), usuarioRoleRepository);
+        Usuario usuario = repository.findByEmail(username).orElseThrow(ResourceNotFoundException::new);
+        return new SecurityUser(usuario, usuarioRoleRepository);
     }
 
     public Usuario findByEmail(String email){
