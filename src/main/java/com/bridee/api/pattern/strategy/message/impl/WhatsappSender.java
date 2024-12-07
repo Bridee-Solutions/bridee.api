@@ -1,9 +1,9 @@
-package com.bridee.api.pattern.strategy.impl;
+package com.bridee.api.pattern.strategy.message.impl;
 
 import com.bridee.api.client.WhatsappClient;
 import com.bridee.api.client.dto.response.WhatsappResponseDto;
 import com.bridee.api.client.dto.request.WhatsappRequestDto;
-import com.bridee.api.pattern.strategy.MessageStrategy;
+import com.bridee.api.pattern.strategy.message.MessageStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,7 @@
 package com.bridee.api.controller;
 
 import com.bridee.api.dto.request.CasalRequestDto;
+import com.bridee.api.dto.request.OrcamentoTotalRequestDto;
 import com.bridee.api.dto.request.externo.CasalExternoRequestDto;
 import com.bridee.api.dto.response.CasalResponseDto;
 import com.bridee.api.dto.response.ErrorResponseDto;
@@ -88,5 +89,5 @@ public interface CasalController {
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
     )
-    ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody BigDecimal orcamentoTotal);
+    ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody OrcamentoTotalRequestDto orcamentoTotal);
 }

@@ -3,7 +3,7 @@ package com.bridee.api.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ public class CustoItemOrcamentoRequestDto {
     @Schema(description = "Nome do custo", example = "Custo XPTO")
     private String nome;
     @NotNull
-    @Positive
+    @PositiveOrZero
     @Schema(description = "Valor do custo", example = "200.0")
     private BigDecimal precoAtual;
 

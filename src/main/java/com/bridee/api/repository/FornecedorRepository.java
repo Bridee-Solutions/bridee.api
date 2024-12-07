@@ -16,7 +16,8 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
             SELECT ifs.fornecedor.nome as nome,
             ifs.fornecedor.id as id,
             ifs.visaoGeral as visaoGeral,
-            ifs.local as local,
+            ifs.cidade as cidade,
+            ifs.bairro as bairro,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as totalAvaliacoes
             FROM InformacaoAssociado ifs WHERE ifs.fornecedor.subcategoriaServico.id = :subcategoriaId
@@ -27,18 +28,20 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
             SELECT ifs.fornecedor.nome as nome,
             ifs.fornecedor.id as id,
             ifs.visaoGeral as visaoGeral,
-            ifs.local as local,
+            ifs.cidade as cidade,
+            ifs.bairro as bairro,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as totalAvaliacoes
-            FROM InformacaoAssociado ifs WHERE ifs.fornecedor.subcategoriaServico.categoriaServico.id = :categoriaId
+            FROM InformacaoAssociado ifs WHERE ifs.fornecedor.subcategoriaServico.categoriaServico.id = :categoriaId AND UPPER(ifs.fornecedor.nome) like UPPER(concat('%', :nome, '%'))
             """)
-    Page<AssociadoResponseProjection> findFornecedorDetailsByCategoria(Integer categoriaId, Pageable pageable);
+    Page<AssociadoResponseProjection> findFornecedorDetailsByCategoriaAndNome(Integer categoriaId, String nome,Pageable pageable);
 
     @Query("""
             SELECT ifs.fornecedor.nome as nome,
             ifs.fornecedor.id as id,
             ifs.visaoGeral as visaoGeral,
-            ifs.local as local,
+            ifs.cidade as cidade,
+            ifs.bairro as bairro,
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = :id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = :id) as totalAvaliacoes,
             ifs.urlSite as siteUrl,
