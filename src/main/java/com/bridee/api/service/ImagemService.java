@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,16 @@ public class ImagemService {
     private final BlobStorageStrategy blobStorageStrategy;
     private final CasalRepository casalRepository;
 
+    public List<String> findUrlBase64ImagensFornecedor(Integer fornecedorId){
+        return findUrlImagensFornecedor(fornecedorId).stream()
+                .map(imagem -> {
+                    if (Objects.nonNull(imagem)){
+                        return Base64.getEncoder().encodeToString(imagem);
+                    }
+                    return null;
+                }).toList();
+    };
+
     public List<byte[]> findUrlImagensFornecedor(Integer fornecedorId){
         return findImagensFornecedor(fornecedorId).stream()
                 .map(imagem -> blobStorageStrategy.downloadFile(imagem.getNome())).toList();
@@ -33,6 +45,11 @@ public class ImagemService {
             throw new ResourceNotFoundException("Fornecedor não encontrado!");
         }
         return repository.findByFornecedorId(fornecedorId);
+    }
+
+    public List<String> findBase64UrlImagensAssessor(Integer assessorId){
+        return findUrlImagensAssessor(assessorId).stream()
+                .map(image -> Base64.getEncoder().encodeToString(image)).toList();
     }
 
     public List<byte[]> findUrlImagensAssessor(Integer assessorId){

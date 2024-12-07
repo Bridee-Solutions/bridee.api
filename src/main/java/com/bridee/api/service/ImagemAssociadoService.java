@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -24,20 +25,24 @@ public class ImagemAssociadoService {
         return repository.saveAll(imagens);
     }
 
-    public ImagemResponseDto findImagemPrincipalBase64(InformacaoAssociado informacaoAssociado){
-        Integer id = informacaoAssociado.getId();
+    public ImagemResponseDto findImagemPrincipalBase64(Integer id){
         ImagemAssociadoProjection imagemPrincipal = repository.findImagemAssociadoByTipo(id, TipoImagemAssociadoEnum.PRINCIPAL);
+        if (Objects.isNull(imagemPrincipal)){
+            return null;
+        }
         byte[] imagem = imagemService.downloadImage(imagemPrincipal.getNome());
-        if (imagem == null){
+        if (Objects.isNull(imagem)){
             return null;
         }
         String data = Base64.getEncoder().encodeToString(imagem);
         return new ImagemResponseDto(imagemPrincipal.getId(), data);
     }
 
-    public List<ImagemResponseDto> findImagensSecundarias(InformacaoAssociado info) {
-        Integer id = info.getId();
+    public List<ImagemResponseDto> findImagensSecundarias(Integer id) {
         List<ImagemAssociadoProjection> nomeImagensSecundarias = repository.findImagensAssociadoByTipo(id, TipoImagemAssociadoEnum.SECUNDARIA);
+        if (Objects.isNull(nomeImagensSecundarias) || nomeImagensSecundarias.isEmpty()){
+            return null;
+        }
         return nomeImagensSecundarias.stream().map(imagem -> {
             String data = Base64.getEncoder()
                     .encodeToString(imagemService.downloadImage(imagem.getNome()));

@@ -35,6 +35,7 @@ public class FornecedorService {
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
     private final BlobStorageStrategy blobStorageStrategy;
+    private final InformacaoAssociadoService informacaoAssociadoService;
 
     public Page<Fornecedor> findAll(Pageable pageable){
         subcategoriaServicoService.findAll();
@@ -50,7 +51,7 @@ public class FornecedorService {
         Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        associadoResponseDto.forEach(associado -> associado.setImagem(blobStorageStrategy.downloadFile(associado.getNome())));
+        associadoResponseDto.forEach(associado -> associado.setImagemPrincipal(informacaoAssociadoService.findImagemPrincipal(associado.getId()).getData()));
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage.getPageable());
     }
@@ -60,7 +61,7 @@ public class FornecedorService {
         Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsByCategoriaAndNome(categoriaId, nome,pageable);
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        associadoResponseDto.forEach(associado -> associado.setImagem(blobStorageStrategy.downloadFile(associado.getNome())));
+        associadoResponseDto.forEach(associado -> associado.setImagemPrincipal(informacaoAssociadoService.findImagemPrincipal(associado.getId()).getData()));
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage.getPageable());
     }
@@ -75,7 +76,7 @@ public class FornecedorService {
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do fornecedor");
         }
 
-        List<byte[]> imagesUrl = imagemService.findUrlImagensFornecedor(id);
+        List<String> imagesUrl = imagemService.findUrlBase64ImagensFornecedor(id);
         List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoFornecedor(id);
         List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoFornecedor(id);
 

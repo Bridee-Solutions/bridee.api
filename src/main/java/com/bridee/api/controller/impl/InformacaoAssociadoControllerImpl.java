@@ -66,8 +66,8 @@ public class InformacaoAssociadoControllerImpl {
         response.setTiposCasamento(tipoCasamentoAssociadoService.findAllByInformacaoAssociadoId(info));
         response.setTiposCerimonia(tipoCerimoniaAssociadoService.findAllByInformacaoAssociadoId(info));
         response.setFormasPagamento(formaPagamentoAssociadoService.findAllByInformacaoAssociadoId(info));
-        response.setImagemPrimaria(imagemAssociadoService.findImagemPrincipalBase64(info));
-        response.setImagensSecundarias(imagemAssociadoService.findImagensSecundarias(info));
+        response.setImagemPrimaria(imagemAssociadoService.findImagemPrincipalBase64(info.getId()));
+        response.setImagensSecundarias(imagemAssociadoService.findImagensSecundarias(info.getId()));
         return ResponseEntity.ok().body(response);
     }
 }

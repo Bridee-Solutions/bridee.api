@@ -1,6 +1,7 @@
 package com.bridee.api.service;
 
 import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
+import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Role;
@@ -47,6 +48,7 @@ public class AssessorService {
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
     private final BlobStorageStrategy blobStorageStrategy;
+    private final InformacaoAssociadoService informacaoAssociadoService;
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
@@ -59,7 +61,12 @@ public class AssessorService {
     public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
         Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
         List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
-        associadoResponse.forEach(associado -> associado.setImagem(blobStorageStrategy.downloadFile(associado.getNome())));
+        associadoResponse.forEach(associado -> {
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getId());
+            if (Objects.nonNull(imagemPrincipal)){
+                associado.setImagemPrincipal(imagemPrincipal.getData());
+            }
+        });
         return PageUtils.collectionToPage(associadoResponse, assessorDetails.getPageable());
     }
 
@@ -73,7 +80,7 @@ public class AssessorService {
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do assessor");
         }
 
-        List<byte[]> imagensUrl = imagemService.findUrlImagensAssessor(assessorId);
+        List<String> imagensUrl = imagemService.findBase64UrlImagensAssessor(assessorId);
         List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(assessorId);
         List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoAssessor(assessorId);
 

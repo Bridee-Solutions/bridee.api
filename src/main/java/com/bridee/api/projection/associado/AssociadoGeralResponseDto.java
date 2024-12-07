@@ -18,7 +18,7 @@ public class AssociadoGeralResponseDto {
     private String servicosFornecidos;
     private String formaDeTrabalho;
     private String qtdConvidados;
-    private List<byte[]> imagens;
+    private List<String> imagens;
     private List<String> formasPagamento;
     private List<String> tiposCasamento;
 

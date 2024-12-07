@@ -12,5 +12,5 @@ public class AssociadoResponseDto {
     private String bairro;
     private Double notaMedia;
     private Double totalAvaliacoes;
-    private byte[] imagem;
+    private String imagemPrincipal;
 }

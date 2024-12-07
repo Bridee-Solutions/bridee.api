@@ -1,12 +1,14 @@
 package com.bridee.api.service;
 
 import com.bridee.api.dto.request.InformacaoAssociadoPerfilDto;
+import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.entity.ImagemAssociado;
 import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
 import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.mapper.request.InformacaoAssociadoMapper;
+import com.bridee.api.repository.AssessorRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ import java.util.Objects;
 public class InformacaoAssociadoService {
 
     private final InformacaoAssociadoRepository repository;
-    private final AssessorService assessorService;
+    private final AssessorRepository assessorRepository;
     private final ImagemService imagemService;
     private final ImagemAssociadoService imagemAssociadoService;
     private final InformacaoAssociadoMapper requestMapper;
@@ -66,7 +68,9 @@ public class InformacaoAssociadoService {
     }
 
     private void vinculateAssessorToInformation(InformacaoAssociado informacaoAssociado, Integer assessorId){
-        assessorService.existsById(assessorId);
+        if (!assessorRepository.existsById(assessorId)) {
+            throw new ResourceNotFoundException("Assessor não encontrado");
+        }
         Assessor assessor = new Assessor(assessorId);
         informacaoAssociado.setAssessor(assessor);
     }
@@ -102,5 +106,19 @@ public class InformacaoAssociadoService {
     public InformacaoAssociado findByAssessorId(Integer id) {
         return repository.findByAssessorId(id)
         .orElseThrow(() -> new ResourceNotFoundException("Informação de associado não encontrada para o idAssessor: " + id));
+    }
+
+    public ImagemResponseDto findImagemPrincipal(Integer associadoId){
+        if (!repository.existsById(associadoId)) {
+            throw new ResourceNotFoundException("Associado não encontrado!");
+        }
+        return imagemAssociadoService.findImagemPrincipalBase64(associadoId);
+    }
+
+    public List<ImagemResponseDto> findImagemSecudaria(Integer associadoId){
+        if (!repository.existsById(associadoId)) {
+            throw new ResourceNotFoundException("Associado não encontrado!");
+        }
+        return imagemAssociadoService.findImagensSecundarias(associadoId);
     }
 }
