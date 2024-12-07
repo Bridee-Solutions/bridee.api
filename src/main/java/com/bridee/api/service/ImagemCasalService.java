@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,11 +26,17 @@ public class ImagemCasalService {
 
     public String casalImage64Encoded(Integer casalId){
         byte[] casalImage = downloadCasalImage(casalId);
+        if (Objects.isNull(casalImage)){
+            return null;
+        }
         return Base64.getEncoder().encodeToString(casalImage);
     }
 
     private byte[] downloadCasalImage(Integer casalId){
         Imagem casalImage = repository.findImageByCasalId(casalId);
+        if (Objects.isNull(casalImage)){
+            return null;
+        }
         return blobStorageStrategy.downloadFile(casalImage.getNome());
     }
 
