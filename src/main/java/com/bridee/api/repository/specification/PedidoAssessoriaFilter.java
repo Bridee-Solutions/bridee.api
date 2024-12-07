@@ -12,20 +12,18 @@ import java.time.temporal.TemporalAdjusters;
 
 public class PedidoAssessoriaFilter {
 
-    public static Specification<PedidoAssessoria> findByDate(LocalDate date){
+    public static Specification<PedidoAssessoria> findByDate(Integer ano){
         return (root, query, criteriaBuilder) -> {
             Join<PedidoAssessoria, Casamento> casamentoJoin = root.join("casamento");
-            DataFilterDto dateFilter = buildFilterDate(date);
+            DataFilterDto dateFilter = buildFilterDate(ano);
             return criteriaBuilder.between(casamentoJoin.get("dataFim"),
                     dateFilter.getDataInicio(), dateFilter.getDataFim());
         };
     }
 
-    private static DataFilterDto buildFilterDate(LocalDate date) {
-        int ano = date.getYear();
-        int mes = date.getMonthValue();
-        LocalDate initialFilterDate = LocalDate.of(ano, mes, date.with(TemporalAdjusters.firstDayOfMonth()).getDayOfMonth());
-        LocalDate finalFilterDate = LocalDate.of(ano, mes, date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth());
+    private static DataFilterDto buildFilterDate(Integer ano) {
+        LocalDate initialFilterDate = LocalDate.of(ano, 1, 1);
+        LocalDate finalFilterDate = LocalDate.of(ano, 12, 31);
         return new DataFilterDto(initialFilterDate, finalFilterDate);
     }
 

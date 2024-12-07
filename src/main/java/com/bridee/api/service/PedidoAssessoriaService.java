@@ -109,11 +109,10 @@ public class PedidoAssessoriaService {
                 PedidoAssessoriaStatusEnum.ASSESSORADO);
     }
 
-    public List<Casamento> findCasamentosAssessorados(Integer assessorId, Integer mes, Integer ano) {
-        LocalDate dateToBeFiltered = LocalDate.of(ano, mes, LocalDate.now().getDayOfMonth());
+    public List<Casamento> findCasamentosAssessorados(Integer assessorId, Integer ano) {
         Specification<PedidoAssessoria> specification = PedidoAssessoriaFilter.findByAssessorId(assessorId)
                 .and(PedidoAssessoriaFilter.findByPedidoAssessoradoStatus(PedidoAssessoriaStatusEnum.ASSESSORADO)
-                .and(PedidoAssessoriaFilter.findByDate(dateToBeFiltered)));
+                .and(PedidoAssessoriaFilter.findByDate(ano)));
         return repository.findAll(specification).stream()
                 .map(PedidoAssessoria::getCasamento).toList();
     }

@@ -84,11 +84,10 @@ public class AssessorControllerImpl implements AssessorController {
     }
 
     @GetMapping("/{assessorId}/casamentos/assessorados")
-    public ResponseEntity<List<CasamentoResponseDto>> findAllCasamentosAssessorados(@RequestParam Integer mes,
-                                                                                    @RequestParam Integer ano,
+    public ResponseEntity<List<CasamentoResponseDto>> findAllCasamentosAssessorados(@RequestParam Integer ano,
                                                                                     @PathVariable Integer assessorId){
         List<Casamento> casamentos = pedidoAssessoriaService
-                .findCasamentosAssessorados(assessorId, mes, ano);
+                .findCasamentosAssessorados(assessorId, ano);
         List<CasamentoResponseDto> responseDto = casamentoResponseMapper.toDomain(casamentos);
         return ResponseEntity.ok(responseDto);
     }
