@@ -19,5 +19,6 @@ public class AuthenticationResponseDto {
     private Boolean enabled;
     private Integer casamentoId;
     private String tipoUsuario;
+    private Integer assessorId;
 
 }

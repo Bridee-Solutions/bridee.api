@@ -3,6 +3,7 @@ package com.bridee.api.service;
 import com.bridee.api.dto.request.AuthenticationRequestDto;
 import com.bridee.api.dto.response.AuthenticationResponseDto;
 import com.bridee.api.dto.security.SecurityUser;
+import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.enums.UsuarioEnum;
@@ -26,6 +27,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final CasamentoService casamentoService;
+    private final AssessorService assessorService;
 
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto){
         Usuario usuario = usuarioRepository.findByEmail(requestDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Usuário Inválido"));
@@ -50,6 +52,7 @@ public class AuthenticationService {
                 .refreshToken(refreshToken)
                 .tipoUsuario(userType.name())
                 .casamentoId(findCasamentoId(usuario, userType))
+                .assessorId(findAssessorId(usuario, userType))
                 .enabled(usuario.getEnabled())
                 .build();
     }
@@ -58,8 +61,16 @@ public class AuthenticationService {
          return isCasalUser(userType) ? casamentoService.getCasamentoId(usuario.getId()) : null;
     }
 
+    private Integer findAssessorId(Usuario usuario, UsuarioEnum userType){
+        return isAssessorUser(userType) ? usuario.getId() : null;
+    }
+
     private boolean isCasalUser(UsuarioEnum userType){
         return userType.equals(UsuarioEnum.CASAL);
+    }
+
+    private boolean isAssessorUser(UsuarioEnum userType){
+        return userType.equals(UsuarioEnum.ASSESSOR);
     }
 
     private UsuarioEnum defineUsuarioType(Usuario usuario){
