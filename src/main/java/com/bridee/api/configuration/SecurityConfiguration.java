@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(httpRequest -> {
                         httpRequest
                                 .requestMatchers("/error/**").permitAll()
-                                .requestMatchers("/authentication").permitAll()
+                                .requestMatchers("/authentication", "/refresh-token").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/usuarios/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/casais",
                                         "/assessores",
