@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                                         "/mesas/**", "/orcamentos/**", "/orcamento-fornecedor/**",
                                         "/assessores/details", "/assessores/information/**",
                                         "/assessores/solicitar-orcamento/**").hasRole("CASAL")
-                                .requestMatchers("/assessores/**").hasRole("ASSESSOR")
+                                .requestMatchers("/assessores/**").hasAnyRole("ASSESSOR", "CASAL")
                                 .requestMatchers("/tarefas/**").hasAnyRole("CASAL", "ASSESSOR")
                                 .anyRequest().authenticated();
                 })

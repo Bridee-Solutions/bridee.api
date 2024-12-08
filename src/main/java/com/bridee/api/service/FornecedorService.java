@@ -59,7 +59,7 @@ public class FornecedorService {
             }
         });
         return PageUtils.collectionToPage(associadoResponseDto,
-                fornecedorDetailsPage.getPageable());
+                fornecedorDetailsPage);
     }
 
     public Page<AssociadoResponseDto> findFornecedorDetailsByCategoria(Integer categoriaId,String nome, Pageable pageable){
@@ -74,7 +74,7 @@ public class FornecedorService {
             }
         });
         return PageUtils.collectionToPage(associadoResponseDto,
-                fornecedorDetailsPage.getPageable());
+                fornecedorDetailsPage);
     }
 
     public AssociadoGeralResponseDto findFornecedorInformations(Integer id){
