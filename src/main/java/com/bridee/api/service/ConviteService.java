@@ -140,6 +140,7 @@ public class ConviteService {
         ConviteResumoProjection conviteResumoProjection = repository.resumoCasamentoInvites(casamentoId);
         List<CategoriaConvidado> categoriaConvidados = categoriaConvidadoService.findAll();
         List<CategoriaConvidadoResumoDto> categoriasResumo = generateCategoriaResumo(categoriaConvidados, casamentoId);
+        categoriasResumo = categoriasResumo.stream().filter(Objects::nonNull).toList();
         ConviteResumoResponseDto resumo = conviteResponseMapper.fromProjection(conviteResumoProjection);
         resumo.setResumoCategorias(categoriasResumo);
         return resumo;
