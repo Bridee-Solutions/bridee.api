@@ -67,7 +67,7 @@ public class AssessorService {
                 associado.setImagemPrincipal(imagemPrincipal.getData());
             }
         });
-        return PageUtils.collectionToPage(associadoResponse, assessorDetails.getPageable());
+        return PageUtils.collectionToPage(associadoResponse, assessorDetails);
     }
 
     public AssociadoGeralResponseDto findAssessorInformation(Integer assessorId){
