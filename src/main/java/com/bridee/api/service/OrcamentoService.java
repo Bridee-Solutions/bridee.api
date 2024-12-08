@@ -53,8 +53,9 @@ public class OrcamentoService {
     public Integer extractCasalId(Integer casamentoId){
         Casamento casamento = casamentoRepository.findById(casamentoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado"));
-        Integer casalId = casamento.getId();
-        if (!casalRepository.existsById(casalId)){
+        Casal casal = casamento.getCasal();
+        Integer casalId = Objects.nonNull(casal) ? casal.getId() : null;
+        if (Objects.isNull(casalId)){
             throw new ResourceNotFoundException("Casal não encontrado!");
         }
         return casalId;
