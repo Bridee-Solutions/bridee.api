@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
@@ -51,7 +52,12 @@ public class FornecedorService {
         Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        associadoResponseDto.forEach(associado -> associado.setImagemPrincipal(informacaoAssociadoService.findImagemPrincipal(associado.getId()).getData()));
+        associadoResponseDto.forEach(associado -> {
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getId());
+            if (Objects.nonNull(imagemPrincipal)){
+                associado.setImagemPrincipal(imagemPrincipal.getData());
+            }
+        });
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage.getPageable());
     }
@@ -61,7 +67,12 @@ public class FornecedorService {
         Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsByCategoriaAndNome(categoriaId, nome,pageable);
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        associadoResponseDto.forEach(associado -> associado.setImagemPrincipal(informacaoAssociadoService.findImagemPrincipal(associado.getId()).getData()));
+        associadoResponseDto.forEach(associado -> {
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getId());
+            if (Objects.nonNull(imagemPrincipal)){
+                associado.setImagemPrincipal(imagemPrincipal.getData());
+            }
+        });
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage.getPageable());
     }
