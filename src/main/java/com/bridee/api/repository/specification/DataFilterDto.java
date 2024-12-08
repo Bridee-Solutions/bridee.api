@@ -11,7 +11,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class DataFilterDto {
 
+    private Integer ano;
     private LocalDate dataInicio;
     private LocalDate dataFim;
 
+    public DataFilterDto(LocalDate dataInicio, LocalDate dataFim) {
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
+    }
 }
