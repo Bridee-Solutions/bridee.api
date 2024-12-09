@@ -16,6 +16,9 @@ public class InformacaoAssociadoRequestDto {
     @Schema(description = "Visão geral do negócio do assessor")
     private String visaoGeral;
 
+    @Schema(description = "Atributo que informa caso o assessor aceita casamentos não religiosos")
+    private Boolean naoReligioso;
+
     @Schema(description = "Lista de serviços do negócio do assessor")
     private String servicosOferecidos;
 

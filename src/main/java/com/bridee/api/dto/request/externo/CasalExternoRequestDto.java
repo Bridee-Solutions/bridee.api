@@ -20,6 +20,7 @@ public class CasalExternoRequestDto extends UsuarioExternoRequestDto {
     @Schema(description = "Telefone do parceiro", example = "5511987634982")
     private String telefoneParceiro;
     private Integer quantidadeConvidados;
+    private String tamanhoCasamento;
     private LocalDate dataCasamento;
     private String endereco;
     private boolean isLocalReservado;

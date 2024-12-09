@@ -69,7 +69,7 @@ public class CasalControllerImpl implements CasalController {
         Casal casal = requestMapper.toEntity(requestDto);
         casal = service.save(casal);
         casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento(),
-                requestDto.isLocalReservado(), requestDto.getLocal());
+                requestDto.isLocalReservado(), requestDto.getLocal(), requestDto.getTamanhoCasamento());
         CasalResponseDto responseDto = responseMapper.toDomain(casal);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
@@ -79,7 +79,7 @@ public class CasalControllerImpl implements CasalController {
         Casal casal = externoRequestMapper.toEntity(requestDto);
         casal = service.saveExternal(casal);
         casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento(),
-                requestDto.isLocalReservado(), requestDto.getLocal());
+                requestDto.isLocalReservado(), requestDto.getLocal(), requestDto.getTamanhoCasamento());
         CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(casal);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }

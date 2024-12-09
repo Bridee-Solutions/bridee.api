@@ -3,12 +3,14 @@ package com.bridee.api.service;
 import com.bridee.api.dto.request.InformacaoAssociadoPerfilDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.Assessor;
+import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.entity.ImagemAssociado;
 import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
 import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.mapper.request.InformacaoAssociadoMapper;
 import com.bridee.api.repository.AssessorRepository;
+import com.bridee.api.repository.FornecedorRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ public class InformacaoAssociadoService {
 
     private final InformacaoAssociadoRepository repository;
     private final AssessorRepository assessorRepository;
+    private final FornecedorRepository fornecedorRepository;
     private final ImagemService imagemService;
     private final ImagemAssociadoService imagemAssociadoService;
     private final InformacaoAssociadoMapper requestMapper;
@@ -44,11 +47,38 @@ public class InformacaoAssociadoService {
         return informacaoAssociado;
     }
 
+    public InformacaoAssociado saveFornecedor(InformacaoAssociadoPerfilDto informacaoAssociadoPerfil, Integer fornecedorId){
+        InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoAssociadoPerfil.getInformacaoAssociado());
+        if (repository.existsByFornecedorId(fornecedorId) && Objects.isNull(informacaoAssociado.getId())){
+            throw new BadRequestEntityException("Não foi possível cadastrar uma nova informação associado, assessor já possui uma ");
+        }
+        vinculateFornecedorToInformation(informacaoAssociado, fornecedorId);
+        List<Imagem> imagens = saveInformacaoAssociadoImages(informacaoAssociado);
+        uploadAssociadoImages(informacaoAssociadoPerfil, imagens);
+        return informacaoAssociado;
+    }
+
+    private void vinculateFornecedorToInformation(InformacaoAssociado informacaoAssociado, Integer fornecedorId) {
+        if (!fornecedorRepository.existsById(fornecedorId)) {
+            throw new ResourceNotFoundException("Assessor não encontrado");
+        }
+        Fornecedor fornecedor = Fornecedor.builder()
+                .id(fornecedorId)
+                .build();
+        informacaoAssociado.setFornecedor(fornecedor);
+    }
+
     private void uploadAssociadoImages(InformacaoAssociadoPerfilDto informacaoAssociadoPerfil, List<Imagem> imagens) {
         MultipartFile imagemPrincipal = informacaoAssociadoPerfil.getImagemPrincipal();
-        List<MultipartFile> imagensSecundarias = informacaoAssociadoPerfil.getImagensSecundarias();
+        MultipartFile imagemSecundaria = informacaoAssociadoPerfil.getImagemSecundaria();
+        MultipartFile imagemTerciaria = informacaoAssociadoPerfil.getImagemTerciaria();
+        MultipartFile imagemQuaternaria = informacaoAssociadoPerfil.getImagemQuaternaria();
+        MultipartFile imagemQuinaria = informacaoAssociadoPerfil.getImagemQuinaria();
         uploadImagemPrincipal(imagemPrincipal, imagens);
-        uploadImagensSecudarias(imagensSecundarias, imagens);
+        uploadImagemSecudaria(imagemSecundaria, imagens);
+        uploadImagemTerciaria(imagemTerciaria, imagens);
+        uploadImagemQuaternaria(imagemQuaternaria, imagens);
+        uploadImagemQuinaria(imagemQuinaria, imagens);
     }
 
     private void uploadImagemPrincipal(MultipartFile imagemPrincipal, List<Imagem> imagens) {
@@ -56,15 +86,24 @@ public class InformacaoAssociadoService {
                 .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemPrincipal, image.getNome()));
     }
 
-    private void uploadImagensSecudarias(List<MultipartFile> imagensSecundarias, List<Imagem> imagens){
+    private void uploadImagemSecudaria(MultipartFile imagemSecundaria, List<Imagem> imagens){
         imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.SECUNDARIA.name()))
-            .forEach((imagem) -> {
-                imagensSecundarias.forEach(imagemSecundaria -> {
-                if (imagem.getNome().contains(imagemSecundaria.getName())){
-                    imagemService.uploadImage(imagemSecundaria, imagem.getNome());
-                }
-            });
-        });
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemSecundaria, image.getNome()));
+    }
+
+    private void uploadImagemTerciaria(MultipartFile imagemTerciaria, List<Imagem> imagens){
+        imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.TERCIARIA.name()))
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemTerciaria, image.getNome()));
+    }
+
+    private void uploadImagemQuaternaria(MultipartFile imagemQuaternaria, List<Imagem> imagens){
+        imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.QUATERNARIA.name()))
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemQuaternaria, image.getNome()));
+    }
+
+    private void uploadImagemQuinaria(MultipartFile imagemQuinaria, List<Imagem> imagens) {
+        imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.QUINARIA.name()))
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemQuinaria, image.getNome()));
     }
 
     private void vinculateAssessorToInformation(InformacaoAssociado informacaoAssociado, Integer assessorId){
