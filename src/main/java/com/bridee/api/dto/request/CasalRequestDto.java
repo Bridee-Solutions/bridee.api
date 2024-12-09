@@ -23,6 +23,7 @@ public class CasalRequestDto extends UsuarioRequestDto{
     private String local;
     private boolean isLocalReservado;
     private Integer quantidadeConvidados;
+    private String tamanhoCasamento;
     private LocalDate dataCasamento;
     @Size(min = 8, max = 8)
     @Schema(description = "CEP do endereço", example = "08140300")

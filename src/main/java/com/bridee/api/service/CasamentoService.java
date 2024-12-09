@@ -40,12 +40,13 @@ public class CasamentoService {
     }
 
     public Casamento save(Casal casal, Integer qtdConvidados, LocalDate dataCasamento,
-                          boolean isReservado, String local){
+                          boolean isReservado, String local, String tamanhoCasamento){
         Casamento casamento = Casamento.builder()
                 .nome("%s e %s".formatted(casal.getNome(), casal.getNomeParceiro()))
                 .dataFim(dataCasamento)
                 .localReservado(BooleanUtils.toBoolean(isReservado))
                 .local(local)
+                .tamanhoCasamento(tamanhoCasamento)
                 .totalConvidados(qtdConvidados)
                 .casal(casal)
                 .build();
