@@ -44,8 +44,12 @@ public class ImagemAssociadoService {
             return null;
         }
         return nomeImagensSecundarias.stream().map(imagem -> {
-            String data = Base64.getEncoder()
-                    .encodeToString(imagemService.downloadImage(imagem.getNome()));
+            String data = "";
+            byte[] image = imagemService.downloadImage(imagem.getNome());
+            if (Objects.nonNull(image)){
+                data = Base64.getEncoder()
+                        .encodeToString(image);
+            }
             return new ImagemResponseDto(imagem.getId(), data);
         }).toList();
     }

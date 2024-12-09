@@ -46,9 +46,13 @@ public class InformacaoAssociadoService {
 
     private void uploadAssociadoImages(InformacaoAssociadoPerfilDto informacaoAssociadoPerfil, List<Imagem> imagens) {
         MultipartFile imagemPrincipal = informacaoAssociadoPerfil.getImagemPrincipal();
-        List<MultipartFile> imagensSecundarias = informacaoAssociadoPerfil.getImagensSecundarias();
+        MultipartFile imagemSecundaria = informacaoAssociadoPerfil.getImagemSecundaria();
+        MultipartFile imagemTerciaria = informacaoAssociadoPerfil.getImagemTerciaria();
+        MultipartFile imagemQuaternaria = informacaoAssociadoPerfil.getImagemQuaternaria();
         uploadImagemPrincipal(imagemPrincipal, imagens);
-        uploadImagensSecudarias(imagensSecundarias, imagens);
+        uploadImagemSecudaria(imagemSecundaria, imagens);
+        uploadImagemTerciaria(imagemTerciaria, imagens);
+        uploadImagemQuaternaria(imagemQuaternaria, imagens);
     }
 
     private void uploadImagemPrincipal(MultipartFile imagemPrincipal, List<Imagem> imagens) {
@@ -56,15 +60,19 @@ public class InformacaoAssociadoService {
                 .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemPrincipal, image.getNome()));
     }
 
-    private void uploadImagensSecudarias(List<MultipartFile> imagensSecundarias, List<Imagem> imagens){
+    private void uploadImagemSecudaria(MultipartFile imagemSecundaria, List<Imagem> imagens){
         imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.SECUNDARIA.name()))
-            .forEach((imagem) -> {
-                imagensSecundarias.forEach(imagemSecundaria -> {
-                if (imagem.getNome().contains(imagemSecundaria.getName())){
-                    imagemService.uploadImage(imagemSecundaria, imagem.getNome());
-                }
-            });
-        });
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemSecundaria, image.getNome()));
+    }
+
+    private void uploadImagemTerciaria(MultipartFile imagemTerciaria, List<Imagem> imagens){
+        imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.TERCIARIA.name()))
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemTerciaria, image.getNome()));
+    }
+
+    private void uploadImagemQuaternaria(MultipartFile imagemQuaternaria, List<Imagem> imagens){
+        imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.QUATERNARIA.name()))
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemQuaternaria, image.getNome()));
     }
 
     private void vinculateAssessorToInformation(InformacaoAssociado informacaoAssociado, Integer assessorId){

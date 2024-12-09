@@ -49,7 +49,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     public ResponseEntity<Void> refreshToken(HttpServletRequest request){
         String refreshToken = extractRefreshTokenFromCookie(request);
         String accessToken = authenticationService.generateNewAccessToken(refreshToken);
-        HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", accessToken, true, Duration.ofDays(7), host);
+        HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", accessToken, true, Duration.ofHours(1), host);
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);

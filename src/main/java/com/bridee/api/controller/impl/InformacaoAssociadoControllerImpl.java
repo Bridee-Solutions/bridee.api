@@ -48,11 +48,14 @@ public class InformacaoAssociadoControllerImpl {
     public ResponseEntity<InformacaoAssociadoResponseDto> save(@PathVariable Integer assessorId,
                                                                @RequestParam("json") String informacaoAssociadoDto,
                                                                @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,
-                                                               @RequestPart("imagensSecundarias") List<MultipartFile> imagensSecundarias) throws JsonProcessingException {
+                                                               @RequestPart("imagemSecundaria") MultipartFile imagemSecundaria,
+                                                               @RequestPart("imagemTerciaria") MultipartFile imagemTerciaria,
+                                                               @RequestPart("imagemQuaternaria") MultipartFile imagemQuaternaria) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         InformacaoAssociadoDto informacaoAssociado = objectMapper
                 .readValue(informacaoAssociadoDto, InformacaoAssociadoDto.class);
-        InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal, imagensSecundarias);
+        InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal,
+                imagemSecundaria, imagemTerciaria, imagemQuaternaria);
         InformacaoAssociado info = service.save(informacaoPerfil, assessorId);
         return ResponseEntity.ok(responseMapper.toDomain(info));
     }

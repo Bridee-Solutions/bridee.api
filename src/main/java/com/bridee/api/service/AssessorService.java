@@ -4,6 +4,7 @@ import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.entity.Assessor;
+import com.bridee.api.entity.InformacaoAssociado;
 import com.bridee.api.entity.Role;
 import com.bridee.api.entity.UsuarioRole;
 import com.bridee.api.entity.enums.RoleEnum;
@@ -62,7 +63,8 @@ public class AssessorService {
         Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
         List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
         associadoResponse.forEach(associado -> {
-            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getId());
+            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByAssessorId(associado.getId());
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
             if (Objects.nonNull(imagemPrincipal)){
                 associado.setImagemPrincipal(imagemPrincipal.getData());
             }

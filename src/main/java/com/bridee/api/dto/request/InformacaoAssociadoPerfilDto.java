@@ -14,5 +14,7 @@ public class InformacaoAssociadoPerfilDto {
 
     private InformacaoAssociadoDto informacaoAssociado;
     private MultipartFile imagemPrincipal;
-    private List<MultipartFile> imagensSecundarias;
+    private MultipartFile imagemSecundaria;
+    private MultipartFile imagemTerciaria;
+    private MultipartFile imagemQuaternaria;
 }
