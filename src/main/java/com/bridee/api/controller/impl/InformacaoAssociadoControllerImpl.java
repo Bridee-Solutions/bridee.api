@@ -61,7 +61,7 @@ public class InformacaoAssociadoControllerImpl {
         return ResponseEntity.ok(responseMapper.toDomain(info));
     }
 
-    @PostMapping(value = "/{fornecedorId}/perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{fornecedorId}/perfil-fornecedor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<InformacaoAssociadoResponseDto> saveFornecedorInformation(@PathVariable Integer fornecedorId,
                                                                @RequestParam("json") String informacaoAssociadoDto,
                                                                @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,

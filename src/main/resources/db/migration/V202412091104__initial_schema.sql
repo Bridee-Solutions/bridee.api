@@ -1,0 +1,1 @@
+ALTER TABLE informacao_associado ADD COLUMN nao_religioso tinyInt (1);
