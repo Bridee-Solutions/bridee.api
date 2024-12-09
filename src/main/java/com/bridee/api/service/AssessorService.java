@@ -48,7 +48,6 @@ public class AssessorService {
     private final TipoCasamentoService tipoCasamentoService;
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
-    private final BlobStorageStrategy blobStorageStrategy;
     private final InformacaoAssociadoService informacaoAssociadoService;
 
     public Page<Assessor> findAll(Pageable pageable){
