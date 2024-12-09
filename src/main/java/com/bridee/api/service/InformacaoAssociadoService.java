@@ -49,10 +49,12 @@ public class InformacaoAssociadoService {
         MultipartFile imagemSecundaria = informacaoAssociadoPerfil.getImagemSecundaria();
         MultipartFile imagemTerciaria = informacaoAssociadoPerfil.getImagemTerciaria();
         MultipartFile imagemQuaternaria = informacaoAssociadoPerfil.getImagemQuaternaria();
+        MultipartFile imagemQuinaria = informacaoAssociadoPerfil.getImagemQuinaria();
         uploadImagemPrincipal(imagemPrincipal, imagens);
         uploadImagemSecudaria(imagemSecundaria, imagens);
         uploadImagemTerciaria(imagemTerciaria, imagens);
         uploadImagemQuaternaria(imagemQuaternaria, imagens);
+        uploadImagemQuinaria(imagemQuinaria, imagens);
     }
 
     private void uploadImagemPrincipal(MultipartFile imagemPrincipal, List<Imagem> imagens) {
@@ -73,6 +75,11 @@ public class InformacaoAssociadoService {
     private void uploadImagemQuaternaria(MultipartFile imagemQuaternaria, List<Imagem> imagens){
         imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.QUATERNARIA.name()))
                 .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemQuaternaria, image.getNome()));
+    }
+
+    private void uploadImagemQuinaria(MultipartFile imagemQuinaria, List<Imagem> imagens) {
+        imagens.stream().filter(image -> image.getTipo().equals(TipoImagemAssociadoEnum.QUINARIA.name()))
+                .findFirst().ifPresent((image) -> imagemService.uploadImage(imagemQuinaria, image.getNome()));
     }
 
     private void vinculateAssessorToInformation(InformacaoAssociado informacaoAssociado, Integer assessorId){

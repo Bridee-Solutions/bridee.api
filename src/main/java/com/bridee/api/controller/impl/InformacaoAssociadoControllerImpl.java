@@ -50,12 +50,13 @@ public class InformacaoAssociadoControllerImpl {
                                                                @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,
                                                                @RequestPart("imagemSecundaria") MultipartFile imagemSecundaria,
                                                                @RequestPart("imagemTerciaria") MultipartFile imagemTerciaria,
-                                                               @RequestPart("imagemQuaternaria") MultipartFile imagemQuaternaria) throws JsonProcessingException {
+                                                               @RequestPart("imagemQuaternaria") MultipartFile imagemQuaternaria,
+                                                               @RequestPart("imagemQuinaria") MultipartFile imagemQuinaria) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         InformacaoAssociadoDto informacaoAssociado = objectMapper
                 .readValue(informacaoAssociadoDto, InformacaoAssociadoDto.class);
         InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal,
-                imagemSecundaria, imagemTerciaria, imagemQuaternaria);
+                imagemSecundaria, imagemTerciaria, imagemQuaternaria, imagemQuinaria);
         InformacaoAssociado info = service.save(informacaoPerfil, assessorId);
         return ResponseEntity.ok(responseMapper.toDomain(info));
     }
