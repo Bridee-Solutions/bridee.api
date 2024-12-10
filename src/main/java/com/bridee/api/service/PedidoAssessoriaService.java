@@ -39,7 +39,9 @@ public class PedidoAssessoriaService {
             return pedidoAssessorado;
         }
         var pedidosPendentes = repository.findAllPedidosCasamentoByStatus(casamentoId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO);
-        pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId));
+        if (Objects.nonNull(pedidosPendentes) && !pedidosPendentes.isEmpty()){
+            pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId));
+        }
         return pedidosPendentes.get(0);
     }
 
