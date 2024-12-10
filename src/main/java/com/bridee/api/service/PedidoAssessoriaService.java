@@ -42,6 +42,11 @@ public class PedidoAssessoriaService {
         if (Objects.nonNull(pedidosPendentes) && !pedidosPendentes.isEmpty()){
             pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId));
         }
+      
+        if (pedidosPendentes.isEmpty()){
+            return null;
+        }
+      
         return pedidosPendentes.get(0);
     }
 
