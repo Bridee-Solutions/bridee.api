@@ -74,7 +74,7 @@ public class InformacaoAssociadoControllerImpl {
                 .readValue(informacaoAssociadoDto, InformacaoAssociadoDto.class);
         InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal,
                 imagemSecundaria, imagemTerciaria, imagemQuaternaria, imagemQuinaria);
-        InformacaoAssociado info = service.save(informacaoPerfil, fornecedorId);
+        InformacaoAssociado info = service.saveFornecedor(informacaoPerfil, fornecedorId);
         return ResponseEntity.ok(responseMapper.toDomain(info));
     }
 
