@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.Fornecedor;
+import com.bridee.api.entity.InformacaoAssociado;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
@@ -53,7 +54,8 @@ public class FornecedorService {
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
         associadoResponseDto.forEach(associado -> {
-            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getId());
+            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByAssessorId(associado.getId());
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
             if (Objects.nonNull(imagemPrincipal)){
                 associado.setImagemPrincipal(imagemPrincipal.getData());
             }
@@ -68,7 +70,8 @@ public class FornecedorService {
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
         associadoResponseDto.forEach(associado -> {
-            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getId());
+            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByAssessorId(associado.getId());
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
             if (Objects.nonNull(imagemPrincipal)){
                 associado.setImagemPrincipal(imagemPrincipal.getData());
             }
