@@ -117,6 +117,15 @@ public class AssessorServiceTest {
         Assertions.assertTrue(fields.getCnpjEmpresaExists());
         Assertions.assertTrue(fields.getEmailEmpresaExists());
 
+        Assertions.assertNotNull(responseDto);
     }
+
+//    @Test
+//    @DisplayName("Validar informações assessor")
+//    void validateShouldReturnTrueWhenInformationInvalid(){
+//
+//        Mockito.when(assessorRepository.existsByCnpj(Mockito.any())).thenReturn()
+//
+//    }
 
 }
