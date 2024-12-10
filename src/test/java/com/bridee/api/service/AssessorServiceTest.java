@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
+import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
@@ -81,6 +82,17 @@ public class AssessorServiceTest {
 
         Assertions.assertFalse(all.getContent().isEmpty());
         Assertions.assertEquals(all.getContent().get(0), assessor);
+    }
+
+    @Test
+    @DisplayName("Lista os assessores e seus detalhes")
+    void findAssessorDetailsShouldReturnAssessoresPaged(){
+        var mockito = Mockito.mock(AssociadoResponseProjection.class);
+        Pageable page = PageUtilsTest.buildPageable(0, 10);
+        Page<AssociadoResponseProjection> associadoResponse = PageUtilsTest.buildPageImpl(mockito);
+
+
+
     }
 
 }

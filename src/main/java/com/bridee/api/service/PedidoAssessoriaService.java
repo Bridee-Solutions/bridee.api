@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -30,8 +32,15 @@ public class PedidoAssessoriaService {
         return repository.findAllCasamentoPendente(assessorId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO, pageable);
     }
 
+    //TODO REFATORAR
     public PedidoAssessoria findPedidoAssessorado(Integer casamentoId) {
-        return repository.findPedidoByStatus(casamentoId, PedidoAssessoriaStatusEnum.ASSESSORADO).orElse(null);
+        PedidoAssessoria pedidoAssessorado = repository.findPedidoByStatus(casamentoId, PedidoAssessoriaStatusEnum.ASSESSORADO).orElse(null);
+        if (Objects.nonNull(pedidoAssessorado)){
+            return pedidoAssessorado;
+        }
+        var pedidosPendentes = repository.findAllPedidosCasamentoByStatus(casamentoId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO);
+        pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId));
+        return pedidosPendentes.get(0);
     }
 
     public PedidoAssessoria save(PedidoAssessoria pedidoAssessoria){
@@ -62,9 +71,9 @@ public class PedidoAssessoriaService {
     }
 
     public void updatePrecoCasamentoAssessor(Integer assessorId, Integer casamentoId, BigDecimal preco) {
-        if (!isCasamentoAssessorado(assessorId, casamentoId)) {
-            throw new ResourceNotFoundException("Casamento não assessorado!");
-        }
+//        if (!isCasamentoAssessorado(assessorId, casamentoId)) {
+//            throw new ResourceNotFoundException("Casamento não assessorado!");
+//        }
         repository.updatePreco(assessorId, casamentoId, preco);
     }
 
