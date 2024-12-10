@@ -54,7 +54,7 @@ public class FornecedorService {
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
         associadoResponseDto.forEach(associado -> {
-            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByAssessorId(associado.getId());
+            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByFornecedorId(associado.getId());
             ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
             if (Objects.nonNull(imagemPrincipal)){
                 associado.setImagemPrincipal(imagemPrincipal.getData());
@@ -70,7 +70,7 @@ public class FornecedorService {
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
         associadoResponseDto.forEach(associado -> {
-            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByAssessorId(associado.getId());
+            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByFornecedorId(associado.getId());
             ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
             if (Objects.nonNull(imagemPrincipal)){
                 associado.setImagemPrincipal(imagemPrincipal.getData());

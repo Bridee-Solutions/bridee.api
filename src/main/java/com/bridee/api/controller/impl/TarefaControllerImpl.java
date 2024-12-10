@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/tarefas")
 @RequiredArgsConstructor
-public class TarefaController {
+public class TarefaControllerImpl {
 
     private final TarefaService service;
     private final TarefaRequestMapper requestMapper;
