@@ -104,7 +104,7 @@ public class AssessorServiceTest {
 
     @Test
     @DisplayName("Validar informações assessor")
-    void validateShouldReturnTrueWhenInformationInvalid(){
+    void validateShouldReturnTrueWhenInformationIsvalid(){
 
         var request = Mockito.mock(ValidateAssessorFieldsRequestDto.class);
 
@@ -119,13 +119,5 @@ public class AssessorServiceTest {
 
         Assertions.assertNotNull(fields);
     }
-
-//    @Test
-//    @DisplayName("Validar informações assessor")
-//    void validateShouldReturnTrueWhenInformationInvalid(){
-//
-//        Mockito.when(assessorRepository.existsByCnpj(Mockito.any())).thenReturn()
-//
-//    }
 
 }
