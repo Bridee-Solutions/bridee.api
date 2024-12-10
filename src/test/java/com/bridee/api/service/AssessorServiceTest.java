@@ -1,7 +1,11 @@
 package com.bridee.api.service;
 
+import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
+import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
+import com.bridee.api.mapper.response.AssociadoGeralResponseMapperImpl;
+import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
@@ -52,7 +56,7 @@ public class AssessorServiceTest {
         assessorService = new AssessorService(assessorRepository, usuarioRoleRepository, roleRepository,
                 passwordEncoder, emailService, imagemService, tipoCasamentoService, formaPagamentoService,
                 geralResponseMapper, informacaoAssociadoService);
-
+        geralResponseMapper = new AssociadoGeralResponseMapperImpl();
     }
 
     @Test
@@ -88,10 +92,30 @@ public class AssessorServiceTest {
     @DisplayName("Lista os assessores e seus detalhes")
     void findAssessorDetailsShouldReturnAssessoresPaged(){
         var mockito = Mockito.mock(AssociadoResponseProjection.class);
+
         Pageable page = PageUtilsTest.buildPageable(0, 10);
         Page<AssociadoResponseProjection> associadoResponse = PageUtilsTest.buildPageImpl(mockito);
 
+        Mockito.when(assessorRepository.findAssessorDetails(page)).thenReturn(associadoResponse);
+        Page<AssociadoResponseDto> responseDto = assessorService.findAssessoresDetails(page);
 
+        Assertions.assertNotNull(responseDto);
+    }
+
+    @Test
+    @DisplayName("Validar informações assessor")
+    void validateShouldReturnTrueWhenInformationInvalid(){
+
+        var request = Mockito.mock(ValidateAssessorFieldsRequestDto.class);
+
+        Mockito.when(assessorRepository.existsByCnpj(Mockito.any())).thenReturn(true);
+        Mockito.when(assessorRepository.existsByEmailEmpresa(Mockito.any())).thenReturn(true);
+
+        ValidateAssessorFieldsResponseDto fields = assessorService.validateAssessorFields(request);
+
+        Assertions.assertNotNull(fields);
+        Assertions.assertTrue(fields.getCnpjEmpresaExists());
+        Assertions.assertTrue(fields.getEmailEmpresaExists());
 
     }
 
