@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 @Component
 @RequiredArgsConstructor
@@ -29,16 +31,16 @@ public class ConviteSubscriber implements ConviteObserver {
     @Override
     public void update() {
         List<ConviteTopicDto> convitesTopics = conviteSubject.getUpdate(this);
-        sendInvites(convitesTopics, 0);
+        Queue<ConviteTopicDto> conviteTopicDtos = new PriorityQueue<>();
+        conviteTopicDtos.addAll(convitesTopics);
+        while (!conviteTopicDtos.isEmpty() && conviteTopicDtos.peek() != null){
+            sendInvites(conviteTopicDtos.poll());
+        }
     }
 
-    private void sendInvites(List<ConviteTopicDto> topic, Integer totalSend){
-        if (totalSend == topic.size()){
-            return;
-        }
-        WhatsappRequestDto requestDto = whatsappRequestMapper.toRequestDto(topic.get(totalSend++));
+    private void sendInvites(ConviteTopicDto topic){
+        WhatsappRequestDto requestDto = whatsappRequestMapper.toRequestDto(topic);
         whatsappService.sendMessage(requestDto);
-        sendInvites(topic, totalSend);
     }
 
     @Override

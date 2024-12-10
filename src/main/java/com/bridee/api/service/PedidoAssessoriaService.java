@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class PedidoAssessoriaService {
         }
         var pedidosPendentes = repository.findAllPedidosCasamentoByStatus(casamentoId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO);
         if (Objects.nonNull(pedidosPendentes) && !pedidosPendentes.isEmpty()){
-            pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId));
+            pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId).reversed());
         }
       
         if (pedidosPendentes.isEmpty()){
@@ -131,5 +132,17 @@ public class PedidoAssessoriaService {
                 .and(PedidoAssessoriaFilter.findByDate(ano)));
         return repository.findAll(specification).stream()
                 .map(PedidoAssessoria::getCasamento).toList();
+    }
+
+    public void invalidateWeddings(){
+        List<PedidoAssessoria> allPedidosCasamentoInvalido = repository.findAllPedidosCasamentoInvalido();
+        Stack<PedidoAssessoria> pedidoAssessoriaStack = new Stack<>();
+        allPedidosCasamentoInvalido.forEach(pedidoAssessoriaStack::push);
+        while (!pedidoAssessoriaStack.isEmpty() && pedidoAssessoriaStack.peek() != null){
+            PedidoAssessoria pedidoAssessoria = pedidoAssessoriaStack.pop();
+            pedidoAssessoria.setStatus(PedidoAssessoriaStatusEnum.INVALIDO);
+        }
+        allPedidosCasamentoInvalido = pedidoAssessoriaStack.stream().toList();
+        repository.saveAll(allPedidosCasamentoInvalido);
     }
 }

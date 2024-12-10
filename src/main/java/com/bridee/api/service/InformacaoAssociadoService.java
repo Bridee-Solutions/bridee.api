@@ -160,4 +160,10 @@ public class InformacaoAssociadoService {
         }
         return imagemAssociadoService.findImagensSecundarias(associadoId);
     }
+
+    public InformacaoAssociado findByFornecedorId(Integer id) {
+        return repository.findByFornecedorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Informação de associado não encontrada para o idAssessor: " + id));
+
+    }
 }
