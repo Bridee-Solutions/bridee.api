@@ -20,7 +20,7 @@ public class ItemOrcamentoRequestDto {
     @Positive
     @NotNull
     @Schema(description = "Id do casal", example = "2")
-    private Integer casalId;
+    private Integer casamentoId;
     @NotNull
     @Schema(description = "Custos do item")
     private List<@NotNull CustoItemOrcamentoRequestDto> custos;

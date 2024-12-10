@@ -3,6 +3,7 @@ package com.bridee.api.controller.impl;
 import com.bridee.api.dto.request.AssociadoPrecoRequestDto;
 import com.bridee.api.dto.request.OrcamentoFornecedorRequestDto;
 import com.bridee.api.dto.response.OrcamentoFornecedorResponseDto;
+import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.OrcamentoFornecedor;
 import com.bridee.api.mapper.request.OrcamentoFornecedorRequestMapper;
@@ -32,9 +33,12 @@ public class OrcamentoFornecedorControllerImpl {
     private final OrcamentoFornecedorResponseMapper responseMapper;
     private final CasamentoService casamentoService;
 
-    @PostMapping
-    public ResponseEntity<List<OrcamentoFornecedorResponseDto>> associateFornecedoresCasal(@RequestBody @Valid List<OrcamentoFornecedorRequestDto> requestDto){
-        List<OrcamentoFornecedor> orcamentoFornecedores = requestMapper.toEntity(requestDto);
+    @PostMapping("/{casamentoId}")
+    public ResponseEntity<List<OrcamentoFornecedorResponseDto>> associateFornecedoresCasal(@RequestBody @Valid List<OrcamentoFornecedorRequestDto> requestDto,
+                                                                                           @PathVariable Integer casamentoId){
+        Casamento casamento = casamentoService.findById(casamentoId);
+        Casal casal = casamento.getCasal();
+        List<OrcamentoFornecedor> orcamentoFornecedores = requestMapper.toEntity(requestDto, casal);
         orcamentoFornecedores = service.saveAll(orcamentoFornecedores);
         List<OrcamentoFornecedorResponseDto> responseDto = responseMapper.toDomain(orcamentoFornecedores);
         return ResponseEntity.ok(responseDto);
@@ -45,8 +49,8 @@ public class OrcamentoFornecedorControllerImpl {
                                                                                        @PathVariable Integer categoriaId,
                                                                                        @PathVariable Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
-        requestDto.setCasalId(casamento.getCasal().getId());
-        OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto);
+        Casal casal = casamento.getCasal();
+        OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto, casal);
         orcamentoFornecedor = service.saveOrcamentoFornecedorCasal(orcamentoFornecedor, categoriaId);
         OrcamentoFornecedorResponseDto responseDto = responseMapper.toDomain(orcamentoFornecedor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
