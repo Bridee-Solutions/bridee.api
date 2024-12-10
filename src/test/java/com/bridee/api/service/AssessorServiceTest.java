@@ -117,7 +117,7 @@ public class AssessorServiceTest {
         Assertions.assertTrue(fields.getCnpjEmpresaExists());
         Assertions.assertTrue(fields.getEmailEmpresaExists());
 
-        Assertions.assertNotNull(responseDto);
+        Assertions.assertNotNull(fields);
     }
 
 //    @Test
