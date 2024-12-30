@@ -48,16 +48,35 @@ public class InformacaoAssociadoControllerImpl {
     public ResponseEntity<InformacaoAssociadoResponseDto> save(@PathVariable Integer assessorId,
                                                                @RequestParam("json") String informacaoAssociadoDto,
                                                                @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,
-                                                               @RequestPart("imagensSecundarias") List<MultipartFile> imagensSecundarias) throws JsonProcessingException {
+                                                               @RequestPart("imagemSecundaria") MultipartFile imagemSecundaria,
+                                                               @RequestPart("imagemTerciaria") MultipartFile imagemTerciaria,
+                                                               @RequestPart("imagemQuaternaria") MultipartFile imagemQuaternaria,
+                                                               @RequestPart("imagemQuinaria") MultipartFile imagemQuinaria) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         InformacaoAssociadoDto informacaoAssociado = objectMapper
                 .readValue(informacaoAssociadoDto, InformacaoAssociadoDto.class);
-        InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal, imagensSecundarias);
+        InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal,
+                imagemSecundaria, imagemTerciaria, imagemQuaternaria, imagemQuinaria);
         InformacaoAssociado info = service.save(informacaoPerfil, assessorId);
         return ResponseEntity.ok(responseMapper.toDomain(info));
     }
 
-
+    @PostMapping(value = "/{fornecedorId}/perfil-fornecedor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<InformacaoAssociadoResponseDto> saveFornecedorInformation(@PathVariable Integer fornecedorId,
+                                                               @RequestParam("json") String informacaoAssociadoDto,
+                                                               @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,
+                                                               @RequestPart("imagemSecundaria") MultipartFile imagemSecundaria,
+                                                               @RequestPart("imagemTerciaria") MultipartFile imagemTerciaria,
+                                                               @RequestPart("imagemQuaternaria") MultipartFile imagemQuaternaria,
+                                                               @RequestPart("imagemQuinaria") MultipartFile imagemQuinaria) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        InformacaoAssociadoDto informacaoAssociado = objectMapper
+                .readValue(informacaoAssociadoDto, InformacaoAssociadoDto.class);
+        InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal,
+                imagemSecundaria, imagemTerciaria, imagemQuaternaria, imagemQuinaria);
+        InformacaoAssociado info = service.saveFornecedor(informacaoPerfil, fornecedorId);
+        return ResponseEntity.ok(responseMapper.toDomain(info));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<InformacaoAssociadoResponseDto> findByAssessorId(@PathVariable Integer id){

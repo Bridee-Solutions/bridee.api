@@ -47,7 +47,7 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
     Page<AssociadoResponseProjection> findAssessorDetails(Pageable pageable);
 
     @Query("""
-            SELECT a FROM Assessor a WHERE UPPER(nome) LIKE UPPER(concat('%',:nome,'%'))
+            SELECT a FROM Assessor a WHERE UPPER(a.nome) LIKE UPPER(concat('%',:nome,'%'))
             """)
     Page<Assessor> findAllByNome(String nome, Pageable pageable);
 }

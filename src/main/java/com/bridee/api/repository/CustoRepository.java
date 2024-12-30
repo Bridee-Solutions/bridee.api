@@ -14,5 +14,5 @@ public interface CustoRepository extends JpaRepository<Custo, Integer> {
     @Query("""
             SELECT SUM(c.precoAtual) FROM Custo c WHERE c.itemOrcamento.casal.id = :casalId
             """)
-    long totalPriceItens(Integer casalId);
+    Long totalPriceItens(Integer casalId);
 }

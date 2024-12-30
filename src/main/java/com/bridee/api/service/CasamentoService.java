@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -40,12 +41,13 @@ public class CasamentoService {
     }
 
     public Casamento save(Casal casal, Integer qtdConvidados, LocalDate dataCasamento,
-                          boolean isReservado, String local){
+                          boolean isReservado, String local, String tamanhoCasamento){
         Casamento casamento = Casamento.builder()
                 .nome("%s e %s".formatted(casal.getNome(), casal.getNomeParceiro()))
                 .dataFim(dataCasamento)
                 .localReservado(BooleanUtils.toBoolean(isReservado))
                 .local(local)
+                .tamanhoCasamento(tamanhoCasamento)
                 .totalConvidados(qtdConvidados)
                 .casal(casal)
                 .build();
@@ -84,9 +86,19 @@ public class CasamentoService {
     public BigDecimal calculateOrcamento(Integer casamentoId) {
         Casamento casamento = findById(casamentoId);
         Casal casal = casamento.getCasal();
-        long totalPriceItens = custoRepository.totalPriceItens(casal.getId());
-        long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casal.getId());
-        return new BigDecimal(totalPriceItens + totalPriceOrcamento);
+        Long totalPriceItens = custoRepository.totalPriceItens(casal.getId());
+        Long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casal.getId());
+        if (Objects.nonNull(totalPriceItens) && Objects.nonNull(totalPriceOrcamento)) {
+            return new BigDecimal(totalPriceItens + totalPriceOrcamento);
+        }
+        if (Objects.nonNull(totalPriceItens)){
+            return new BigDecimal(totalPriceItens);
+        }
+        if (Objects.nonNull(totalPriceOrcamento)){
+            return new BigDecimal(totalPriceOrcamento);
+        }
+        return new BigDecimal("0");
+
     }
 
     public void denyWedding(Integer casamentoId, Integer assessorId) {

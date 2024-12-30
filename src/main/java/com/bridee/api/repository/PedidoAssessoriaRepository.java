@@ -52,4 +52,8 @@ public interface PedidoAssessoriaRepository extends JpaRepository<PedidoAssessor
     @Modifying
     int updatePreco(Integer assessorId, Integer casamentoId, BigDecimal preco);
 
+    @Query("""
+            SELECT p.casamento FROM PedidoAssessoria p WHERE p.casamento.dataFim < NOW()
+            """)
+    List<PedidoAssessoria> findAllPedidosCasamentoInvalido();
 }

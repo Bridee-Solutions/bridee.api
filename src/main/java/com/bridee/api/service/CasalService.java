@@ -1,6 +1,7 @@
 package com.bridee.api.service;
 
 import com.bridee.api.entity.Casal;
+import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Role;
 import com.bridee.api.entity.UsuarioRole;
 import com.bridee.api.entity.enums.RoleEnum;
@@ -8,6 +9,7 @@ import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.repository.CasalRepository;
+import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import jakarta.transaction.Transactional;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class CasalService {
 
     private final CasalRepository repository;
     private final RoleRepository roleRepository;
+    private final CasamentoRepository casamentoRepository;
     private final UsuarioRoleRepository usuarioRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
@@ -89,7 +93,13 @@ public class CasalService {
     }
 
     public Casal updateOrcamentoTotal(Integer id, BigDecimal orcamentoTotal) {
-        Casal casal = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casal não encontrado!"));
+        Casamento casamento = casamentoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
+        Casal casal = casamento.getCasal();
+        Integer casalId = Objects.nonNull(casal) ? casal.getId() : null;
+        if(Objects.isNull(casalId)){
+            throw new ResourceNotFoundException("Casal não encontrado!");
+        }
         casal.setOrcamentoTotal(orcamentoTotal);
         return repository.save(casal);
     }

@@ -34,7 +34,7 @@ services:
 
 jwt:
   secret:
-    key: ${JWT_SECRET:""}
+    key: ${JWT_SECRET:fefwefefefewefwawefweafweawfwefawefawfwefwefawfwefawfwaefawfaw}
 
 email:
   register:
