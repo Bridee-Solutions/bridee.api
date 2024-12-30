@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +33,22 @@ public class PedidoAssessoriaService {
         return repository.findAllCasamentoPendente(assessorId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO, pageable);
     }
 
+    //TODO REFATORAR
     public PedidoAssessoria findPedidoAssessorado(Integer casamentoId) {
-        return repository.findPedidoByStatus(casamentoId, PedidoAssessoriaStatusEnum.ASSESSORADO).orElse(null);
+        PedidoAssessoria pedidoAssessorado = repository.findPedidoByStatus(casamentoId, PedidoAssessoriaStatusEnum.ASSESSORADO).orElse(null);
+        if (Objects.nonNull(pedidoAssessorado)){
+            return pedidoAssessorado;
+        }
+        var pedidosPendentes = repository.findAllPedidosCasamentoByStatus(casamentoId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO);
+        if (Objects.nonNull(pedidosPendentes) && !pedidosPendentes.isEmpty()){
+            pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId).reversed());
+        }
+      
+        if (pedidosPendentes.isEmpty()){
+            return null;
+        }
+      
+        return pedidosPendentes.get(0);
     }
 
     public PedidoAssessoria save(PedidoAssessoria pedidoAssessoria){
@@ -62,9 +79,9 @@ public class PedidoAssessoriaService {
     }
 
     public void updatePrecoCasamentoAssessor(Integer assessorId, Integer casamentoId, BigDecimal preco) {
-        if (!isCasamentoAssessorado(assessorId, casamentoId)) {
-            throw new ResourceNotFoundException("Casamento não assessorado!");
-        }
+//        if (!isCasamentoAssessorado(assessorId, casamentoId)) {
+//            throw new ResourceNotFoundException("Casamento não assessorado!");
+//        }
         repository.updatePreco(assessorId, casamentoId, preco);
     }
 
@@ -115,5 +132,17 @@ public class PedidoAssessoriaService {
                 .and(PedidoAssessoriaFilter.findByDate(ano)));
         return repository.findAll(specification).stream()
                 .map(PedidoAssessoria::getCasamento).toList();
+    }
+
+    public void invalidateWeddings(){
+        List<PedidoAssessoria> allPedidosCasamentoInvalido = repository.findAllPedidosCasamentoInvalido();
+        Stack<PedidoAssessoria> pedidoAssessoriaStack = new Stack<>();
+        allPedidosCasamentoInvalido.forEach(pedidoAssessoriaStack::push);
+        while (!pedidoAssessoriaStack.isEmpty() && pedidoAssessoriaStack.peek() != null){
+            PedidoAssessoria pedidoAssessoria = pedidoAssessoriaStack.pop();
+            pedidoAssessoria.setStatus(PedidoAssessoriaStatusEnum.INVALIDO);
+        }
+        allPedidosCasamentoInvalido = pedidoAssessoriaStack.stream().toList();
+        repository.saveAll(allPedidosCasamentoInvalido);
     }
 }

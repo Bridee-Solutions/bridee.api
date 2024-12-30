@@ -2,10 +2,13 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.request.ImageMetadata;
 import com.bridee.api.entity.Casal;
+import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.entity.ImagemCasal;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.ImageMapper;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
+import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.ImagemCasalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ public class ImagemCasalService {
     private final ImageMapper imageMapper;
     private final ImagemService imagemService;
     private final BlobStorageStrategy blobStorageStrategy;
+    private final CasamentoRepository casamentoRepository;
 
     public String casalImage64Encoded(Integer casalId){
         byte[] casalImage = downloadCasalImage(casalId);
@@ -40,8 +44,15 @@ public class ImagemCasalService {
         return blobStorageStrategy.downloadFile(casalImage.getNome());
     }
 
-    public void uploadCasalImage(Integer casalId, ImageMetadata imageMetadata,
+    public void uploadCasalImage(Integer casamentoId, ImageMetadata imageMetadata,
                                  MultipartFile multipartFile){
+        Casamento casamento = casamentoRepository.findById(casamentoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
+        Casal casal = casamento.getCasal();
+        Integer casalId = Objects.nonNull(casal) ? casal.getId() : null;
+        if (Objects.isNull(casalId)){
+            throw new ResourceNotFoundException("Casal não encontrado!");
+        }
         Imagem imagem = buildCasalImage(casalId, imageMetadata);
         imagemService.uploadImage(multipartFile, imagem.getNome());
     }

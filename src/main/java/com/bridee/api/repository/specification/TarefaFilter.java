@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TarefaFilter implements Specification<Tarefa> {
 
@@ -33,6 +35,7 @@ public class TarefaFilter implements Specification<Tarefa> {
     private TarefaStatusEnum status;
     private List<Integer> mes;
     private Integer casalId;
+    private List<Integer> anos;
 
     @Override
     public Predicate toPredicate(Root<Tarefa> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -64,8 +67,10 @@ public class TarefaFilter implements Specification<Tarefa> {
         }
 
         if (Objects.nonNull(mes)){
-            filterDate().forEach((date) -> {
-                orPredicates.add(criteriaBuilder.between(root.get("dataLimite"), date.getDataInicio(), date.getDataFim()));
+            filterDate().forEach((dates) -> {
+                dates.forEach(date -> {
+                    orPredicates.add(criteriaBuilder.between(root.get("dataLimite"), date.getDataInicio(), date.getDataFim()));
+                });
             } );
         }
 
@@ -171,14 +176,14 @@ public class TarefaFilter implements Specification<Tarefa> {
         return TypeFactory.defaultInstance().constructType(rawType);
     };
 
-    private List<DataFilterDto> filterDate(){
-        return mes.stream().map((mes) -> {
-            LocalDate localDate = LocalDate.of(LocalDate.now().getYear(), mes, LocalDate.now().getDayOfMonth());
-            LocalDate dataInicioMesAtual = LocalDate.of(LocalDate.now().getYear(), mes,
+    private List<List<DataFilterDto>> filterDate(){
+        return anos.stream().map(ano -> mes.stream().map((mes) -> {
+            LocalDate localDate = LocalDate.of(ano, mes, LocalDate.now().getDayOfMonth());
+            LocalDate dataInicioMesAtual = LocalDate.of(ano, mes,
                     localDate.with(TemporalAdjusters.firstDayOfMonth()).getDayOfMonth());
-            LocalDate dataFimMesAtual = LocalDate.of(LocalDate.now().getYear(), mes,
+            LocalDate dataFimMesAtual = LocalDate.of(ano, mes,
                     localDate.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth());
-            return new DataFilterDto(dataInicioMesAtual, dataFimMesAtual);
-        }).toList();
+            return new DataFilterDto(ano, dataInicioMesAtual, dataFimMesAtual);
+        }).toList()).toList();
     }
 }

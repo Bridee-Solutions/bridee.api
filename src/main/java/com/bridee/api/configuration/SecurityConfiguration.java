@@ -32,7 +32,8 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(httpRequest -> {
                         httpRequest
-                                .requestMatchers("/authentication").permitAll()
+                                .requestMatchers("/error/**").permitAll()
+                                .requestMatchers("/authentication", "/refresh-token").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/usuarios/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/casais",
                                         "/assessores",
@@ -43,8 +44,10 @@ public class SecurityConfiguration {
                                         "/swagger-ui/**").permitAll()
                                 .requestMatchers("/casais/**", "/convidados/**",
                                         "/convites/**", "/dashboards/**", "/itens-orcamento/**",
-                                        "/mesas/**", "/orcamentos/**", "/orcamento-fornecedor/**").hasRole("CASAL")
-                                .requestMatchers("/assessores/**").hasRole("ASSESSOR")
+                                        "/mesas/**", "/orcamentos/**", "/orcamento-fornecedor/**",
+                                        "/assessores/details", "/assessores/information/**",
+                                        "/assessores/solicitar-orcamento/**").hasRole("CASAL")
+                                .requestMatchers("/assessores/**").hasAnyRole("ASSESSOR", "CASAL")
                                 .requestMatchers("/tarefas/**").hasAnyRole("CASAL", "ASSESSOR")
                                 .anyRequest().authenticated();
                 })

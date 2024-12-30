@@ -31,12 +31,19 @@ public class TarefaService {
     public List<Tarefa> findAllByCasalId(Integer casamentoId, Map<String, Object> params){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
+        String years = buildCasalTaskYearsFilter(casal.getId());
         params.put("casalId", casal.getId());
-
+        params.put("anos", years);
         TarefaFilter tarefaFilter = new TarefaFilter();
         tarefaFilter.buildFilter(params);
 
         return repository.findAll(tarefaFilter);
+    }
+
+    private String buildCasalTaskYearsFilter(Integer id) {
+        List<String> years = repository.findAllYearsFromTasks(id)
+                .stream().map(String::valueOf).toList();
+        return String.join(",", years);
     }
 
     public List<Tarefa> findAllByCasalId(Integer casalId){

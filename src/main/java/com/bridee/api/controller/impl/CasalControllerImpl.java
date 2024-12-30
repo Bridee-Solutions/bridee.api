@@ -69,7 +69,7 @@ public class CasalControllerImpl implements CasalController {
         Casal casal = requestMapper.toEntity(requestDto);
         casal = service.save(casal);
         casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento(),
-                requestDto.isLocalReservado(), requestDto.getLocal());
+                requestDto.isLocalReservado(), requestDto.getLocal(), requestDto.getTamanhoCasamento());
         CasalResponseDto responseDto = responseMapper.toDomain(casal);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
@@ -79,18 +79,18 @@ public class CasalControllerImpl implements CasalController {
         Casal casal = externoRequestMapper.toEntity(requestDto);
         casal = service.saveExternal(casal);
         casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento(),
-                requestDto.isLocalReservado(), requestDto.getLocal());
+                requestDto.isLocalReservado(), requestDto.getLocal(), requestDto.getTamanhoCasamento());
         CasalExternoResponseDto responseDto = externoResponseMapper.toDomain(casal);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
-    @PostMapping(value = "/imagem-perfil/{casalId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> uploadImage(@PathVariable Integer casalId,
+    @PostMapping(value = "/imagem-perfil/{casamentoId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadImage(@PathVariable Integer casamentoId,
                                             @RequestParam(value = "metadata") String metadataJson,
                                             @RequestPart("file") MultipartFile file) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ImageMetadata imageMetadata = objectMapper.readValue(metadataJson, ImageMetadata.class);
-        imagemCasalService.uploadCasalImage(casalId, imageMetadata, file);
+        imagemCasalService.uploadCasalImage(casamentoId, imageMetadata, file);
         return ResponseEntity.ok().build();
     }
 

@@ -49,7 +49,12 @@ public class ImagemService {
 
     public List<String> findBase64UrlImagensAssessor(Integer assessorId){
         return findUrlImagensAssessor(assessorId).stream()
-                .map(image -> Base64.getEncoder().encodeToString(image)).toList();
+                .map(imagem -> {
+                    if (Objects.nonNull(imagem)){
+                        return Base64.getEncoder().encodeToString(imagem);
+                    }
+                    return null;
+                }).toList();
     }
 
     public List<byte[]> findUrlImagensAssessor(Integer assessorId){

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/dashboards")
 @RequiredArgsConstructor
-public class DashboardController {
+public class DashboardControllerImpl {
 
     private final DashboardService dashboardService;
 

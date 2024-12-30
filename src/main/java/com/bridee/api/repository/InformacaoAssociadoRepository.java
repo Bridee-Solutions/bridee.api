@@ -10,4 +10,8 @@ public interface InformacaoAssociadoRepository extends JpaRepository<InformacaoA
     Optional<InformacaoAssociado> findByAssessorId(Integer id);
 
     boolean existsByAssessorId(Integer assessorId);
+
+    boolean existsByFornecedorId(Integer fornecedorId);
+
+    Optional<InformacaoAssociado> findByFornecedorId(Integer id);
 }
