@@ -58,9 +58,15 @@ public class AssessorService {
         return assessorRepository.findAllByNome(nome, pageable);
     }
 
+    public Integer getAdviserIdFromEmail(String email){
+        return assessorRepository.findIdByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Assessor não encontrado"));
+    }
+
     public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
         Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
         List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
+
         associadoResponse.forEach(associado -> {
             InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByAssessorId(associado.getId());
             ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
@@ -68,6 +74,7 @@ public class AssessorService {
                 associado.setImagemPrincipal(imagemPrincipal.getData());
             }
         });
+
         return PageUtils.collectionToPage(associadoResponse, assessorDetails);
     }
 
