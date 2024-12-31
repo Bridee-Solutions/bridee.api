@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
 
@@ -50,4 +51,9 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             SELECT a FROM Assessor a WHERE UPPER(a.nome) LIKE UPPER(concat('%',:nome,'%'))
             """)
     Page<Assessor> findAllByNome(String nome, Pageable pageable);
+
+    @Query("""
+            SELECT a.id FROM Assessor a WHERE a.email = :email
+            """)
+    Optional<Integer> findIdByEmail(String email);
 }
