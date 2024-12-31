@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.controller.MesaController;
 import com.bridee.api.dto.request.MesaRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
@@ -41,8 +42,8 @@ public class MesaControllerImpl implements MesaController {
     private final MesaRequestMapper mesaRequestMapper;
     private final MesaResponseMapper mesaResponseMapper;
 
-    @GetMapping("/casamento/{casamentoId}")
-    public ResponseEntity<Page<MesaResponseDto>> findAll(@PathVariable Integer casamentoId, Pageable pageable){
+    @GetMapping
+    public ResponseEntity<Page<MesaResponseDto>> findAll(@WeddingIdentifier Integer casamentoId, Pageable pageable){
 
         List<Mesa> mesasCasamento = mesaService.findAllByCasamentoId(casamentoId);
         Page<MesaResponseDto> mesaResponse = mesaResponseMapper.toDomainPage(mesasCasamento, pageable);
@@ -50,9 +51,9 @@ public class MesaControllerImpl implements MesaController {
         return ResponseEntity.ok(mesaResponse);
     }
 
-    @GetMapping("/casamento/{casamentoId}/convidados-livres")
+    @GetMapping("/convidados-livres")
     public ResponseEntity<Page<ConvidadoResponseDto>> findConvidadosWithoutMesa(@RequestParam Map<String, Object> params,
-                                                                                @PathVariable Integer casamentoId){
+                                                                                @WeddingIdentifier Integer casamentoId){
         List<Mesa> mesas = mesaService.findAllByCasamentoId(casamentoId);
         Pageable pageRequest = PageUtils.buildPageable(params);
         String nome = (String) params.get("nome");
@@ -60,9 +61,9 @@ public class MesaControllerImpl implements MesaController {
         return ResponseEntity.ok(convidadoResponseMapper.toDomainPage(convidadosWithoutMesa, pageRequest));
     }
 
-    @PostMapping("/casamento/{casamentoId}")
+    @PostMapping
     public ResponseEntity<MesaResponseDto> save(@RequestBody MesaRequestDto requestDto,
-                                                @PathVariable Integer casamentoId){
+                                                @WeddingIdentifier Integer casamentoId){
         Mesa mesa = mesaRequestMapper.toEntity(requestDto);
         mesa = mesaService.save(mesa, casamentoId);
         MesaResponseDto responseDto = mesaResponseMapper.toDomain(mesa);

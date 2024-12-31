@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.controller.ConviteController;
 import com.bridee.api.dto.request.ConviteRequestDto;
 import com.bridee.api.dto.response.ConviteResponseDto;
@@ -45,21 +46,21 @@ public class ConviteControllerImpl implements ConviteController {
         return ResponseEntity.ok(responseMapper.toDomain(convite));
     }
 
-    @GetMapping("/casamento/{casamentoId}")
+    @GetMapping
     public ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter,
-                                                                    @PathVariable Integer casamentoId){
+                                                                    @WeddingIdentifier Integer casamentoId){
         List<Convite> convites = conviteService.findAllByCasamentoId(filter, casamentoId);
         Pageable pageable = PageUtils.buildPageable(filter);
         return ResponseEntity.ok(responseMapper.toDomainPage(convites, pageable));
     }
 
-    @GetMapping("/casamento/{casamentoId}/relatorio")
-    public ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@PathVariable Integer casamentoId){
+    @GetMapping("/relatorio")
+    public ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@WeddingIdentifier Integer casamentoId){
         return ResponseEntity.ok(conviteService.gerarRelatorioCasamento(casamentoId));
     }
 
-    @GetMapping("/casamento/{casamentoId}/resumo")
-    public ResponseEntity<ConviteResumoResponseDto> resumo(@PathVariable Integer casamentoId){
+    @GetMapping("/resumo")
+    public ResponseEntity<ConviteResumoResponseDto> resumo(@WeddingIdentifier Integer casamentoId){
         return ResponseEntity.ok(conviteService.inviteResume(casamentoId));
     }
 
@@ -87,8 +88,8 @@ public class ConviteControllerImpl implements ConviteController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/casamento/{casamentoId}")
-    public ResponseEntity<Void> deleteAll(@PathVariable Integer casamentoId){
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll(@WeddingIdentifier Integer casamentoId){
         conviteService.deleteAllWeddingInvites(casamentoId);
         return ResponseEntity.noContent().build();
     }

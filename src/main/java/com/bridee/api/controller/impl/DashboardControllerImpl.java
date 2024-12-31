@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.dto.response.DashboardResponseDto;
 import com.bridee.api.service.DashboardService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ public class DashboardControllerImpl {
 
     private final DashboardService dashboardService;
 
-    @GetMapping("/casamento/{casamentoId}")
-    public ResponseEntity<DashboardResponseDto> dashboard(@PathVariable Integer casamentoId){
+    @GetMapping
+    public ResponseEntity<DashboardResponseDto> dashboard(@WeddingIdentifier Integer casamentoId){
         return ResponseEntity.ok(dashboardService.buildDashboard(casamentoId));
     }
 

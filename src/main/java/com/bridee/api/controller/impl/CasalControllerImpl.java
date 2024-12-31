@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.controller.CasalController;
 import com.bridee.api.dto.request.CasalRequestDto;
 import com.bridee.api.dto.request.ImageMetadata;
@@ -84,8 +85,8 @@ public class CasalControllerImpl implements CasalController {
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
-    @PostMapping(value = "/imagem-perfil/{casamentoId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> uploadImage(@PathVariable Integer casamentoId,
+    @PostMapping(value = "/imagem-perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadImage(@WeddingIdentifier Integer casamentoId,
                                             @RequestParam(value = "metadata") String metadataJson,
                                             @RequestPart("file") MultipartFile file) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

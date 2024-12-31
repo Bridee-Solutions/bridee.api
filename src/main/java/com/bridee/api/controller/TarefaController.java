@@ -24,7 +24,6 @@ public interface TarefaController {
                    @ApiResponse(responseCode = "200", description = "Lista de tarefas do casamento",
                                 content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json"))
                })
-    @GetMapping("/casamento/{casamentoId}")
     ResponseEntity<List<TarefasResponseDto>> findAll(
         @Parameter(description = "ID do casamento para o qual as tarefas serão recuperadas") @PathVariable Integer casamentoId,
         @RequestParam Map<String, Object> params);
@@ -36,7 +35,6 @@ public interface TarefaController {
                                 content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")),
                    @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
                })
-    @PostMapping("/casamento/{casamentoId}")
     ResponseEntity<TarefaResponseDto> save(
         @Parameter(description = "ID do casamento ao qual a tarefa será associada") @PathVariable Integer casamentoId,
         @RequestBody @Valid TarefaRequestDto requestDto);
@@ -48,7 +46,6 @@ public interface TarefaController {
                                 content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")),
                    @ApiResponse(responseCode = "404", description = "Tarefa não encontrada")
                })
-    @PutMapping("/casamento/{casamentoId}/tarefa/{tarefaId}")
     ResponseEntity<TarefaResponseDto> update(
         @Parameter(description = "ID do casamento") @PathVariable Integer casamentoId,
         @Parameter(description = "ID da tarefa a ser atualizada") @PathVariable Integer tarefaId,
@@ -60,7 +57,6 @@ public interface TarefaController {
                    @ApiResponse(responseCode = "204", description = "Tarefa excluída com sucesso"),
                    @ApiResponse(responseCode = "404", description = "Tarefa não encontrada")
                })
-    @DeleteMapping("/{id}")
     ResponseEntity<TarefaResponseDto> delete(
         @Parameter(description = "ID da tarefa a ser excluída") @PathVariable Integer id);
 }

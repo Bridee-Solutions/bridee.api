@@ -29,7 +29,6 @@ public interface OrcamentoFornecedorController {
             @ApiResponse(responseCode = "400", description = "Requisição inválida", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    @PostMapping
     ResponseEntity<List<OrcamentoFornecedorResponseDto>> associateFornecedoresCasal(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Lista de fornecedores a serem associados ao casal",
@@ -49,7 +48,6 @@ public interface OrcamentoFornecedorController {
             @ApiResponse(responseCode = "400", description = "Requisição inválida", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    @PostMapping("/categoria/{categoriaId}/casamento/{casamentoId}")
     ResponseEntity<OrcamentoFornecedorResponseDto> saveOrcamentoFornecedorCasal(
             @Parameter(description = "ID da categoria", required = true) 
             @PathVariable Integer categoriaId,
@@ -74,7 +72,6 @@ public interface OrcamentoFornecedorController {
             @ApiResponse(responseCode = "404", description = "Orçamento não encontrado", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
-    @PutMapping("/preco/{id}")
     ResponseEntity<Void> updateOrcamentoFornecedor(
             @Parameter(description = "ID do orçamento de fornecedor a ser atualizado", required = true) 
             @PathVariable Integer id,
