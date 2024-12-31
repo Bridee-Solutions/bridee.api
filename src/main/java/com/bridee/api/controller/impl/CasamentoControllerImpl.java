@@ -1,5 +1,7 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.AdvisorIdentifier;
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.dto.request.UpdateCasalMessageDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
 import com.bridee.api.entity.Assessor;
@@ -25,36 +27,36 @@ public class CasamentoControllerImpl {
     private final CasamentoService casamentoService;
     private final AssessorResponseMapper responseMapper;
 
-    @GetMapping("/{casamentoId}/orcamento")
-    public ResponseEntity<BigDecimal> calculateCasamentoOrcamento(@PathVariable Integer casamentoId){
+    @GetMapping("/orcamento")
+    public ResponseEntity<BigDecimal> calculateCasamentoOrcamento(@WeddingIdentifier Integer casamentoId){
         return ResponseEntity.ok(casamentoService.calculateOrcamento(casamentoId));
     }
 
-    @PutMapping("/{casamentoId}/assessor/{assessorId}")
-    public ResponseEntity<AssessorResponseDto> vinculateAssessorToWedding(@PathVariable Integer casamentoId,
+    @PutMapping("/assessor/{assessorId}/vincular")
+    public ResponseEntity<AssessorResponseDto> vinculateAssessorToWedding(@WeddingIdentifier Integer casamentoId,
                                                                           @PathVariable Integer assessorId){
         Assessor assessor = casamentoService.vinculateAssessorToWedding(casamentoId, assessorId);
         AssessorResponseDto responseDto = responseMapper.toDomain(assessor);
         return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/{casamentoId}/assessor/{assessorId}/aceitar-proposta")
+    @PutMapping("/{casamentoId}/aceitar-proposta")
     public ResponseEntity<Void> acceptWedding(@PathVariable Integer casamentoId,
-                                            @PathVariable Integer assessorId){
+                                              @AdvisorIdentifier Integer assessorId){
         casamentoService.acceptWedding(casamentoId, assessorId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{casamentoId}/assessor/{assessorId}/recusar-proposta")
+    @PutMapping("/{casamentoId}/recusar-proposta")
     public ResponseEntity<Void> denyWedding(@PathVariable Integer casamentoId,
-                                            @PathVariable Integer assessorId){
+                                            @AdvisorIdentifier Integer assessorId){
         casamentoService.denyWedding(casamentoId, assessorId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{casamentoId}/assessor/{assessorId}/remover-proposta")
+    @PutMapping("/{casamentoId}/remover-proposta")
     public ResponseEntity<Void> removeWeddingAdvise(@PathVariable Integer casamentoId,
-                                            @PathVariable Integer assessorId){
+                                            @AdvisorIdentifier Integer assessorId){
         casamentoService.removeWeddingAdvise(casamentoId, assessorId);
         return ResponseEntity.noContent().build();
     }
