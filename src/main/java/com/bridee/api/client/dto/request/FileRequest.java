@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileRequest {
 
     private String fileName;
-    private MultipartFile file;
+    private String file;
 
     public FileRequest(String fileName) {
         this.fileName = fileName;
