@@ -21,13 +21,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 public class AzureBlobStorageImpl implements BlobStorageStrategy {
 
-    @Value("${services.bridee.function.storage-function.key}")
+    @Value("${services.bridee.function.storage-function.api-key}")
     private String storageFunctionApiKey;
 
     private final AzureStorageFunctionClient azureFunctionClient;
@@ -41,8 +42,16 @@ public class AzureBlobStorageImpl implements BlobStorageStrategy {
 
     @Override
     public void uploadFile(MultipartFile multipartFile, String filename) {
-        FileRequest fileRequest = new FileRequest(filename, multipartFile);
+        FileRequest fileRequest = new FileRequest(filename, toBase64(multipartFile));
         azureFunctionClient.uploadFile(fileRequest, storageFunctionApiKey);
+    }
+
+    private String toBase64(MultipartFile multipartFile){
+        try{
+            return Base64.getEncoder().encodeToString(multipartFile.getInputStream().readAllBytes());
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
