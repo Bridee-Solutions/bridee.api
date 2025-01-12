@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.json.JsonMergePatch;
 import java.math.BigDecimal;
 
 @Tag(name = "Controller de casal")
@@ -79,7 +80,7 @@ public interface CasalController {
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
     )
-    ResponseEntity<CasalResponseDto> update(@RequestBody @Valid CasalRequestDto requestDto, @PathVariable Integer id);
+    ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id);
 
     @Operation(summary = "Atualiza o orcamento de um casal",
             description = "Atualiza o orcamento de um casal pelo id")
