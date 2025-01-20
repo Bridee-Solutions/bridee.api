@@ -9,11 +9,12 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.json.JsonMergePatch;
 import javax.json.JsonValue;
+import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.Set;
 
 @Component
@@ -30,7 +31,61 @@ public class PatchHelper {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .findAndAddModules()
                 .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
-                .build();;
+                .build();
+    }
+
+    public void mergeNonNull(Object source, Object destination){
+        Field[] sourceFields = allFields(source);
+        Field[] destinationFields = allFields(destination);
+
+        for (Field sourceField: sourceFields){
+            for(Field destinationField: destinationFields){
+                if(sourceField.getName().equals(destinationField.getName())){
+                    try {
+                        sourceField.setAccessible(true);
+                        Object sourceFieldValue = sourceField.get(source);
+                        if(Objects.nonNull(sourceFieldValue)){
+                            destinationField.setAccessible(true);
+                            destinationField.set(destination, sourceFieldValue);
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }finally {
+                        sourceField.setAccessible(false);
+                        destinationField.setAccessible(false);
+                    }
+                };
+            }
+        }
+    }
+
+    private Field[] allFields(Object object){
+        return fillObjectFields(object);
+    }
+
+    private Field[] fillObjectFields(Object object){
+        Class<?> objectClass = object.getClass();
+        Field[] objectFields = objectClass.getDeclaredFields();
+        if (!isSuperClassObject(objectClass)){
+            return extractAllInheritanceFields(objectClass, objectFields);
+        }
+        return objectFields;
+    }
+
+    private boolean isSuperClassObject(Class<?> objectClass){
+        return objectClass.getSuperclass().isAssignableFrom(Object.class);
+    }
+
+    private Field[] extractAllInheritanceFields(Class<?> objectClass, Field[] objectFields){
+        Field[] objectSuperClassFields = objectClass.getSuperclass().getDeclaredFields();
+        Field[] allFields = new Field[objectSuperClassFields.length + objectFields.length];
+        for (int i = 0; i < objectFields.length; i++) {
+            allFields[i] = objectFields[i];
+        }
+        for (int i = objectFields.length; i < allFields.length; i++) {
+            allFields[i] = objectSuperClassFields[i - objectFields.length];
+        }
+        return allFields;
     }
 
     public <T> T mergePatch(JsonMergePatch jsonMergePatch, T targetBean, Class<? extends T > beanClass){
