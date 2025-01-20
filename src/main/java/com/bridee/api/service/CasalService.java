@@ -12,6 +12,7 @@ import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
+import com.bridee.api.utils.PatchHelper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ public class CasalService {
     private final UsuarioRoleRepository usuarioRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final PatchHelper patchHelper;
 
     public Page<Casal> findAll(Pageable pageable){
         return repository.findAll(pageable);
@@ -76,9 +78,9 @@ public class CasalService {
     }
 
     public Casal update(Casal casal, Integer id){
-        if (!repository.existsById(id)) throw new ResourceNotFoundException();
-        casal.setId(id);
-        return repository.save(casal);
+        Casal casalToBeUpdated = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        patchHelper.mergeNonNull(casal, casalToBeUpdated);
+        return repository.save(casalToBeUpdated);
     }
 
     public void deleteById(Integer id){

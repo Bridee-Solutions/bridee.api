@@ -69,8 +69,8 @@ public class CasamentoService {
 
     public void updateMessage(Integer casamentoId, String message){
         existsById(casamentoId);
-        int updatedSuccessfully = repository.updateCasamentoMessage(casamentoId, message);
-        if (updatedSuccessfully == 0){
+        int totalUpdates = repository.updateCasamentoMessage(casamentoId, message);
+        if (totalUpdates == 0){
             throw new UnprocessableEntityException("Não foi possível atualizar a mensagem dos convites");
         };
     }

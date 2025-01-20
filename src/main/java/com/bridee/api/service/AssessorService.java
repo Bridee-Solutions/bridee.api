@@ -20,6 +20,7 @@ import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.utils.PageUtils;
+import com.bridee.api.utils.PatchHelper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -49,6 +50,7 @@ public class AssessorService {
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
     private final InformacaoAssociadoService informacaoAssociadoService;
+    private final PatchHelper patchHelper;
 
     public Page<Assessor> findAll(Pageable pageable){
          return assessorRepository.findAll(pageable);
@@ -126,9 +128,9 @@ public class AssessorService {
     }
 
     public Assessor update(Assessor assessor, Integer id){
-        if (!assessorRepository.existsById(id)) throw new ResourceNotFoundException();
-        assessor.setId(id);
-        return assessorRepository.save(assessor);
+        Assessor assessorToBeUpdated = assessorRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        patchHelper.mergeNonNull(assessor, assessorToBeUpdated);
+        return assessorRepository.save(assessorToBeUpdated);
     }
 
     public void deleteById(Integer id){
