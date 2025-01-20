@@ -39,6 +39,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         AuthenticationResponseDto authenticationResponse = authenticationService.authenticate(authenticationRequest);
         HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", authenticationResponse.getAccessToken(), true, Duration.ofHours(1),host);
         HttpCookie refreshTokenCookie = CookieUtils.createCookie("refresh_token", authenticationResponse.getRefreshToken(), true, Duration.ofDays(7), host);
+
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
@@ -49,6 +50,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     public ResponseEntity<Void> refreshToken(HttpServletRequest request){
         String refreshToken = extractRefreshTokenFromCookie(request);
         String accessToken = authenticationService.generateNewAccessToken(refreshToken);
+
         HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", accessToken, true, Duration.ofHours(1), host);
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());

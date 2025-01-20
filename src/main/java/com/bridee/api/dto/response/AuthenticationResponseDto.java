@@ -17,8 +17,5 @@ public class AuthenticationResponseDto {
     private String refreshToken;
     @Schema(description = "Se o usuário está habilitado pela aplicação", example = "true")
     private Boolean enabled;
-    private Integer casamentoId;
     private String tipoUsuario;
-    private Integer assessorId;
-
 }
