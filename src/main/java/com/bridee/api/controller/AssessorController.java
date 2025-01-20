@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.json.JsonMergePatch;
+
 @Tag(name = "Controller de assessor")
 public interface AssessorController {
 
@@ -109,7 +111,7 @@ public interface AssessorController {
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
         }
     )
-    ResponseEntity<AssessorResponseDto> update(@RequestBody @Valid AssessorRequestDto requestDto, @PathVariable Integer id);
+    ResponseEntity<AssessorResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id);
 
     @Operation(summary = "Deleta as informações de um assessor",
             description = "Deleta as informações de um assessor pelo id")

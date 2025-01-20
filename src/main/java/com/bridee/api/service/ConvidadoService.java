@@ -9,6 +9,7 @@ import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.ConvidadoRepository;
 import com.bridee.api.repository.specification.ConvidadoFilter;
+import com.bridee.api.utils.PatchHelper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class ConvidadoService {
 
     private final ConvidadoRepository repository;
     private final CasamentoService casamentoService;
+    private final PatchHelper patchHelper;
 
     public List<Convidado> findAll() {
         return repository.findAll();
@@ -47,11 +49,9 @@ public class ConvidadoService {
     }
 
     public Convidado update(Convidado convidado, Integer id){
-        if (!repository.existsById(id)){
-            throw new ResourceNotFoundException("Convidado não encontrado!");
-        }
-        convidado.setId(id);
-        return repository.save(convidado);
+        Convidado convidadoToBeUpdated = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        patchHelper.mergeNonNull(convidado, convidadoToBeUpdated);
+        return repository.save(convidadoToBeUpdated);
     }
 
     public void saveAllInvites(List<Convidado> convidados, Convite convite){

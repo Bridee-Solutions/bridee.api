@@ -91,7 +91,6 @@ public class CasalControllerImpl implements CasalController {
 
     @PatchMapping(value = "/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id){
-//        Casal casal = requestMapper.toEntity(requestDto);
         Casal casal = patchHelper.mergePatch(jsonMergePatch, new Casal(), Casal.class);
         CasalResponseDto responseDto = responseMapper.toDomain(service.update(casal, id));
         return ResponseEntity.ok(responseDto);
