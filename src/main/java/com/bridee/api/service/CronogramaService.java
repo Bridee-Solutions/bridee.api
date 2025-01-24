@@ -22,12 +22,19 @@ public class CronogramaService {
 
     public List<Atividade> findAllByCasamentoId(Integer casamentoId) {
         casamentoService.existsById(casamentoId);
-        Cronograma cronogramaCasamento = repository.findAtividadesCronogramaByCasamentoId(casamentoId);
+        Cronograma cronogramaCasamento = repository.findCronogramaByCasamentoId(casamentoId);
         return cronogramaCasamento.getAtividades();
     }
 
+    public Cronograma save(Cronograma cronograma){
+        if(repository.existsByCasamentoId(cronograma.getCasamento().getId())){
+            throw new ResourceAlreadyExists("Já existe um cronograma para esse casamento");
+        }
+        return repository.save(cronograma);
+    }
+
     public Atividade saveAtividade(Atividade atividade, Integer cronogramaId){
-        if (atividadeRepository.existsByNome(atividade.getNome())){
+        if (repository.existsAtividadeByNomeInCronograma(atividade.getNome(), cronogramaId)){
             throw new ResourceAlreadyExists("Atividade já cadastrada no cronograma do casamento!");
         }
         Cronograma cronograma = repository.findById(cronogramaId)
