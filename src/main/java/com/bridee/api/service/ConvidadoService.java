@@ -4,23 +4,20 @@ import com.bridee.api.dto.request.MesaConvidadoRequestDto;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.entity.Mesa;
-import com.bridee.api.entity.enums.TipoConvidado;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.ConvidadoRepository;
 import com.bridee.api.repository.specification.ConvidadoFilter;
 import com.bridee.api.utils.PatchHelper;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
@@ -99,7 +96,8 @@ public class ConvidadoService {
         Specification<Convidado> spec = null;
         if(Objects.nonNull(nome)){
             spec = Specification
-                    .where(ConvidadoFilter.hasCasamentoId(casamentoId)).and(ConvidadoFilter.hasNome(nome));
+                    .where(ConvidadoFilter.hasCasamentoId(casamentoId))
+                    .and(ConvidadoFilter.hasNome(nome));
         }else{
             spec = Specification
                     .where(ConvidadoFilter.hasCasamentoId(casamentoId));
@@ -115,25 +113,18 @@ public class ConvidadoService {
     private List<Convidado> extractConvidadosWithoutMesa(List<Mesa> mesas, String nome, Integer casamentoId){
 
         List<Convidado> allConvidados = findByCasamentoIdAndNome(casamentoId, nome);
+        List<Convidado> convidadosWithMesa = convidadosWithMesa(mesas);
 
-        if (mesas.isEmpty()){
+        if (mesas.isEmpty() || convidadosWithMesa.isEmpty()){
             return allConvidados;
         }
-
-        Optional<List<Convidado>> convidadosWithMesaOptional = convidadosWithMesa(mesas);
-
-        if (convidadosWithMesaOptional.isEmpty()){
-            return allConvidados;
-        }
-
-        List<Convidado> convidadosWithMesa = convidadosWithMesaOptional.get();
 
         return allConvidados.stream().filter(convidado -> !convidadosWithMesa.contains(convidado))
                 .toList();
     }
 
-    public Optional<List<Convidado>> convidadosWithMesa(List<Mesa> mesas){
-        return mesas.stream().map(Mesa::getConvidados).findFirst();
+    public List<Convidado> convidadosWithMesa(List<Mesa> mesas){
+        return mesas.stream().map(Mesa::getConvidados).findFirst().orElse(new ArrayList<>());
     }
 
     private List<Convidado> removeDuplicatedConvidados(List<Convidado> convidados){
