@@ -98,10 +98,6 @@ public class CasalService {
         Casamento casamento = casamentoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
         Casal casal = casamento.getCasal();
-        Integer casalId = Objects.nonNull(casal) ? casal.getId() : null;
-        if(Objects.isNull(casalId)){
-            throw new ResourceNotFoundException("Casal não encontrado!");
-        }
         casal.setOrcamentoTotal(orcamentoTotal);
         return repository.save(casal);
     }
