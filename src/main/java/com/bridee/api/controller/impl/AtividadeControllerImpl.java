@@ -7,6 +7,7 @@ import com.bridee.api.mapper.request.AtividadeRequestMapper;
 import com.bridee.api.mapper.response.AtividadeResponseMapper;
 import com.bridee.api.service.CronogramaService;
 import com.bridee.api.utils.UriUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +38,7 @@ public class AtividadeControllerImpl {
     }
 
     @PostMapping("/cronograma/{cronogramaId}")
-    public ResponseEntity<AtividadeResponseDto> saveAtividade(@RequestBody AtividadeRequestDto requestDto,
+    public ResponseEntity<AtividadeResponseDto> saveAtividade(@RequestBody @Valid AtividadeRequestDto requestDto,
                                                               @PathVariable Integer cronogramaId){
         Atividade atividade = requestMapper.toEntity(requestDto);
         atividade = cronogramaService.saveAtividade(atividade, cronogramaId);
@@ -46,7 +47,7 @@ public class AtividadeControllerImpl {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AtividadeResponseDto> updateAtividade(@RequestBody AtividadeRequestDto requestDto,
+    public ResponseEntity<AtividadeResponseDto> updateAtividade(@RequestBody @Valid AtividadeRequestDto requestDto,
                                                                 @PathVariable Integer id){
         Atividade atividade = requestMapper.toEntity(requestDto);
         atividade = cronogramaService.updateAtividade(atividade, id);
