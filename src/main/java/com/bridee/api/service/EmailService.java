@@ -14,14 +14,12 @@ import com.bridee.api.entity.enums.email.template.EmailTemplate;
 import com.bridee.api.pattern.strategy.message.impl.EmailSender;
 import com.bridee.api.utils.AzureBlobStorageProperties;
 import com.bridee.api.utils.EmailTemplateBuilder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -48,10 +46,6 @@ public class EmailService {
     }
 
     public void sendRegistrationEmail(Usuario usuario){
-
-        if (Objects.isNull(usuario)){
-            throw new IllegalArgumentException("Usuario não encontrado!");
-        }
 
         var verificationToken = verificationTokenService.generateVerificationToken(usuario);
 
