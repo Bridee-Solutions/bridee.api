@@ -25,7 +25,6 @@ import java.util.Objects;
 public class CasamentoService {
 
     private final CasamentoRepository repository;
-    private final AssessorService assessorService;
     private final OrcamentoFornecedorRepository orcamentoFornecedorRepository;
     private final CustoRepository custoRepository;
     private final PedidoAssessoriaService pedidoAssessoriaService;
@@ -70,17 +69,25 @@ public class CasamentoService {
     }
 
     public Assessor vinculateAssessorToWedding(Integer casamentoId, Integer assessorId) {
-        PedidoAssessoria pedidoAssessoria = generatePedidoAssessoria(casamentoId, assessorId);
+        PedidoAssessoria pedidoAssessoria = createPedidoAssessoria(casamentoId, assessorId);
         return pedidoAssessoria.getAssessor();
     }
 
-    private PedidoAssessoria generatePedidoAssessoria(Integer casamentoId, Integer assessorId){
-        Assessor assessor = assessorService.findById(assessorId);
-        Casamento casamento = Casamento.builder()
-                .id(casamentoId).build();
-        PedidoAssessoria pedidoAssessoria = new PedidoAssessoria(PedidoAssessoriaStatusEnum.NAO_ASSESSORADO,
-                casamento, assessor);
+    private PedidoAssessoria createPedidoAssessoria(Integer casamentoId, Integer assessorId){
+        PedidoAssessoria pedidoAssessoria = buildPedidoAssessoria(casamentoId, assessorId);
         return pedidoAssessoriaService.save(pedidoAssessoria);
+    }
+
+    private PedidoAssessoria buildPedidoAssessoria(Integer casamentoId, Integer assessorId){
+        Assessor assessor = new Assessor(assessorId);
+        Casamento casamento = Casamento.builder()
+                .id(casamentoId)
+                .build();
+        return PedidoAssessoria.builder()
+                .assessor(assessor)
+                .casamento(casamento)
+                .status(PedidoAssessoriaStatusEnum.NAO_ASSESSORADO)
+                .build();
     }
 
     public BigDecimal calculateOrcamento(Integer casamentoId) {
@@ -88,6 +95,10 @@ public class CasamentoService {
         Casal casal = casamento.getCasal();
         Long totalPriceItens = custoRepository.totalPriceItens(casal.getId());
         Long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casal.getId());
+        return calculateOrcamento(totalPriceItens, totalPriceOrcamento);
+    }
+
+    private BigDecimal calculateOrcamento(Long totalPriceItens, Long totalPriceOrcamento){
         if (Objects.nonNull(totalPriceItens) && Objects.nonNull(totalPriceOrcamento)) {
             return new BigDecimal(totalPriceItens + totalPriceOrcamento);
         }
@@ -98,7 +109,6 @@ public class CasamentoService {
             return new BigDecimal(totalPriceOrcamento);
         }
         return new BigDecimal("0");
-
     }
 
     public void denyWedding(Integer casamentoId, Integer assessorId) {
