@@ -17,9 +17,9 @@ import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.utils.CsvUtils;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -54,11 +54,7 @@ public class OrcamentoService {
         Casamento casamento = casamentoRepository.findById(casamentoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado"));
         Casal casal = casamento.getCasal();
-        Integer casalId = Objects.nonNull(casal) ? casal.getId() : null;
-        if (Objects.isNull(casalId)){
-            throw new ResourceNotFoundException("Casal não encontrado!");
-        }
-        return casalId;
+        return casal.getId();
     }
 
     @Transactional
@@ -124,22 +120,27 @@ public class OrcamentoService {
 
     @Transactional
     public BigDecimal calculateTotalOrcamento(Casal casal){
-
         if (Objects.isNull(casal)){
             throw new ResourceNotFoundException("Não foi possível calcular o orcamento de um casal não cadastrado");
         }
-        List<ItemOrcamento> itensOrcamento = casal.getItemOrcamentos();
-        List<OrcamentoFornecedor> orcamentoFornecedores = casal.getOrcamentoFornecedores();
 
-        Double valorTotalItens = itensOrcamento.stream().mapToDouble(item -> item.getCustos().stream()
-                .mapToDouble(custo -> Double.parseDouble(custo.getPrecoAtual().toString())).sum()).sum();
-
-        Double valorTotalFornecedores = orcamentoFornecedores.stream()
-                .mapToDouble(orcamento -> Double.parseDouble(orcamento.getPreco().toString())).sum();
-
-        BigDecimal totalItens = new BigDecimal(valorTotalItens);
-        BigDecimal totalFornecedores = new BigDecimal(valorTotalFornecedores);
+        BigDecimal totalItens = calculateTotalItens(casal);
+        BigDecimal totalFornecedores = calculateTotalFornecedores(casal);
         return totalItens.add(totalFornecedores);
+    }
+
+    private  BigDecimal calculateTotalItens(Casal casal){
+        List<ItemOrcamento> itensOrcamento = casal.getItemOrcamentos();
+        double valorTotalItens = itensOrcamento.stream().mapToDouble(item -> item.getCustos().stream()
+                .mapToDouble(custo -> Double.parseDouble(custo.getPrecoAtual().toString())).sum()).sum();
+        return new BigDecimal(valorTotalItens);
+    }
+
+    private BigDecimal calculateTotalFornecedores(Casal casal){
+        List<OrcamentoFornecedor> orcamentoFornecedores = casal.getOrcamentoFornecedores();
+        double valorTotalFornecedores = orcamentoFornecedores.stream()
+                .mapToDouble(orcamento -> Double.parseDouble(orcamento.getPreco().toString())).sum();
+        return new BigDecimal(valorTotalFornecedores);
     }
 
     public byte[] generateCsvFile(Integer id) {
