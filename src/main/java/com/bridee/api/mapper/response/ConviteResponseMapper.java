@@ -1,9 +1,6 @@
 package com.bridee.api.mapper.response;
 
-import com.bridee.api.dto.response.ConvidadoResponseDto;
-import com.bridee.api.dto.response.ConviteResponseDto;
-import com.bridee.api.dto.response.ConviteResumoResponseDto;
-import com.bridee.api.dto.response.ConvitesResponseDto;
+import com.bridee.api.dto.response.*;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.mapper.BaseMapper;
@@ -24,7 +21,7 @@ public interface ConviteResponseMapper extends BaseMapper<ConvitesResponseDto, C
         return convidados.stream().map(ConvidadoResponseDto::new).toList();
     }
 
-    default ConviteResumoResponseDto fromProjection(ConviteResumoProjection projection){
+    default ConviteResumoResponseDto fromProjection(ConviteResumoProjection projection, List<CategoriaConvidadoResumoDto> categoriaConvidadoResumo){
         if(projection == null){
             return null;
         }
@@ -34,6 +31,7 @@ public interface ConviteResponseMapper extends BaseMapper<ConvitesResponseDto, C
                 .totalConvidados(projection.getTotalConvidados())
                 .totalCriancas(projection.getTotalCriancas())
                 .totalAdultos(projection.getTotalAdultos())
+                .resumoCategorias(categoriaConvidadoResumo)
                 .build();
     }
 
