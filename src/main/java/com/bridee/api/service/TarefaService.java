@@ -6,14 +6,15 @@ import com.bridee.api.entity.Tarefa;
 import com.bridee.api.entity.TarefaCasal;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.projection.casamento.CasamentoDateProjection;
 import com.bridee.api.repository.TarefaCasalRepository;
 import com.bridee.api.repository.TarefaRepository;
 import com.bridee.api.repository.specification.TarefaFilter;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,16 +29,21 @@ public class TarefaService {
     private final CasamentoService casamentoService;
     private final TarefaCasalRepository tarefaCasalRepository;
 
+    @Transactional(readOnly = true)
     public List<Tarefa> findAllByCasalId(Integer casamentoId, Map<String, Object> params){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
-        String years = buildCasalTaskYearsFilter(casal.getId());
-        params.put("casalId", casal.getId());
-        params.put("anos", years);
-        TarefaFilter tarefaFilter = new TarefaFilter();
-        tarefaFilter.buildFilter(params);
 
+        TarefaFilter tarefaFilter = buildTarefaFilter(casal.getId(), params);
         return repository.findAll(tarefaFilter);
+    }
+
+    private TarefaFilter buildTarefaFilter(Integer casalId, Map<String, Object> params){
+        String years = buildCasalTaskYearsFilter(casalId);
+        params.put("casalId", casalId);
+        params.put("anos", years);
+        return new TarefaFilter()
+                .buildFilter(params);
     }
 
     private String buildCasalTaskYearsFilter(Integer id) {
@@ -50,16 +56,14 @@ public class TarefaService {
         Map<String, Object> filterAttributes = new HashMap<>();
         filterAttributes.put("casalId", casalId);
 
-        TarefaFilter tarefaFilter = new TarefaFilter();
-        tarefaFilter.buildFilter(filterAttributes);
+        TarefaFilter tarefaFilter = new TarefaFilter()
+                .buildFilter(filterAttributes);
         return repository.findAll(tarefaFilter);
     }
 
     public Tarefa save(Integer casamentoId, Tarefa tarefa){
-
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
-
         if (tarefaCasalRepository.existsByTarefaNomeAndCasalId(tarefa.getNome(), casal.getId())){
             throw new ResourceAlreadyExists("Tarefa já cadastrada no casamento!");
         }
@@ -76,8 +80,8 @@ public class TarefaService {
         if (!repository.existsById(tarefaId)){
             throw new ResourceNotFoundException("Tarefa não encontrada");
         }
-        Casamento casamento = casamentoService.findById(casamentoId);
-        tarefa.setMesesAnteriores(casamento.getDataFim().getMonthValue() - tarefa.getDataLimite().getMonthValue());
+        CasamentoDateProjection result = casamentoService.findDataFimByCasamentoId(casamentoId);
+        tarefa.setMesesAnteriores(result.getDataFim().getMonthValue() - tarefa.getDataLimite().getMonthValue());
         tarefa.setId(tarefaId);
         return repository.save(tarefa);
     }

@@ -37,11 +37,6 @@ import java.util.List;
 public class InformacaoAssociadoControllerImpl {
     
     private final InformacaoAssociadoService service;
-    private final TipoCasamentoAssociadoService tipoCasamentoAssociadoService;
-    private final TipoCerimoniaAssociadoService tipoCerimoniaAssociadoService;
-    private final FormaPagamentoAssociadoService formaPagamentoAssociadoService;
-    private final ImagemAssociadoService imagemAssociadoService;
-    private final InformacaoAssociadoMapper requestMapper;
     private final InformacaoAssociadoResponseMapper responseMapper;
     
     
@@ -83,11 +78,7 @@ public class InformacaoAssociadoControllerImpl {
     public ResponseEntity<InformacaoAssociadoResponseDto> findByAssessorId(@PathVariable Integer id){
         InformacaoAssociado info = service.findByAssessorId(id);
         InformacaoAssociadoResponseDto response = responseMapper.toDomain(info);
-        response.setTiposCasamento(tipoCasamentoAssociadoService.findAllByInformacaoAssociadoId(info));
-        response.setTiposCerimonia(tipoCerimoniaAssociadoService.findAllByInformacaoAssociadoId(info));
-        response.setFormasPagamento(formaPagamentoAssociadoService.findAllByInformacaoAssociadoId(info));
-        response.setImagemPrimaria(imagemAssociadoService.findImagemPrincipalBase64(info.getId()));
-        response.setImagensSecundarias(imagemAssociadoService.findImagensSecundarias(info.getId()));
+        response.setDetalhes(service.buildInformacaoAssociadoDetalhes(info));
         return ResponseEntity.ok().body(response);
     }
 }

@@ -4,9 +4,9 @@ import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.VerificationToken;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.VerificationTokenRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -37,6 +37,7 @@ public class VerificationTokenService {
             return true;
     }
 
+    @Transactional(readOnly = true)
     public VerificationToken findVerificationTokenByValor(String valor){
         return repository.findByValor(valor).orElseThrow(() -> new ResourceNotFoundException("Token de verificação não encontrado."));
     }

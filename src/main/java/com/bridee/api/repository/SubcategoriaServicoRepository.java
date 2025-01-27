@@ -2,10 +2,12 @@ package com.bridee.api.repository;
 
 import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.projection.orcamento.SubcategoriaProjection;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 
 import java.util.List;
 
@@ -19,6 +21,9 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
     @Query("""
             SELECT s FROM SubcategoriaServico s WHERE s.categoriaServico.id = :categoriaId
             """)
+    @QueryHints({
+            @QueryHint(name = "org.hibernate.readOnly", value="true")
+    })
     List<SubcategoriaServico> findAllByCategoriaId(Integer categoriaId);
 
     @Query("""
@@ -29,6 +34,9 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
     @Query("""
             SELECT f.subcategoriaServico FROM Fornecedor f WHERE f.id = :id
             """)
+    @QueryHints({
+            @QueryHint(name = "org.hibernate.readOnly", value="true")
+    })
     SubcategoriaServico findByFornecedorId(Integer id);
 
     @Query("""

@@ -101,7 +101,7 @@ public class ItemOrcamentoService {
         if (custos.isEmpty()){
             throw new UnprocessableEntityException("Custos não encontrados!");
         }
-        Integer itemOrcamentoId = custos.get(0).getId();
+        Integer itemOrcamentoId = custos.get(0).getItemOrcamento().getId();
         List<Custo> allCustos = custoService.findAllByItemOrcamentoId(itemOrcamentoId);
         List<Integer> custosToBeDeleted = inactivesCustosIds(allCustos, custos);
         custoService.deleteAllByIds(custosToBeDeleted);

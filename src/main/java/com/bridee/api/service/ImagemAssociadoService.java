@@ -43,14 +43,16 @@ public class ImagemAssociadoService {
         if (Objects.isNull(nomeImagensSecundarias) || nomeImagensSecundarias.isEmpty()){
             return null;
         }
-        return nomeImagensSecundarias.stream().map(imagem -> {
-            String data = "";
-            byte[] image = imagemService.downloadImage(imagem.getNome());
-            if (Objects.nonNull(image)){
-                data = Base64.getEncoder()
-                        .encodeToString(image);
-            }
-            return new ImagemResponseDto(imagem.getId(), data);
-        }).toList();
+        return nomeImagensSecundarias.stream().map(this::buildImagemSecundaria).toList();
+    }
+
+    private ImagemResponseDto buildImagemSecundaria(ImagemAssociadoProjection imagem){
+        String data = "";
+        byte[] image = imagemService.downloadImage(imagem.getNome());
+        if (Objects.nonNull(image)){
+            data = Base64.getEncoder()
+                    .encodeToString(image);
+        }
+        return new ImagemResponseDto(imagem.getId(), data);
     }
 }

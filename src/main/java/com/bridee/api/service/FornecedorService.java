@@ -14,11 +14,11 @@ import com.bridee.api.projection.associado.AssociadoResponseDto;
 import com.bridee.api.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.utils.PageUtils;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +36,6 @@ public class FornecedorService {
     private final TipoCasamentoService tipoCasamentoService;
     private final FormaPagamentoService formaPagamentoService;
     private final AssociadoGeralResponseMapper geralResponseMapper;
-    private final BlobStorageStrategy blobStorageStrategy;
     private final InformacaoAssociadoService informacaoAssociadoService;
 
     public Page<Fornecedor> findAll(Pageable pageable){
@@ -48,38 +47,38 @@ public class FornecedorService {
         return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
+    @Transactional(readOnly = true)
     public Page<AssociadoResponseDto> findFornecedorDetails(Integer subcategoriaId, Pageable pageable){
         subcategoriaServicoService.existsById(subcategoriaId);
         Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        associadoResponseDto.forEach(associado -> {
-            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByFornecedorId(associado.getId());
-            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
-            if (Objects.nonNull(imagemPrincipal)){
-                associado.setImagemPrincipal(imagemPrincipal.getData());
-            }
-        });
+        fillFornecedorDetailsImages(associadoResponseDto);
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage);
     }
 
+    @Transactional(readOnly = true)
     public Page<AssociadoResponseDto> findFornecedorDetailsByCategoria(Integer categoriaId,String nome, Pageable pageable){
         categoriaServicoService.existsById(categoriaId);
         Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsByCategoriaAndNome(categoriaId, nome,pageable);
 
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        associadoResponseDto.forEach(associado -> {
-            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByFornecedorId(associado.getId());
-            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
-            if (Objects.nonNull(imagemPrincipal)){
-                associado.setImagemPrincipal(imagemPrincipal.getData());
-            }
-        });
+        fillFornecedorDetailsImages(associadoResponseDto);
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage);
     }
 
+    private void fillFornecedorDetailsImages(List<AssociadoResponseDto> associadoResponse){
+        associadoResponse.forEach(associado -> {
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getInformacaoAssociadoId());
+            if (Objects.nonNull(imagemPrincipal)){
+                associado.setImagemPrincipal(imagemPrincipal.getData());
+            }
+        });
+    }
+
+    @Transactional(readOnly = true)
     public AssociadoGeralResponseDto findFornecedorInformations(Integer id){
         if (!repository.existsById(id)){
             throw new ResourceNotFoundException("Fornecedor não encontrado!");
@@ -90,15 +89,18 @@ public class FornecedorService {
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do fornecedor");
         }
 
-        List<String> imagesUrl = imagemService.findUrlBase64ImagensFornecedor(id);
-        List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoFornecedor(id);
-        List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoFornecedor(id);
+        return buildAssociadoGeralResponseDto(resultProjection);
+    }
 
-        AssociadoGeralResponseDto geralDto = geralResponseMapper.toGeralDto(resultProjection);
+    private AssociadoGeralResponseDto buildAssociadoGeralResponseDto(AssociadoGeralResponseProjection result){
+        List<String> imagesUrl = imagemService.findUrlBase64ImagensFornecedor(result.getId());
+        List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoFornecedor(result.getId());
+        List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoFornecedor(result.getId());
+
+        AssociadoGeralResponseDto geralDto = geralResponseMapper.toGeralDto(result);
         geralDto.setImagens(imagesUrl);
         geralDto.setFormasPagamento(nomeFormasPagamento);
         geralDto.setTiposCasamento(tiposCasamento);
-
         return geralDto;
     }
 

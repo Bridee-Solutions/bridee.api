@@ -49,11 +49,7 @@ public class ImagemCasalService {
         Casamento casamento = casamentoRepository.findById(casamentoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
         Casal casal = casamento.getCasal();
-        Integer casalId = Objects.nonNull(casal) ? casal.getId() : null;
-        if (Objects.isNull(casalId)){
-            throw new ResourceNotFoundException("Casal não encontrado!");
-        }
-        Imagem imagem = buildCasalImage(casalId, imageMetadata);
+        Imagem imagem = buildCasalImage(casal.getId(), imageMetadata);
         imagemService.uploadImage(multipartFile, imagem.getNome());
     }
 

@@ -5,29 +5,31 @@ import com.bridee.api.entity.Mesa;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.MesaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MesaService {
 
     private final MesaRepository repository;
     private final CasamentoService casamentoService;
 
+    @Transactional(readOnly = true)
     public List<Mesa> findAllByCasamentoId(Integer casamentoId){
         casamentoService.existsById(casamentoId);
         return repository.findAllByCasamentoId(casamentoId);
     }
 
+    @Transactional(readOnly = true)
     public Mesa findById(Integer id){
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada!"));
     }
 
-    @Transactional
     public Mesa save(Mesa mesa, Integer casamentoId){
         validateMesaCasamento(mesa, casamentoId);
         mesa.setCasamento(Casamento.builder()
@@ -36,7 +38,6 @@ public class MesaService {
         return repository.save(mesa);
     }
 
-    @Transactional
     public Mesa update(Mesa mesa, Integer id){
         if (!repository.existsById(id)){
             throw new ResourceNotFoundException("Mesa não encontrada");
@@ -45,7 +46,6 @@ public class MesaService {
         return repository.save(mesa);
     }
 
-    @Transactional
     public void deleteById(Integer id){
         if (!repository.existsById(id)){
             throw new ResourceNotFoundException("Mesa não encontrada");

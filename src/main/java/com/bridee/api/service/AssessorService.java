@@ -4,14 +4,12 @@ import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.entity.Assessor;
-import com.bridee.api.entity.InformacaoAssociado;
 import com.bridee.api.entity.Role;
 import com.bridee.api.entity.UsuarioRole;
 import com.bridee.api.entity.enums.RoleEnum;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
-import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
 import com.bridee.api.projection.associado.AssociadoResponseDto;
@@ -21,16 +19,13 @@ import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.PatchHelper;
-import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,21 +60,25 @@ public class AssessorService {
                 .orElseThrow(() -> new ResourceNotFoundException("Assessor não encontrado"));
     }
 
+    @Transactional(readOnly = true)
     public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
         Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
         List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
 
+        fillAssessorDetailsImages(associadoResponse);
+        return PageUtils.collectionToPage(associadoResponse, assessorDetails);
+    }
+
+    private void fillAssessorDetailsImages(List<AssociadoResponseDto> associadoResponse){
         associadoResponse.forEach(associado -> {
-            InformacaoAssociado informacaoAssociado = informacaoAssociadoService.findByAssessorId(associado.getId());
-            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(informacaoAssociado.getId());
+            ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getInformacaoAssociadoId());
             if (Objects.nonNull(imagemPrincipal)){
                 associado.setImagemPrincipal(imagemPrincipal.getData());
             }
         });
-
-        return PageUtils.collectionToPage(associadoResponse, assessorDetails);
     }
 
+    @Transactional(readOnly = true)
     public AssociadoGeralResponseDto findAssessorInformation(Integer assessorId){
         if (!assessorRepository.existsById(assessorId)){
             throw new ResourceNotFoundException("Assessor não encontrado!");
@@ -90,16 +89,19 @@ public class AssessorService {
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do assessor");
         }
 
-        List<String> imagensUrl = imagemService.findBase64UrlImagensAssessor(assessorId);
-        List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(assessorId);
-        List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoAssessor(assessorId);
+        return buildAssociadoGeralResponseDto(resultProjection);
+    }
 
-        AssociadoGeralResponseDto geralResponseDto = geralResponseMapper.toGeralDto(resultProjection);
-        geralResponseDto.setImagens(imagensUrl);
-        geralResponseDto.setFormasPagamento(nomeFormasPagamento);
-        geralResponseDto.setTiposCasamento(tiposCasamento);
+    private AssociadoGeralResponseDto buildAssociadoGeralResponseDto(AssociadoGeralResponseProjection result){
+        List<String> imagesUrl = imagemService.findBase64UrlImagensAssessor(result.getId());
+        List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(result.getId());
+        List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoAssessor(result.getId());
 
-        return geralResponseDto;
+        AssociadoGeralResponseDto geralDto = geralResponseMapper.toGeralDto(result);
+        geralDto.setImagens(imagesUrl);
+        geralDto.setFormasPagamento(nomeFormasPagamento);
+        geralDto.setTiposCasamento(tiposCasamento);
+        return geralDto;
     }
 
     public Assessor save(Assessor assessor){
@@ -123,6 +125,7 @@ public class AssessorService {
         return createdAssessor;
     }
 
+    @Transactional(readOnly = true)
     public Assessor findById(Integer id){
         return assessorRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
@@ -136,12 +139,6 @@ public class AssessorService {
     public void deleteById(Integer id){
         if (!assessorRepository.existsById(id)) throw new ResourceNotFoundException();
         assessorRepository.deleteById(id);
-    }
-
-    public void existsById(Integer id){
-        if(!assessorRepository.existsById(id)){
-            throw new ResourceNotFoundException("Assessor não encontrado!");
-        }
     }
 
     public ValidateAssessorFieldsResponseDto validateAssessorFields(ValidateAssessorFieldsRequestDto requestDto) {
