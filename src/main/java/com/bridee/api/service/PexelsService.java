@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,17 +23,8 @@ public class PexelsService {
 
     public PexelsImageResponseDto findPexelsImages(String query){
         ResponseEntity<PexelsImageResponseDto> images = pexelsClient.getImages(query, apiKey);
-        PexelsImageResponseDto responseDto = images.getBody() != null ? images.getBody() : null;
+        PexelsImageResponseDto responseDto = Objects.nonNull(images) ? images.getBody() : null;
         if (responseDto == null) throw new ImagesNotFoundException();
-
-        ListaObj<PexelsPhotos> photos = new ListaObj<>();
-        responseDto.getPhotos().forEach(photos::add);
-        List<PexelsPhotos> list = new ArrayList<>();
-        Comparable<PexelsPhotos>[] pexelsPhotos = MergeSort.mergeSort(photos);
-        for (Comparable<PexelsPhotos> pexel: pexelsPhotos){
-            list.add((PexelsPhotos) pexel);
-        }
-        responseDto.setPhotos(list);
         return responseDto;
     };
 

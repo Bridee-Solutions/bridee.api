@@ -9,13 +9,13 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DataFilterDto {
+public class DateFilterDto {
 
     private Integer ano;
     private LocalDate dataInicio;
     private LocalDate dataFim;
 
-    public DataFilterDto(LocalDate dataInicio, LocalDate dataFim) {
+    public DateFilterDto(LocalDate dataInicio, LocalDate dataFim) {
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
     }

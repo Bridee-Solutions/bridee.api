@@ -33,7 +33,6 @@ public class PedidoAssessoriaService {
         return repository.findAllCasamentoPendente(assessorId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO, pageable);
     }
 
-    //TODO REFATORAR
     public PedidoAssessoria findPedidoAssessorado(Integer casamentoId) {
         PedidoAssessoria pedidoAssessorado = repository.findPedidoByStatus(casamentoId, PedidoAssessoriaStatusEnum.ASSESSORADO).orElse(null);
         if (Objects.nonNull(pedidoAssessorado)){

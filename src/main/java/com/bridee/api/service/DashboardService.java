@@ -44,6 +44,7 @@ public class DashboardService {
     private final TarefaResponseMapper tarefaResponseMapper;
     private final CasalResponseMapper casalResponseMapper;
 
+    @Transactional(readOnly = true)
     public DashboardResponseDto buildDashboard(Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();

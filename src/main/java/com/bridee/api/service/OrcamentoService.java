@@ -41,7 +41,7 @@ public class OrcamentoService {
     private final SubcategoriaServicoService subcategoriaServicoService;
     private final CasamentoRepository casamentoRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public OrcamentoProjection findCasamentoOrcamento(Integer casamentoId){
         Integer casalId = extractCasalId(casamentoId);
         orcamentoFornecedorService.findByCasalId(casalId);

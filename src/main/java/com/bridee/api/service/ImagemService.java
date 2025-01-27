@@ -4,7 +4,6 @@ import com.bridee.api.entity.Imagem;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.repository.AssessorRepository;
-import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.ImagemRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class ImagemService {
     private final FornecedorRepository fornecedorRepository;
     private final AssessorRepository assessorRepository;
     private final BlobStorageStrategy blobStorageStrategy;
-    private final CasalRepository casalRepository;
 
     public List<String> findUrlBase64ImagensFornecedor(Integer fornecedorId){
         return findUrlImagensFornecedor(fornecedorId).stream()
@@ -32,7 +30,7 @@ public class ImagemService {
                         return Base64.getEncoder().encodeToString(imagem);
                     }
                     return null;
-                }).toList();
+                }).filter(Objects::nonNull).toList();
     };
 
     public List<byte[]> findUrlImagensFornecedor(Integer fornecedorId){
@@ -54,7 +52,7 @@ public class ImagemService {
                         return Base64.getEncoder().encodeToString(imagem);
                     }
                     return null;
-                }).toList();
+                }).filter(Objects::nonNull).toList();
     }
 
     public List<byte[]> findUrlImagensAssessor(Integer assessorId){

@@ -7,6 +7,7 @@ import com.bridee.api.entity.PedidoAssessoria;
 import com.bridee.api.entity.enums.PedidoAssessoriaStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
+import com.bridee.api.projection.casamento.CasamentoDateProjection;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.CustoRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
@@ -31,6 +32,10 @@ public class CasamentoService {
 
     public Casamento findById(Integer id){
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
+    }
+
+    public CasamentoDateProjection findDataFimByCasamentoId(Integer id){
+        return repository.findDataFimByCasamentoId(id);
     }
 
     public Integer getCasamentoId(Integer casalId){

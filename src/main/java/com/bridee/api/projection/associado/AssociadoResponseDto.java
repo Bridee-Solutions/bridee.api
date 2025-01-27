@@ -6,6 +6,7 @@ import lombok.Data;
 public class AssociadoResponseDto {
 
     private Integer id;
+    private Integer informacaoAssociadoId;
     private String nome;
     private String visaoGeral;
     private String cidade;

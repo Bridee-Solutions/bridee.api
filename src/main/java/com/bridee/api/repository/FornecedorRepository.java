@@ -15,6 +15,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
     @Query("""
             SELECT ifs.fornecedor.nome as nome,
             ifs.fornecedor.id as id,
+            ifs.id as informacaoAssociadoId,
             ifs.visaoGeral as visaoGeral,
             ifs.cidade as cidade,
             ifs.bairro as bairro,
@@ -27,6 +28,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
     @Query("""
             SELECT ifs.fornecedor.nome as nome,
             ifs.fornecedor.id as id,
+            ifs.id as informacaoAssociadoId,
             ifs.visaoGeral as visaoGeral,
             ifs.cidade as cidade,
             ifs.bairro as bairro,

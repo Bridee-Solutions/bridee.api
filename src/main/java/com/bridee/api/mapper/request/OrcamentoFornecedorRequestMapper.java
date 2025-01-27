@@ -11,6 +11,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface OrcamentoFornecedorRequestMapper extends BaseMapper<OrcamentoFornecedorRequestDto, OrcamentoFornecedor> {
@@ -43,9 +44,19 @@ public interface OrcamentoFornecedorRequestMapper extends BaseMapper<OrcamentoFo
     };
 
     default Fornecedor generateFornecedor(Integer fornecedorId){
+        if(Objects.isNull(fornecedorId)){
+            return null;
+        }
         return Fornecedor.builder()
                 .id(fornecedorId)
                 .build();
+    }
+
+    default Casal generateCasal(Integer casalId){
+        if(Objects.isNull(casalId)){
+            return null;
+        }
+        return new Casal(casalId);
     }
 
 

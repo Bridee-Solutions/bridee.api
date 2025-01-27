@@ -21,6 +21,7 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
     @Query("""
             SELECT ifs.assessor.nome as nome,
             ifs.assessor.id as id,
+            ifs.id as informacaoAssociadoId,
             ifs.visaoGeral as visaoGeral,
             ifs.cidade as cidade,
             ifs.bairro as bairro,
@@ -37,6 +38,7 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
     @Query("""
             SELECT ifs.assessor.nome as nome,
             ifs.assessor.id as id,
+            ifs.id as informacaoAssociadoId,
             ifs.visaoGeral as visaoGeral,
             ifs.cidade as cidade,
             ifs.bairro as bairro,
