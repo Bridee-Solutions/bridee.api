@@ -4,7 +4,7 @@ import com.bridee.api.dto.response.*;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.mapper.BaseMapper;
-import com.bridee.api.projection.convite.ConviteResumoProjection;
+import com.bridee.api.repository.projection.convite.ConviteResumoProjection;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

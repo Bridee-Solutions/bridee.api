@@ -12,7 +12,7 @@ import com.bridee.api.exception.CsvDownloadErro;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.FornecedorOrcamentoRequestMapper;
 import com.bridee.api.mapper.request.ItemOrcamentoRequestMapper;
-import com.bridee.api.projection.orcamento.OrcamentoProjection;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.CasamentoRepository;

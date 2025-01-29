@@ -1,12 +1,11 @@
 package com.bridee.api.repository;
 
 import com.bridee.api.entity.Assessor;
-import com.bridee.api.projection.associado.AssociadoResponseProjection;
-import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
+import com.bridee.api.repository.projection.associado.AssociadoResponseProjection;
+import com.bridee.api.repository.projection.associado.AssociadoGeralResponseProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;

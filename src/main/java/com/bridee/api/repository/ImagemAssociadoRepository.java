@@ -2,7 +2,7 @@ package com.bridee.api.repository;
 
 import com.bridee.api.entity.ImagemAssociado;
 import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
-import com.bridee.api.projection.associado.ImagemAssociadoProjection;
+import com.bridee.api.repository.projection.associado.ImagemAssociadoProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

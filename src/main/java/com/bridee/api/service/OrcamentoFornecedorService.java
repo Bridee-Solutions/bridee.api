@@ -1,12 +1,11 @@
 package com.bridee.api.service;
 
-import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.entity.OrcamentoFornecedor;
 import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.mapper.response.OrcamentoFornecedorResponseMapper;
-import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
+import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

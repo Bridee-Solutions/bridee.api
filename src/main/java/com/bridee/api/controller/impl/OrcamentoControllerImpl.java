@@ -5,7 +5,7 @@ import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.mapper.response.CasalOrcamentoResponseMapper;
-import com.bridee.api.projection.orcamento.OrcamentoProjection;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.service.OrcamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

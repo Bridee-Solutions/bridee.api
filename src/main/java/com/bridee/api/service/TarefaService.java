@@ -6,13 +6,11 @@ import com.bridee.api.entity.Tarefa;
 import com.bridee.api.entity.TarefaCasal;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.projection.casamento.CasamentoDateProjection;
+import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
 import com.bridee.api.repository.TarefaCasalRepository;
 import com.bridee.api.repository.TarefaRepository;
 import com.bridee.api.repository.specification.TarefaFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

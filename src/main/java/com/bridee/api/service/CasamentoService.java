@@ -7,7 +7,7 @@ import com.bridee.api.entity.PedidoAssessoria;
 import com.bridee.api.entity.enums.PedidoAssessoriaStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
-import com.bridee.api.projection.casamento.CasamentoDateProjection;
+import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.CustoRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;

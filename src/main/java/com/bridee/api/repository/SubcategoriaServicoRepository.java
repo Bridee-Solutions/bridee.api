@@ -1,7 +1,7 @@
 package com.bridee.api.repository;
 
 import com.bridee.api.entity.SubcategoriaServico;
-import com.bridee.api.projection.orcamento.SubcategoriaProjection;
+import com.bridee.api.repository.projection.orcamento.SubcategoriaProjection;
 import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
