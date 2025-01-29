@@ -1,8 +1,7 @@
 package com.bridee.api.repository;
 
 import com.bridee.api.entity.Casamento;
-import com.bridee.api.projection.casamento.CasamentoDateProjection;
-import jakarta.transaction.Transactional;
+import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

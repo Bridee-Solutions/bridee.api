@@ -16,7 +16,7 @@ import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.FornecedorOrcamentoResponseMapper;
 import com.bridee.api.mapper.response.TarefaResponseMapper;
-import com.bridee.api.projection.orcamento.OrcamentoProjection;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -8,7 +8,7 @@ import com.bridee.api.dto.response.ConvitesResponseDto;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.mapper.request.ConviteRequestMapper;
 import com.bridee.api.mapper.response.ConviteResponseMapper;
-import com.bridee.api.projection.orcamento.RelatorioProjection;
+import com.bridee.api.repository.projection.orcamento.RelatorioProjection;
 import com.bridee.api.service.ConviteService;
 import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.UriUtils;

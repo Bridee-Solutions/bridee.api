@@ -1,4 +1,4 @@
-package com.bridee.api.projection.convite;
+package com.bridee.api.repository.projection.convite;
 
 public interface CategoriaConvidadoProjection {
 

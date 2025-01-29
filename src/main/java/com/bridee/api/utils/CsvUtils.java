@@ -1,8 +1,7 @@
 package com.bridee.api.utils;
 
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.projection.orcamento.ItemOrcamentoProjection;
-import com.bridee.api.projection.orcamento.OrcamentoProjection;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -11,8 +10,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class CsvUtils {

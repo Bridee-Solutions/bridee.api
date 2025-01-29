@@ -1,4 +1,4 @@
-package com.bridee.api.projection.orcamento.orcamentofornecedor;
+package com.bridee.api.repository.projection.orcamento.orcamentofornecedor;
 
 import java.math.BigDecimal;
 

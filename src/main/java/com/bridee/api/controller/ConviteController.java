@@ -4,10 +4,7 @@ import com.bridee.api.dto.request.ConviteRequestDto;
 import com.bridee.api.dto.response.ConviteResponseDto;
 import com.bridee.api.dto.response.ConvitesResponseDto;
 import com.bridee.api.dto.response.ErrorResponseDto;
-import com.bridee.api.entity.Convite;
-import com.bridee.api.projection.orcamento.RelatorioProjection;
-import com.bridee.api.utils.PageUtils;
-import com.bridee.api.utils.UriUtils;
+import com.bridee.api.repository.projection.orcamento.RelatorioProjection;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,17 +13,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Controller de convite")

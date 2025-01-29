@@ -2,14 +2,12 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.ImagemAssociado;
-import com.bridee.api.entity.InformacaoAssociado;
 import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
-import com.bridee.api.projection.associado.ImagemAssociadoProjection;
+import com.bridee.api.repository.projection.associado.ImagemAssociadoProjection;
 import com.bridee.api.repository.ImagemAssociadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;

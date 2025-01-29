@@ -2,7 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.projection.orcamento.SubcategoriaProjection;
+import com.bridee.api.repository.projection.orcamento.SubcategoriaProjection;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.SubcategoriaServicoRepository;
 import lombok.RequiredArgsConstructor;
