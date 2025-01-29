@@ -13,15 +13,13 @@ import com.bridee.api.mapper.request.CasalRequestMapper;
 import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
-import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
-import com.bridee.api.pattern.strategy.blobstorage.impl.AzureBlobStorageImpl;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.service.CasamentoService;
 import com.bridee.api.service.ImagemCasalService;
+import com.bridee.api.utils.JsonConverter;
 import com.bridee.api.utils.PatchHelper;
 import com.bridee.api.utils.UriUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,6 +45,7 @@ public class CasalControllerImpl implements CasalController {
     private final CasamentoService casamentoService;
     private final ImagemCasalService imagemCasalService;
     private final PatchHelper patchHelper;
+    private final JsonConverter jsonConverter;
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
@@ -84,8 +83,7 @@ public class CasalControllerImpl implements CasalController {
     public ResponseEntity<Void> uploadImage(@WeddingIdentifier Integer casamentoId,
                                             @RequestParam(value = "metadata") String metadataJson,
                                             @RequestPart("file") MultipartFile file) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ImageMetadata imageMetadata = objectMapper.readValue(metadataJson, ImageMetadata.class);
+        ImageMetadata imageMetadata = jsonConverter.fromJson(metadataJson, ImageMetadata.class);
         imagemCasalService.uploadCasalImage(casamentoId, imageMetadata, file);
         return ResponseEntity.ok().build();
     }
