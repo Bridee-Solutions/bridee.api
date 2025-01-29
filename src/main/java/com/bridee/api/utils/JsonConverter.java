@@ -7,16 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class JsonConverter {
 
-    @Bean
-    public ObjectMapper objectMapper(){
-        return new ObjectMapper();
-    }
+    private final ObjectMapper objectMapper;
 
     public <T> T convertObject(Object object, Class<T> clazz){
         try{
-            return objectMapper().convertValue(object, clazz);
+            return objectMapper.convertValue(object, clazz);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
@@ -24,7 +22,7 @@ public class JsonConverter {
 
     public <T> T fromJson(String json, Class<T> clazz){
         try {
-            return objectMapper().readValue(json,clazz);
+            return objectMapper.readValue(json,clazz);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -32,7 +30,7 @@ public class JsonConverter {
 
     public String toJson(Object object){
         try {
-            return objectMapper().writeValueAsString(object);
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
