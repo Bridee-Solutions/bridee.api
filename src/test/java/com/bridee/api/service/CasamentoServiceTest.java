@@ -36,7 +36,7 @@ public class CasamentoServiceTest {
 
     @BeforeEach
     void setUp(){
-        casamentoService = new CasamentoService(repository, assessorService,
+        casamentoService = new CasamentoService(repository,
                 orcamentoFornecedorRepository, custoRepository, pedidoAssessoriaService);
     }
 

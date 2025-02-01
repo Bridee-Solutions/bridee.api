@@ -10,6 +10,7 @@ import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.util.PageUtilsTest;
+import com.bridee.api.utils.PatchHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,11 +57,13 @@ public class CasalServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private EmailService emailService;
+    @Mock
+    private PatchHelper patchHelper;
 
     @BeforeEach
     void setUp(){
         casalService = new CasalService(repository, roleRepository, casamentoRepository,
-                usuarioRoleRepository, passwordEncoder, emailService);
+                usuarioRoleRepository, passwordEncoder, emailService, patchHelper);
     }
 
     @Test
@@ -129,14 +132,14 @@ public class CasalServiceTest {
         var casal = new Casal(1);
         casal.setNome("Ian");
         casal.setOrcamentoTotal(new BigDecimal("300.0"));
+        when(repository.findById(any())).thenReturn(Optional.of(casal));
         when(repository.save(any())).thenReturn(casal);
-        when(repository.existsById(any())).thenReturn(true);
 
         Casal casalUpdated = casalService.update(casal, 1);
 
         assertNotNull(casalUpdated);
         assertEquals(casalUpdated.getOrcamentoTotal(), new BigDecimal("300.0"));
-        verify(repository, times(1)).existsById(1);
+        verify(repository, times(1)).findById(any());
         verify(repository, times(1)).save(casal);
     }
 
