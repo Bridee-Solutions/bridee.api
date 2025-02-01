@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.dto.request.TarefaRequestDto;
 import com.bridee.api.dto.response.TarefaResponseDto;
 import com.bridee.api.dto.response.TarefasResponseDto;
@@ -35,15 +36,15 @@ public class TarefaControllerImpl {
     private final TarefaResponseMapper responseMapper;
     private final TarefasResponseMapper tarefasResponseMapper;
 
-    @GetMapping("/casamento/{casamentoId}")
-    public ResponseEntity<List<TarefasResponseDto>> findAll(@PathVariable Integer casamentoId,
+    @GetMapping
+    public ResponseEntity<List<TarefasResponseDto>> findAll(@WeddingIdentifier Integer casamentoId,
                                                             @RequestParam Map<String, Object> params){
         List<Tarefa> tarefas = service.findAllByCasalId(casamentoId, params);
         return ResponseEntity.ok(tarefasResponseMapper.toTarefasDto(tarefas));
     }
 
-    @PostMapping("/casamento/{casamentoId}")
-    public ResponseEntity<TarefaResponseDto> save(@PathVariable Integer casamentoId,
+    @PostMapping
+    public ResponseEntity<TarefaResponseDto> save(@WeddingIdentifier Integer casamentoId,
                                                   @RequestBody @Valid TarefaRequestDto requestDto){
         Tarefa tarefa = requestMapper.toEntity(requestDto);
         tarefa = service.save(casamentoId, tarefa);
@@ -51,8 +52,8 @@ public class TarefaControllerImpl {
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
     }
 
-    @PutMapping("/casamento/{casamentoId}/tarefa/{tarefaId}")
-    public ResponseEntity<TarefaResponseDto> update(@PathVariable Integer casamentoId,
+    @PutMapping("/{tarefaId}")
+    public ResponseEntity<TarefaResponseDto> update(@WeddingIdentifier Integer casamentoId,
                                                     @PathVariable Integer tarefaId,
                                                     @RequestBody @Valid TarefaRequestDto requestDto){
         Tarefa tarefa = requestMapper.toEntity(requestDto);

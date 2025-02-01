@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.dto.request.AtividadeRequestDto;
 import com.bridee.api.dto.response.AtividadeResponseDto;
 import com.bridee.api.entity.Atividade;
@@ -29,8 +30,8 @@ public class AtividadeControllerImpl {
     private final AtividadeResponseMapper responseMapper;
     private final AtividadeRequestMapper requestMapper;
 
-    @GetMapping("/{casamentoId}")
-    public ResponseEntity<List<AtividadeResponseDto>> findAllAtividadesByCasamentoId(@PathVariable Integer casamentoId){
+    @GetMapping
+    public ResponseEntity<List<AtividadeResponseDto>> findAllAtividadesByCasamentoId(@WeddingIdentifier Integer casamentoId){
         List<Atividade> atividades = cronogramaService.findAllByCasamentoId(casamentoId);
         List<AtividadeResponseDto> responseDto = responseMapper.toDomain(atividades);
         return ResponseEntity.ok(responseDto);

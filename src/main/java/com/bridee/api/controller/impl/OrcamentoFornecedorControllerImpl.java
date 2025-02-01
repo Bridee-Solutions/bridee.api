@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.dto.request.AssociadoPrecoRequestDto;
 import com.bridee.api.dto.request.OrcamentoFornecedorRequestDto;
 import com.bridee.api.dto.response.OrcamentoFornecedorResponseDto;
@@ -33,9 +34,9 @@ public class OrcamentoFornecedorControllerImpl {
     private final OrcamentoFornecedorResponseMapper responseMapper;
     private final CasamentoService casamentoService;
 
-    @PostMapping("/{casamentoId}")
+    @PostMapping
     public ResponseEntity<List<OrcamentoFornecedorResponseDto>> associateFornecedoresCasal(@RequestBody @Valid List<OrcamentoFornecedorRequestDto> requestDto,
-                                                                                           @PathVariable Integer casamentoId){
+                                                                                           @WeddingIdentifier Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
         List<OrcamentoFornecedor> orcamentoFornecedores = requestMapper.toEntity(requestDto, casal);
@@ -44,10 +45,10 @@ public class OrcamentoFornecedorControllerImpl {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/categoria/{categoriaId}/casamento/{casamentoId}")
+    @PostMapping("/categoria/{categoriaId}")
     public ResponseEntity<OrcamentoFornecedorResponseDto> saveOrcamentoFornecedorCasal(@RequestBody @Valid OrcamentoFornecedorRequestDto requestDto,
                                                                                        @PathVariable Integer categoriaId,
-                                                                                       @PathVariable Integer casamentoId){
+                                                                                       @WeddingIdentifier Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
         OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto, casal);

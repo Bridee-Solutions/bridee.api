@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -35,9 +36,14 @@ public class CasamentoService {
     }
 
     public Integer getCasamentoId(Integer casalId){
-        int casamentoId = repository.findCasamentoIdByCasalId(casalId);
+        Integer casamentoId = repository.findCasamentoIdByCasalId(casalId);
         existsById(casamentoId);
         return casamentoId;
+    }
+
+    public Integer getWeddingIdFromCoupleEmail(String casalEmail){
+        return repository.findCasamentoIdByCoupleEmail(casalEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
     }
 
     public Casamento save(Casal casal, Integer qtdConvidados, LocalDate dataCasamento,

@@ -31,10 +31,10 @@ public class AzureBlobStorageImpl implements BlobStorageStrategy {
 
     private BlobServiceClient blobServiceClient;
 
-    @PostConstruct
-    public void init(){
-        this.blobServiceClient = new BlobServiceClientBuilder().connectionString(azureConnectionString).buildClient();
-    }
+//    @PostConstruct
+//    public void init(){
+//        this.blobServiceClient = new BlobServiceClientBuilder().connectionString(azureConnectionString).buildClient();
+//    }
 
     @Override
     public byte[] downloadFile(String filename) {

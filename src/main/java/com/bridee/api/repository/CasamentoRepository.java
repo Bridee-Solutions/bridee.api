@@ -1,10 +1,11 @@
 package com.bridee.api.repository;
 
 import com.bridee.api.entity.Casamento;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 public interface CasamentoRepository extends JpaRepository<Casamento, Integer> {
 
@@ -17,5 +18,10 @@ public interface CasamentoRepository extends JpaRepository<Casamento, Integer> {
     @Query("""
             SELECT ca.id FROM Casamento ca WHERE ca.casal.id = :casalId
             """)
-    int findCasamentoIdByCasalId(Integer casalId);
+    Integer findCasamentoIdByCasalId(Integer casalId);
+
+    @Query("""
+            SELECT ca.id FROM Casamento ca WHERE ca.casal.email = :email
+            """)
+    Optional<Integer> findCasamentoIdByCoupleEmail(String email);
 }

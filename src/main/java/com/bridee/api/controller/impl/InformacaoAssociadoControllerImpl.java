@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.AdvisorIdentifier;
 import com.bridee.api.dto.request.InformacaoAssociadoDto;
 import com.bridee.api.dto.request.InformacaoAssociadoPerfilDto;
 import com.bridee.api.dto.response.InformacaoAssociadoResponseDto;
@@ -44,8 +45,8 @@ public class InformacaoAssociadoControllerImpl {
     private final InformacaoAssociadoResponseMapper responseMapper;
     
     
-    @PostMapping(value = "/{assessorId}/perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<InformacaoAssociadoResponseDto> save(@PathVariable Integer assessorId,
+    @PostMapping(value = "/perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<InformacaoAssociadoResponseDto> save(@AdvisorIdentifier Integer assessorId,
                                                                @RequestParam("json") String informacaoAssociadoDto,
                                                                @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,
                                                                @RequestPart("imagemSecundaria") MultipartFile imagemSecundaria,

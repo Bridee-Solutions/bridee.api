@@ -1,5 +1,7 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.AdvisorIdentifier;
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.controller.AssessorController;
 import com.bridee.api.dto.request.AssessorRequestDto;
 import com.bridee.api.dto.request.AssociadoPrecoRequestDto;
@@ -75,17 +77,17 @@ public class AssessorControllerImpl implements AssessorController {
         return ResponseEntity.ok(service.findAssessorInformation(id));
     }
 
-    @GetMapping("/{assessorId}/casais/pendentes")
-    public ResponseEntity<Page<CasamentoResponseDto>> findAllCasamentosPendentes(@PathVariable Integer assessorId,
+    @GetMapping("/casais/pendentes")
+    public ResponseEntity<Page<CasamentoResponseDto>> findAllCasamentosPendentes(@AdvisorIdentifier Integer assessorId,
                                                                              Pageable pageable){
         Page<Casamento> casais = pedidoAssessoriaService.findCasamentosPendenteByAssessorId(assessorId, pageable);
         Page<CasamentoResponseDto> response = casamentoResponseMapper.toDomain(casais);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{assessorId}/casamentos/assessorados")
+    @GetMapping("/casamentos/assessorados")
     public ResponseEntity<List<CasamentoResponseDto>> findAllCasamentosAssessorados(@RequestParam Integer ano,
-                                                                                    @PathVariable Integer assessorId){
+                                                                                    @AdvisorIdentifier Integer assessorId){
         List<Casamento> casamentos = pedidoAssessoriaService
                 .findCasamentosAssessorados(assessorId, ano);
         List<CasamentoResponseDto> responseDto = casamentoResponseMapper.toDomain(casamentos);
@@ -126,9 +128,9 @@ public class AssessorControllerImpl implements AssessorController {
         return ResponseEntity.ok(responseMapper.toDomain(assessor));
     }
 
-    @PutMapping("/{assessorId}/casamento/{casamentoId}")
+    @PutMapping("/{assessorId}/preco")
     public ResponseEntity<Void> updateAssessorPreco(@PathVariable Integer assessorId,
-                                                    @PathVariable Integer casamentoId,
+                                                    @WeddingIdentifier Integer casamentoId,
                                                     @RequestBody @Valid AssociadoPrecoRequestDto requestDto
                                                     ){
         pedidoAssessoriaService.updatePrecoCasamentoAssessor(assessorId, casamentoId, requestDto.getPreco());
