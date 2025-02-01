@@ -19,6 +19,10 @@ spring:
 
 services:
   bridee:
+    function:
+      storage-function:
+        url: ${BRIDEE_STORAGE_FUNCTION_URL:""}
+        api-key: ${BRIDEE_STORAGE_FUNCTION_API-KEY:"DEFAULT"}
     email:
       host: ${BRIDEE_EMAIL_HOST:smtp.gmail.com}
       user: ${BRIDEE_EMAIL_USERNAME:""}
