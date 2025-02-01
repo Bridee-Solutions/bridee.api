@@ -1,8 +1,8 @@
 package com.bridee.api.repository;
 
 import com.bridee.api.entity.Fornecedor;
-import com.bridee.api.projection.associado.AssociadoGeralResponseProjection;
-import com.bridee.api.projection.associado.AssociadoResponseProjection;
+import com.bridee.api.repository.projection.associado.AssociadoGeralResponseProjection;
+import com.bridee.api.repository.projection.associado.AssociadoResponseProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +15,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
     @Query("""
             SELECT ifs.fornecedor.nome as nome,
             ifs.fornecedor.id as id,
+            ifs.id as informacaoAssociadoId,
             ifs.visaoGeral as visaoGeral,
             ifs.cidade as cidade,
             ifs.bairro as bairro,
@@ -27,6 +28,7 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
     @Query("""
             SELECT ifs.fornecedor.nome as nome,
             ifs.fornecedor.id as id,
+            ifs.id as informacaoAssociadoId,
             ifs.visaoGeral as visaoGeral,
             ifs.cidade as cidade,
             ifs.bairro as bairro,

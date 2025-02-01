@@ -2,6 +2,7 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.request.InformacaoAssociadoPerfilDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
+import com.bridee.api.dto.response.InformacaoAssociadoDetalhes;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.entity.Imagem;
@@ -11,7 +12,6 @@ import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.mapper.request.InformacaoAssociadoMapper;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.FornecedorRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.bridee.api.entity.InformacaoAssociado;
@@ -19,6 +19,7 @@ import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.InformacaoAssociadoRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -35,6 +36,9 @@ public class InformacaoAssociadoService {
     private final ImagemService imagemService;
     private final ImagemAssociadoService imagemAssociadoService;
     private final InformacaoAssociadoMapper requestMapper;
+    private final TipoCasamentoAssociadoService tipoCasamentoAssociadoService;
+    private final TipoCerimoniaAssociadoService tipoCerimoniaAssociadoService;
+    private final FormaPagamentoAssociadoService formaPagamentoAssociadoService;
 
     public InformacaoAssociado save(InformacaoAssociadoPerfilDto informacaoAssociadoPerfil, Integer assessorId){
         InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoAssociadoPerfil.getInformacaoAssociado());
@@ -165,5 +169,17 @@ public class InformacaoAssociadoService {
         return repository.findByFornecedorId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Informação de associado não encontrada para o idAssessor: " + id));
 
+    }
+
+    @Transactional(readOnly = true)
+    public InformacaoAssociadoDetalhes buildInformacaoAssociadoDetalhes(InformacaoAssociado info){
+        InformacaoAssociadoDetalhes informacaoAssociadoDetalhes = new InformacaoAssociadoDetalhes();
+        informacaoAssociadoDetalhes.setTiposCasamento(tipoCasamentoAssociadoService.findAllByInformacaoAssociadoId(info));
+        informacaoAssociadoDetalhes.setTiposCerimonia(tipoCerimoniaAssociadoService.findAllByInformacaoAssociadoId(info));
+        informacaoAssociadoDetalhes.setFormasPagamento(formaPagamentoAssociadoService.findAllByInformacaoAssociadoId(info));
+        informacaoAssociadoDetalhes.setImagemPrimaria(imagemAssociadoService.findImagemPrincipalBase64(info.getId()));
+        informacaoAssociadoDetalhes.setImagensSecundarias(imagemAssociadoService.findImagensSecundarias(info.getId()));
+
+        return informacaoAssociadoDetalhes;
     }
 }

@@ -5,7 +5,7 @@ import com.bridee.api.dto.response.CategoriaConvidadoResumoDto;
 import com.bridee.api.entity.CategoriaConvidado;
 import com.bridee.api.entity.enums.CategoriaConvidadoEnum;
 import com.bridee.api.mapper.BaseMapper;
-import com.bridee.api.projection.convite.CategoriaConvidadoProjection;
+import com.bridee.api.repository.projection.convite.CategoriaConvidadoProjection;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

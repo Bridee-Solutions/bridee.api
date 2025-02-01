@@ -2,14 +2,14 @@ package com.bridee.api.service;
 
 import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.projection.orcamento.SubcategoriaProjection;
+import com.bridee.api.repository.projection.orcamento.SubcategoriaProjection;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.SubcategoriaServicoRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class SubcategoriaServicoService {
         return subcategoriaServicoRepository.findAllProjections();
     }
 
+    @Transactional(readOnly = true)
     public Page<SubcategoriaServico> findAllByCategoria(Integer categoriaId, Pageable pageable) {
         categoriaServicoService.existsById(categoriaId);
         return subcategoriaServicoRepository.findAllByCategoriaId(categoriaId, pageable);
@@ -49,6 +50,7 @@ public class SubcategoriaServicoService {
         return subcategoriaServicoRepository.findByFornecedorId(id);
     }
 
+    @Transactional(readOnly = true)
     public Page<SubcategoriaServico> findAllByCategoriaName(String nome, Pageable pageable) {
         return subcategoriaServicoRepository.findAllByCategoriaNome(nome, pageable);
     }

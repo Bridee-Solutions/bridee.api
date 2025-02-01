@@ -1,4 +1,4 @@
-package com.bridee.api.projection.convite;
+package com.bridee.api.repository.projection.convite;
 
 import org.springframework.beans.factory.annotation.Value;
 

@@ -51,26 +51,8 @@ public class AuthenticationService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .tipoUsuario(userType.name())
-                .casamentoId(findCasamentoId(usuario, userType))
-                .assessorId(findAssessorId(usuario, userType))
                 .enabled(usuario.getEnabled())
                 .build();
-    }
-
-    private Integer findCasamentoId(Usuario usuario, UsuarioEnum userType){
-         return isCasalUser(userType) ? casamentoService.getCasamentoId(usuario.getId()) : null;
-    }
-
-    private Integer findAssessorId(Usuario usuario, UsuarioEnum userType){
-        return isAssessorUser(userType) ? usuario.getId() : null;
-    }
-
-    private boolean isCasalUser(UsuarioEnum userType){
-        return userType.equals(UsuarioEnum.CASAL);
-    }
-
-    private boolean isAssessorUser(UsuarioEnum userType){
-        return userType.equals(UsuarioEnum.ASSESSOR);
     }
 
     private UsuarioEnum defineUsuarioType(Usuario usuario){
@@ -84,7 +66,7 @@ public class AuthenticationService {
         UserDetails userDetails = createUserDetails(refreshToken);
         boolean isTokenValid = jwtService.isTokenValid(refreshToken, userDetails);
         if (!isTokenValid){
-            throw new UnauthorizedUserException("Refresh Token inválido");
+            throw new BadRequestEntityException("Refresh Token inválido");
         }
         return jwtService.generateToken(new HashMap<>(), userDetails);
     }

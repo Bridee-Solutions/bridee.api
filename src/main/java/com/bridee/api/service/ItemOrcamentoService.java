@@ -6,7 +6,7 @@ import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.mapper.response.ItemOrcamentoResponseMapper;
-import com.bridee.api.projection.orcamento.ItemOrcamentoProjection;
+import com.bridee.api.repository.projection.orcamento.ItemOrcamentoProjection;
 import com.bridee.api.repository.ItemOrcamentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -101,7 +101,7 @@ public class ItemOrcamentoService {
         if (custos.isEmpty()){
             throw new UnprocessableEntityException("Custos não encontrados!");
         }
-        Integer itemOrcamentoId = custos.get(0).getId();
+        Integer itemOrcamentoId = custos.get(0).getItemOrcamento().getId();
         List<Custo> allCustos = custoService.findAllByItemOrcamentoId(itemOrcamentoId);
         List<Integer> custosToBeDeleted = inactivesCustosIds(allCustos, custos);
         custoService.deleteAllByIds(custosToBeDeleted);

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.json.JsonMergePatch;
 import java.util.List;
 
 @Tag(name = "Controller de convidado")
@@ -60,7 +61,7 @@ public interface ConvidadoController {
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
     ResponseEntity<ConvidadoResponseDto> update(@PathVariable Integer id,
-                                                       @RequestBody @Valid ConvidadoRequestDto requestDto);
+                                                @RequestBody JsonMergePatch jsonMergePatch);
     @Operation(summary = "Deleta um convidado",
             description = "Deleta um convidado")
     @ApiResponses(value = {

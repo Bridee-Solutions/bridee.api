@@ -1,7 +1,7 @@
 package com.bridee.api.repository;
 
 import com.bridee.api.entity.Casal;
-import com.bridee.api.projection.orcamento.OrcamentoProjection;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

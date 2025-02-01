@@ -7,6 +7,7 @@ import com.bridee.api.entity.PedidoAssessoria;
 import com.bridee.api.entity.enums.PedidoAssessoriaStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
+import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.CustoRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
@@ -26,13 +27,16 @@ import java.util.Optional;
 public class CasamentoService {
 
     private final CasamentoRepository repository;
-    private final AssessorService assessorService;
     private final OrcamentoFornecedorRepository orcamentoFornecedorRepository;
     private final CustoRepository custoRepository;
     private final PedidoAssessoriaService pedidoAssessoriaService;
 
     public Casamento findById(Integer id){
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
+    }
+
+    public CasamentoDateProjection findDataFimByCasamentoId(Integer id){
+        return repository.findDataFimByCasamentoId(id);
     }
 
     public Integer getCasamentoId(Integer casalId){
@@ -69,24 +73,32 @@ public class CasamentoService {
 
     public void updateMessage(Integer casamentoId, String message){
         existsById(casamentoId);
-        int updatedSuccessfully = repository.updateCasamentoMessage(casamentoId, message);
-        if (updatedSuccessfully == 0){
+        int totalUpdates = repository.updateCasamentoMessage(casamentoId, message);
+        if (totalUpdates == 0){
             throw new UnprocessableEntityException("Não foi possível atualizar a mensagem dos convites");
         };
     }
 
     public Assessor vinculateAssessorToWedding(Integer casamentoId, Integer assessorId) {
-        PedidoAssessoria pedidoAssessoria = generatePedidoAssessoria(casamentoId, assessorId);
+        PedidoAssessoria pedidoAssessoria = createPedidoAssessoria(casamentoId, assessorId);
         return pedidoAssessoria.getAssessor();
     }
 
-    private PedidoAssessoria generatePedidoAssessoria(Integer casamentoId, Integer assessorId){
-        Assessor assessor = assessorService.findById(assessorId);
-        Casamento casamento = Casamento.builder()
-                .id(casamentoId).build();
-        PedidoAssessoria pedidoAssessoria = new PedidoAssessoria(PedidoAssessoriaStatusEnum.NAO_ASSESSORADO,
-                casamento, assessor);
+    private PedidoAssessoria createPedidoAssessoria(Integer casamentoId, Integer assessorId){
+        PedidoAssessoria pedidoAssessoria = buildPedidoAssessoria(casamentoId, assessorId);
         return pedidoAssessoriaService.save(pedidoAssessoria);
+    }
+
+    private PedidoAssessoria buildPedidoAssessoria(Integer casamentoId, Integer assessorId){
+        Assessor assessor = new Assessor(assessorId);
+        Casamento casamento = Casamento.builder()
+                .id(casamentoId)
+                .build();
+        return PedidoAssessoria.builder()
+                .assessor(assessor)
+                .casamento(casamento)
+                .status(PedidoAssessoriaStatusEnum.NAO_ASSESSORADO)
+                .build();
     }
 
     public BigDecimal calculateOrcamento(Integer casamentoId) {
@@ -94,6 +106,10 @@ public class CasamentoService {
         Casal casal = casamento.getCasal();
         Long totalPriceItens = custoRepository.totalPriceItens(casal.getId());
         Long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casal.getId());
+        return calculateOrcamento(totalPriceItens, totalPriceOrcamento);
+    }
+
+    private BigDecimal calculateOrcamento(Long totalPriceItens, Long totalPriceOrcamento){
         if (Objects.nonNull(totalPriceItens) && Objects.nonNull(totalPriceOrcamento)) {
             return new BigDecimal(totalPriceItens + totalPriceOrcamento);
         }
@@ -104,7 +120,6 @@ public class CasamentoService {
             return new BigDecimal(totalPriceOrcamento);
         }
         return new BigDecimal("0");
-
     }
 
     public void denyWedding(Integer casamentoId, Integer assessorId) {
