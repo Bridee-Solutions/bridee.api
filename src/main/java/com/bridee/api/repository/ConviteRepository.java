@@ -5,9 +5,9 @@ import com.bridee.api.entity.Convite;
 
 import com.bridee.api.entity.enums.CategoriaConvidadoEnum;
 import com.bridee.api.entity.enums.TipoConvidado;
-import com.bridee.api.projection.convite.CategoriaConvidadoProjection;
-import com.bridee.api.projection.convite.ConviteResumoProjection;
-import com.bridee.api.projection.orcamento.RelatorioProjection;
+import com.bridee.api.repository.projection.convite.CategoriaConvidadoProjection;
+import com.bridee.api.repository.projection.convite.ConviteResumoProjection;
+import com.bridee.api.repository.projection.orcamento.RelatorioProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

@@ -1,4 +1,4 @@
-package com.bridee.api.projection.orcamento;
+package com.bridee.api.repository.projection.orcamento;
 
 import java.util.List;
 

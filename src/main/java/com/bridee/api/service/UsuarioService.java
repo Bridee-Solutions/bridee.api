@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.bridee.api.repository.UsuarioRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -28,6 +29,7 @@ public class UsuarioService implements UserDetailsService {
         return new SecurityUser(usuario, usuarioRoleRepository);
     }
 
+    @Transactional(readOnly = true)
     public Usuario findByEmail(String email){
         return repository.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
     }

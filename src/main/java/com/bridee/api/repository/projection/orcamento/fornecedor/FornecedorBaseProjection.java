@@ -1,4 +1,4 @@
-package com.bridee.api.projection.orcamento.fornecedor;
+package com.bridee.api.repository.projection.orcamento.fornecedor;
 
 public interface FornecedorBaseProjection {
 

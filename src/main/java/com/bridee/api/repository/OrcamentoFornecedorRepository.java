@@ -1,10 +1,10 @@
 package com.bridee.api.repository;
 
 import com.bridee.api.entity.OrcamentoFornecedor;
-import com.bridee.api.projection.orcamento.fornecedor.FornecedorProjection;
-import com.bridee.api.projection.orcamento.fornecedor.FornecedorBaseProjection;
-import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorBaseProjection;
-import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
+import com.bridee.api.repository.projection.orcamento.fornecedor.FornecedorProjection;
+import com.bridee.api.repository.projection.orcamento.fornecedor.FornecedorBaseProjection;
+import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorBaseProjection;
+import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

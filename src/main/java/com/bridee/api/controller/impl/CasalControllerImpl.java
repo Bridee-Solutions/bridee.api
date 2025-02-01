@@ -13,31 +13,23 @@ import com.bridee.api.mapper.request.CasalRequestMapper;
 import com.bridee.api.mapper.request.externo.CasalExternoRequestMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.externo.CasalExternoResponseMapper;
-import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
-import com.bridee.api.pattern.strategy.blobstorage.impl.AzureBlobStorageImpl;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.service.CasamentoService;
 import com.bridee.api.service.ImagemCasalService;
+import com.bridee.api.utils.JsonConverter;
+import com.bridee.api.utils.PatchHelper;
 import com.bridee.api.utils.UriUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.json.JsonMergePatch;
 import java.math.BigDecimal;
 
 @RestController
@@ -52,6 +44,8 @@ public class CasalControllerImpl implements CasalController {
     private final CasalExternoResponseMapper externoResponseMapper;
     private final CasamentoService casamentoService;
     private final ImagemCasalService imagemCasalService;
+    private final PatchHelper patchHelper;
+    private final JsonConverter jsonConverter;
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
@@ -89,15 +83,14 @@ public class CasalControllerImpl implements CasalController {
     public ResponseEntity<Void> uploadImage(@WeddingIdentifier Integer casamentoId,
                                             @RequestParam(value = "metadata") String metadataJson,
                                             @RequestPart("file") MultipartFile file) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ImageMetadata imageMetadata = objectMapper.readValue(metadataJson, ImageMetadata.class);
+        ImageMetadata imageMetadata = jsonConverter.fromJson(metadataJson, ImageMetadata.class);
         imagemCasalService.uploadCasalImage(casamentoId, imageMetadata, file);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CasalResponseDto> update(@RequestBody @Valid CasalRequestDto requestDto, @PathVariable Integer id){
-        Casal casal = requestMapper.toEntity(requestDto);
+    @PatchMapping(value = "/{id}", consumes = "application/merge-patch+json")
+    public ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id){
+        Casal casal = patchHelper.mergePatch(jsonMergePatch, new Casal(), Casal.class);
         CasalResponseDto responseDto = responseMapper.toDomain(service.update(casal, id));
         return ResponseEntity.ok(responseDto);
     }

@@ -1,6 +1,6 @@
-package com.bridee.api.projection.orcamento;
+package com.bridee.api.repository.projection.orcamento;
 
-import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
+import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;

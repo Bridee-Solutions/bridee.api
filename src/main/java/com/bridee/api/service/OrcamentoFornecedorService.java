@@ -1,18 +1,15 @@
 package com.bridee.api.service;
 
-import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.entity.OrcamentoFornecedor;
 import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.mapper.response.OrcamentoFornecedorResponseMapper;
-import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
+import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,8 +46,6 @@ public class OrcamentoFornecedorService {
     private void removeInactivesOrcamentoFornecedor(List<OrcamentoFornecedor> orcamentoFornecedores){
 
         Integer casalId = orcamentoFornecedores.get(0).getCasal().getId();
-        repository.findFornecedoresBaseProjectionByCasalId(casalId);
-
         List<OrcamentoFornecedor> allOrcamentoFornecedores = responseMapper
                 .fromProjection(repository.findAllBaseProjectionByCasalId(casalId));
 
@@ -68,28 +63,30 @@ public class OrcamentoFornecedorService {
     public OrcamentoFornecedor saveOrcamentoFornecedorCasal(OrcamentoFornecedor orcamentoFornecedor, Integer categoriaId) {
 
         Integer fornecedorId = orcamentoFornecedor.getFornecedor().getId();
-        Fornecedor fornecedor = fornecedorService.findById(fornecedorId);
-        List<SubcategoriaServico> subcategoriasFromCategoria = subcategoriaServicoService.findAllByCategoria(categoriaId);
-        SubcategoriaServico subcategoriaServicoFornecedor = subcategoriaServicoService
-                .findByFornecedorId(fornecedorId);
-        SubcategoriaServico subcategoria = findSubcategoriaFornecedor(subcategoriasFromCategoria, subcategoriaServicoFornecedor);
-
-        Integer casalId = orcamentoFornecedor.getCasal().getId();
-        List<OrcamentoFornecedor> orcamentosFornecedoresCadastrados = repository
-                .findAllByCasalIdAndSubcategoriaId(casalId, subcategoria.getId());
-        if (!orcamentosFornecedoresCadastrados.isEmpty()){
-            deleteAllOrcamentoFornecedores(orcamentosFornecedoresCadastrados);
-        }
+        SubcategoriaServico subcategoria = findSubcategoriaFornecedor(fornecedorId, categoriaId);
+        removePreviousOrcamentoFornecedorIfExists(orcamentoFornecedor, subcategoria);
 
         orcamentoFornecedor = repository.save(orcamentoFornecedor);
-        orcamentoFornecedor.setFornecedor(fornecedor);
+        orcamentoFornecedor.setFornecedor(orcamentoFornecedor.getFornecedor());
         return orcamentoFornecedor;
     }
 
-    private SubcategoriaServico findSubcategoriaFornecedor(List<SubcategoriaServico> subcategoriaServicos, SubcategoriaServico subcategoriaServicoFornecedor){
+    private void removePreviousOrcamentoFornecedorIfExists(OrcamentoFornecedor orcamentoFornecedor, SubcategoriaServico subcategoria) {
+        Integer casalId = orcamentoFornecedor.getCasal().getId();
+        List<OrcamentoFornecedor> orcamentosFornecedoresCadastrados = repository.findAllByCasalIdAndSubcategoriaId(casalId, subcategoria.getId());
 
-        Optional<SubcategoriaServico> subcategoriaOpt = subcategoriaServicos.stream()
-                .filter(subcategoria -> subcategoria.getId().equals(subcategoriaServicoFornecedor.getId())).findFirst();
+        if (!orcamentosFornecedoresCadastrados.isEmpty()){
+            deleteAllOrcamentoFornecedores(orcamentosFornecedoresCadastrados);
+        }
+    }
+
+    private SubcategoriaServico findSubcategoriaFornecedor(Integer fornecedorId, Integer categoriaId){
+        List<SubcategoriaServico> subcategoriasFromCategoria = subcategoriaServicoService.findAllByCategoria(categoriaId);
+        SubcategoriaServico subcategoriaServicoFornecedor = subcategoriaServicoService.findByFornecedorId(fornecedorId);
+
+        Optional<SubcategoriaServico> subcategoriaOpt = subcategoriasFromCategoria.stream()
+                .filter(subcategoria -> subcategoria.getId().equals(subcategoriaServicoFornecedor.getId()))
+                .findFirst();
 
         if (subcategoriaOpt.isEmpty()){
             throw new ResourceNotFoundException("Subcategoria não encontrada para a categoria informada");

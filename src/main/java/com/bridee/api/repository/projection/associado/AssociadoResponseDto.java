@@ -1,4 +1,4 @@
-package com.bridee.api.projection.associado;
+package com.bridee.api.repository.projection.associado;
 
 import lombok.Data;
 
@@ -6,6 +6,7 @@ import lombok.Data;
 public class AssociadoResponseDto {
 
     private Integer id;
+    private Integer informacaoAssociadoId;
     private String nome;
     private String visaoGeral;
     private String cidade;

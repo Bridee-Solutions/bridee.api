@@ -33,21 +33,17 @@ public class PedidoAssessoriaService {
         return repository.findAllCasamentoPendente(assessorId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO, pageable);
     }
 
-    //TODO REFATORAR
     public PedidoAssessoria findPedidoAssessorado(Integer casamentoId) {
         PedidoAssessoria pedidoAssessorado = repository.findPedidoByStatus(casamentoId, PedidoAssessoriaStatusEnum.ASSESSORADO).orElse(null);
         if (Objects.nonNull(pedidoAssessorado)){
             return pedidoAssessorado;
         }
         var pedidosPendentes = repository.findAllPedidosCasamentoByStatus(casamentoId, PedidoAssessoriaStatusEnum.PENDENTE_APROVACAO);
-        if (Objects.nonNull(pedidosPendentes) && !pedidosPendentes.isEmpty()){
-            pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId).reversed());
-        }
-      
         if (pedidosPendentes.isEmpty()){
             return null;
         }
-      
+        pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId).reversed());
+
         return pedidosPendentes.get(0);
     }
 
@@ -136,13 +132,7 @@ public class PedidoAssessoriaService {
 
     public void invalidateWeddings(){
         List<PedidoAssessoria> allPedidosCasamentoInvalido = repository.findAllPedidosCasamentoInvalido();
-        Stack<PedidoAssessoria> pedidoAssessoriaStack = new Stack<>();
-        allPedidosCasamentoInvalido.forEach(pedidoAssessoriaStack::push);
-        while (!pedidoAssessoriaStack.isEmpty() && pedidoAssessoriaStack.peek() != null){
-            PedidoAssessoria pedidoAssessoria = pedidoAssessoriaStack.pop();
-            pedidoAssessoria.setStatus(PedidoAssessoriaStatusEnum.INVALIDO);
-        }
-        allPedidosCasamentoInvalido = pedidoAssessoriaStack.stream().toList();
+        allPedidosCasamentoInvalido.forEach(pedido -> pedido.setStatus(PedidoAssessoriaStatusEnum.INVALIDO));
         repository.saveAll(allPedidosCasamentoInvalido);
     }
 }

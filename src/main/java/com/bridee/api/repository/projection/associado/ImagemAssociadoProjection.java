@@ -1,4 +1,4 @@
-package com.bridee.api.projection.associado;
+package com.bridee.api.repository.projection.associado;
 
 public interface ImagemAssociadoProjection {
 

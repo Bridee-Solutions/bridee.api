@@ -8,8 +8,8 @@ import com.bridee.api.dto.response.AssessorResponseDto;
 import com.bridee.api.dto.response.ErrorResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.dto.response.externo.AssessorExternoResponseDto;
-import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
-import com.bridee.api.projection.associado.AssociadoResponseDto;
+import com.bridee.api.repository.projection.associado.AssociadoGeralResponseDto;
+import com.bridee.api.repository.projection.associado.AssociadoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.json.JsonMergePatch;
 
 @Tag(name = "Controller de assessor")
 public interface AssessorController {
@@ -109,7 +111,7 @@ public interface AssessorController {
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
         }
     )
-    ResponseEntity<AssessorResponseDto> update(@RequestBody @Valid AssessorRequestDto requestDto, @PathVariable Integer id);
+    ResponseEntity<AssessorResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id);
 
     @Operation(summary = "Deleta as informações de um assessor",
             description = "Deleta as informações de um assessor pelo id")

@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class TarefaFilter implements Specification<Tarefa> {
 
@@ -88,7 +86,7 @@ public class TarefaFilter implements Specification<Tarefa> {
         return criteriaBuilder.and(andPredicate, orPredicate);
     }
 
-    public void buildFilter(Map<String, Object> params){
+    public TarefaFilter buildFilter(Map<String, Object> params){
         Field[] fields = extractField();
         params.forEach((key, value) -> {
             for (Field field: fields){
@@ -97,6 +95,7 @@ public class TarefaFilter implements Specification<Tarefa> {
                 }
             }
         });
+        return this;
     }
 
     private void associateParamsValues(String key, Object value, Field field){
@@ -176,14 +175,19 @@ public class TarefaFilter implements Specification<Tarefa> {
         return TypeFactory.defaultInstance().constructType(rawType);
     };
 
-    private List<List<DataFilterDto>> filterDate(){
-        return anos.stream().map(ano -> mes.stream().map((mes) -> {
-            LocalDate localDate = LocalDate.of(ano, mes, LocalDate.now().getDayOfMonth());
-            LocalDate dataInicioMesAtual = LocalDate.of(ano, mes,
-                    localDate.with(TemporalAdjusters.firstDayOfMonth()).getDayOfMonth());
-            LocalDate dataFimMesAtual = LocalDate.of(ano, mes,
-                    localDate.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth());
-            return new DataFilterDto(ano, dataInicioMesAtual, dataFimMesAtual);
-        }).toList()).toList();
+    private List<List<DateFilterDto>> filterDate(){
+        return anos.stream().map(ano -> mes.stream()
+                .map((mes) -> buildFilterDateDto(ano, mes))
+                .toList())
+                .toList();
+    }
+
+    private DateFilterDto buildFilterDateDto(Integer ano, Integer mes){
+        LocalDate localDate = LocalDate.of(ano, mes, LocalDate.now().getDayOfMonth());
+        LocalDate dataInicioMesAtual = LocalDate.of(ano, mes,
+                localDate.with(TemporalAdjusters.firstDayOfMonth()).getDayOfMonth());
+        LocalDate dataFimMesAtual = LocalDate.of(ano, mes,
+                localDate.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth());
+        return new DateFilterDto(ano, dataInicioMesAtual, dataFimMesAtual);
     }
 }
