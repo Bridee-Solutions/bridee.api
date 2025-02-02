@@ -3,15 +3,12 @@ package com.bridee.api.service;
 import com.bridee.api.dto.request.AuthenticationRequestDto;
 import com.bridee.api.dto.response.AuthenticationResponseDto;
 import com.bridee.api.dto.security.SecurityUser;
-import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.enums.UsuarioEnum;
 import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.exception.UnauthorizedUserException;
 import com.bridee.api.exception.UsuarioExternoException;
-import com.bridee.api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,23 +20,28 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final CasamentoService casamentoService;
-    private final AssessorService assessorService;
 
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto){
-        Usuario usuario = usuarioRepository.findByEmail(requestDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Usuário Inválido"));
+        Usuario usuario = usuarioService.findByEmail(requestDto.getEmail());
         UserDetails userAuthenticated = new SecurityUser(usuario);
+        validatePasswords(requestDto, userAuthenticated);
+        validateUser(usuario);
+        return buildAuthenticationResponse(usuario, userAuthenticated);
+    }
+
+    private void validatePasswords(AuthenticationRequestDto requestDto, UserDetails userAuthenticated){
         if (!passwordEncoder.matches(requestDto.getSenha(), userAuthenticated.getPassword())){
             throw new ResourceNotFoundException("Usuário inválido");
         }
+    }
+
+    private void validateUser(Usuario usuario){
         if (usuario.getExterno()){
             throw new UsuarioExternoException("Usuário não cadastro pela aplicação");
         }
-        return buildAuthenticationResponse(usuario, userAuthenticated);
-
     }
 
     private AuthenticationResponseDto buildAuthenticationResponse(Usuario usuario, UserDetails userAuthenticated){
@@ -73,9 +75,7 @@ public class AuthenticationService {
 
     private UserDetails createUserDetails(String refreshToken){
         String username = jwtService.extractUsername(refreshToken);
-        Usuario usuario = usuarioRepository.findByEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado!"));
-        return new SecurityUser(usuario);
+        return usuarioService.loadUserByUsername(username);
     }
 
 }

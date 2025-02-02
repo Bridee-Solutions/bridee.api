@@ -95,8 +95,8 @@ public class CasalControllerImpl implements CasalController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/orcamento-total/{id}")
-    public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody @Valid OrcamentoTotalRequestDto orcamentoTotal){
+    @PutMapping("/orcamento-total")
+    public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@WeddingIdentifier Integer id, @RequestBody @Valid OrcamentoTotalRequestDto orcamentoTotal){
         Casal casal = service.updateOrcamentoTotal(id, orcamentoTotal.getOrcamentoTotal());
         return ResponseEntity.ok(responseMapper.toDomain(casal));
     }
