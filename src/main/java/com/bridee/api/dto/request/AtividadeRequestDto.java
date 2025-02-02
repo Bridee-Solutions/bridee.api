@@ -12,7 +12,7 @@ public class AtividadeRequestDto {
 
     @NotBlank
     private String nome;
-    @NotNull
+    @NotNull(message = "Data de inicio não pode ser nula")
     private LocalDateTime inicio;
     @NotNull
     private LocalDateTime fim;
