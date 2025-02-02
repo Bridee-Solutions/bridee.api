@@ -5,7 +5,8 @@ import org.mapstruct.Mapper;
 
 import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
+import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface FornecedorResponseMapper extends BaseMapper<FornecedorResponseDto, Fornecedor> {
 }
