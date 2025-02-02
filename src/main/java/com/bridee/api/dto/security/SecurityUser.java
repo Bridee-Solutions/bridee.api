@@ -2,6 +2,7 @@ package com.bridee.api.dto.security;
 
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.UsuarioRole;
+import com.bridee.api.entity.enums.RoleEnum;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<UsuarioRole> usuarioRoles = usuarioRoleRepository.findByUsuarioEmail(usuario.getEmail());
+        List<RoleEnum> usuarioRoles = usuarioRoleRepository.findRoleNameByUsuarioEmail(usuario.getEmail());
         return SecurityRole.findAllUserRoles(usuarioRoles);
     }
 
