@@ -61,3 +61,7 @@ azure:
 httpOnly:
   cookie:
     host: ${HTTPONLY_COOKIE_DOMAIN:localhost}
+
+cache:
+  manager:
+    expireMinutes: ${CACHE_EXPIRE_MINUTES:20}
