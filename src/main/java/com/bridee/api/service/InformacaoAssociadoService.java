@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.configuration.cache.CacheConstants;
 import com.bridee.api.dto.request.InformacaoAssociadoPerfilDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.InformacaoAssociadoDetalhes;
@@ -12,6 +13,7 @@ import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.mapper.request.InformacaoAssociadoMapper;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.FornecedorRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.bridee.api.entity.InformacaoAssociado;
@@ -40,6 +42,7 @@ public class InformacaoAssociadoService {
     private final TipoCerimoniaAssociadoService tipoCerimoniaAssociadoService;
     private final FormaPagamentoAssociadoService formaPagamentoAssociadoService;
 
+    @CacheEvict(cacheNames = CacheConstants.ASSESSOR)
     public InformacaoAssociado save(InformacaoAssociadoPerfilDto informacaoAssociadoPerfil, Integer assessorId){
         InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoAssociadoPerfil.getInformacaoAssociado());
         if (repository.existsByAssessorId(assessorId) && Objects.isNull(informacaoAssociado.getId())){
@@ -51,6 +54,7 @@ public class InformacaoAssociadoService {
         return informacaoAssociado;
     }
 
+    @CacheEvict(cacheNames = CacheConstants.FORNECEDOR)
     public InformacaoAssociado saveFornecedor(InformacaoAssociadoPerfilDto informacaoAssociadoPerfil, Integer fornecedorId){
         InformacaoAssociado informacaoAssociado = requestMapper.toEntity(informacaoAssociadoPerfil.getInformacaoAssociado());
         if (repository.existsByFornecedorId(fornecedorId) && Objects.isNull(informacaoAssociado.getId())){
