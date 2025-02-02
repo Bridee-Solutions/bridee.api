@@ -19,8 +19,8 @@ public class CustomJwtConverter implements Converter<Jwt, JwtAuthenticationToken
     @Override
     public JwtAuthenticationToken convert(Jwt source) {
         String userEmail = source.getClaim("email");
-        List<SimpleGrantedAuthority> authorities = usuarioRoleRepository.findByUsuarioEmail(userEmail).stream()
-                .map(usuarioRole -> new SimpleGrantedAuthority(usuarioRole.getUserRole())).toList();
+        List<SimpleGrantedAuthority> authorities = usuarioRoleRepository.findRoleNameByUsuarioEmail(userEmail).stream()
+                .map(usuarioRole -> new SimpleGrantedAuthority(usuarioRole.name())).toList();
         return new JwtAuthenticationToken(source, authorities);
     }
 
