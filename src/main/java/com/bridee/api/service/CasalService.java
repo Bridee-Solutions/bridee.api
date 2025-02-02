@@ -45,7 +45,10 @@ public class CasalService {
     }
 
     public Casal save(Casal casal){
-        if (repository.existsByEmail(casal.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
+        if (repository.existsByEmail(casal.getEmail())){
+            throw new ResourceAlreadyExists("Email já cadastrado");
+        }
+
         Role role = roleRepository.findByNome(RoleEnum.ROLE_CASAL).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         casal.setSenha(passwordEncoder.encode(casal.getSenha()));
 
@@ -56,8 +59,8 @@ public class CasalService {
         Casal casalCreated = repository.save(casal);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, casalCreated);
         usuarioRoleRepository.save(usuarioRole);
-        emailService.sendRegistrationEmail(casalCreated);
 
+        emailService.sendRegistrationEmail(casalCreated.getEmail());
         return casalCreated;
     }
 
