@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.configuration.cache.CacheConstants;
 import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
@@ -20,6 +21,7 @@ import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.PatchHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,6 +63,7 @@ public class AssessorService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheConstants.ASSESSOR)
     public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
         Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
         List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
