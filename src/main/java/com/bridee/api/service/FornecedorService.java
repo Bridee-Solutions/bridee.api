@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.configuration.cache.CacheConstants;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
@@ -12,6 +13,7 @@ import com.bridee.api.repository.projection.associado.AssociadoResponseProjectio
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,9 +37,9 @@ public class FornecedorService {
     private final AssociadoGeralResponseMapper geralResponseMapper;
     private final InformacaoAssociadoService informacaoAssociadoService;
 
+    @Transactional(readOnly = true)
     public Page<Fornecedor> findAll(Pageable pageable){
-        subcategoriaServicoService.findAll();
-        return repository.findAll(pageable);
+        return repository.findAllFornecedores(pageable);
     }
 
     public Fornecedor findById(Integer id){
@@ -45,6 +47,7 @@ public class FornecedorService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheConstants.FORNECEDOR)
     public Page<AssociadoResponseDto> findFornecedorDetails(Integer subcategoriaId, Pageable pageable){
         subcategoriaServicoService.existsById(subcategoriaId);
         Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);

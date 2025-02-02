@@ -17,11 +17,8 @@ public class CronogramaService {
 
     private final CronogramaRepository repository;
     private final AtividadeRepository atividadeRepository;
-    private final CasamentoService casamentoService;
-
 
     public List<Atividade> findAllByCasamentoId(Integer casamentoId) {
-        casamentoService.existsById(casamentoId);
         Cronograma cronogramaCasamento = repository.findCronogramaByCasamentoId(casamentoId);
         return cronogramaCasamento.getAtividades();
     }
