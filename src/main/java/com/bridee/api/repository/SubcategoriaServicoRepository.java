@@ -14,24 +14,6 @@ import java.util.List;
 public interface SubcategoriaServicoRepository extends JpaRepository<SubcategoriaServico, Integer> {
 
     @Query("""
-            SELECT s FROM SubcategoriaServico s WHERE s.categoriaServico.id = :categoriaId
-            """)
-    Page<SubcategoriaServico> findAllByCategoriaId(Integer categoriaId, Pageable pageable);
-
-    @Query("""
-            SELECT s FROM SubcategoriaServico s WHERE s.categoriaServico.id = :categoriaId
-            """)
-    @QueryHints({
-            @QueryHint(name = "org.hibernate.readOnly", value="true")
-    })
-    List<SubcategoriaServico> findAllByCategoriaId(Integer categoriaId);
-
-    @Query("""
-            SELECT s FROM SubcategoriaServico s
-            """)
-    List<SubcategoriaProjection> findAllProjections();
-
-    @Query("""
             SELECT f.subcategoriaServico FROM Fornecedor f WHERE f.id = :id
             """)
     @QueryHints({
@@ -43,4 +25,12 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
             SELECT s FROM SubcategoriaServico s WHERE UPPER(s.categoriaServico.nome) like UPPER(concat('%',:nome,'%'))
             """)
     Page<SubcategoriaServico> findAllByCategoriaNome(String nome, Pageable pageable);
+
+    @Query("""
+            SELECT s FROM SubcategoriaServico s JOIN FETCH s.categoriaServico
+            """)
+    @QueryHints(value = {
+            @QueryHint(name = "org.hibernate.readOnly", value="true")
+    })
+    List<SubcategoriaServico> findAllSubcategories();
 }
