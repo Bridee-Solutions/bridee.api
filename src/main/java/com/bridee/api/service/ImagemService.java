@@ -7,6 +7,7 @@ import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.ImagemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +17,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ImagemService {
 
     private final ImagemRepository repository;
@@ -24,6 +26,7 @@ public class ImagemService {
     private final BlobStorageStrategy blobStorageStrategy;
 
     public List<String> findUrlBase64ImagensFornecedor(Integer fornecedorId){
+        log.info("FORNECEDOR: buscando as imagens do fornecedor com id: {}", fornecedorId);
         return findUrlImagensFornecedor(fornecedorId).stream()
                 .map(imagem -> {
                     if (Objects.nonNull(imagem)){
@@ -46,6 +49,7 @@ public class ImagemService {
     }
 
     public List<String> findBase64UrlImagensAssessor(Integer assessorId){
+        log.info("ASSESSOR: buscando as imagens do assessor com id: {}", assessorId);
         return findUrlImagensAssessor(assessorId).stream()
                 .map(imagem -> {
                     if (Objects.nonNull(imagem)){

@@ -21,6 +21,7 @@ import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.PatchHelper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AssessorService {
 
     private final AssessorRepository assessorRepository;
@@ -66,6 +68,7 @@ public class AssessorService {
     @Cacheable(cacheNames = CacheConstants.ASSESSOR)
     public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
         Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
+        log.info("ASSESSOR: convertendo AssociadoResponseProjection para AssociadoResponseDto");
         List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
 
         fillAssessorDetailsImages(associadoResponse);
@@ -73,9 +76,12 @@ public class AssessorService {
     }
 
     private void fillAssessorDetailsImages(List<AssociadoResponseDto> associadoResponse){
+        log.info("ASSESSOR: iniciando busca das imagens dos assessores");
         associadoResponse.forEach(associado -> {
+            log.info("ASSESSOR: buscando imagem principal para o assessor com id: {}", associado.getId());
             ImagemResponseDto imagemPrincipal = informacaoAssociadoService.findImagemPrincipal(associado.getInformacaoAssociadoId());
             if (Objects.nonNull(imagemPrincipal)){
+                log.info("ASSESSOR: imagem encontrada com sucesso!");
                 associado.setImagemPrincipal(imagemPrincipal.getData());
             }
         });
@@ -87,7 +93,7 @@ public class AssessorService {
             throw new ResourceNotFoundException("Assessor não encontrado!");
         }
 
-        AssociadoGeralResponseProjection resultProjection = assessorRepository.findFornecedorInformations(assessorId);
+        AssociadoGeralResponseProjection resultProjection = assessorRepository.findAssessorInformations(assessorId);
         if (Objects.isNull(resultProjection)){
             throw new ResourceNotFoundException("Não foi possível recuperar as informações do assessor");
         }
@@ -100,6 +106,7 @@ public class AssessorService {
         List<String> nomeFormasPagamento = formaPagamentoService.findNomeFormasPagamentoAssessor(result.getId());
         List<String> tiposCasamento = tipoCasamentoService.findNomeTiposCasamentoAssessor(result.getId());
 
+        log.info("ASSESSOR: convertendo AssociadoResponseProjection para AssociadoGeralResponseDto");
         AssociadoGeralResponseDto geralDto = geralResponseMapper.toGeralDto(result);
         geralDto.setImagens(imagesUrl);
         geralDto.setFormasPagamento(nomeFormasPagamento);
@@ -109,30 +116,36 @@ public class AssessorService {
 
     public Assessor save(Assessor assessor){
         if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())){
+            log.error("ASSESSOR: e-mail {} já cadastrado", assessor.getEmail());
             throw new ResourceAlreadyExists("Email já cadastrado");
         }
 
+        log.info("ASSESSOR: buscando a role de assessor");
         Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         assessor.setSenha(passwordEncoder.encode(assessor.getSenha()));
 
         Assessor createdAssessor = assessorRepository.save(assessor);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, createdAssessor);
         usuarioRoleRepository.save(usuarioRole);
-
+        log.info("ASSESSOR: assessor criado com sucesso com id: {}", createdAssessor.getId());
         emailService.sendRegistrationEmail(createdAssessor.getEmail());
         return createdAssessor;
     }
 
     public Assessor saveExternal(Assessor assessor){
         if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())){
+            log.error("ASSESSOR: e-mail {} já cadastrado para externo", assessor.getEmail());
             throw new ResourceAlreadyExists("Email já cadastrado");
         }
 
+        log.info("ASSESSOR: buscando a role de assessor");
         Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         assessor.setEnabled(true);
+
         Assessor createdAssessor = assessorRepository.save(assessor);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, createdAssessor);
         usuarioRoleRepository.save(usuarioRole);
+        log.info("ASSESSOR: assessor externo criado com sucesso com id: {}", createdAssessor.getId());
         return createdAssessor;
     }
 
