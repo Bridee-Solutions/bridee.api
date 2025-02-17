@@ -15,6 +15,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,8 @@ public class ItemOrcamento {
     @JoinColumn
     private Casal casal;
 
-    @OneToMany(mappedBy = "itemOrcamento", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "itemOrcamento", fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Custo> custos = new ArrayList<>();
 
 }

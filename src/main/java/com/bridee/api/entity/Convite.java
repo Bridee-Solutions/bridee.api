@@ -14,6 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ public class Convite {
     @JoinColumn
     private Casamento casamento;
 
-    @OneToMany(mappedBy = "convite", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "convite")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Convidado> convidados = new ArrayList<>();
 }
