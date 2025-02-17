@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,7 +40,8 @@ public class Tarefa {
     private TarefaStatusEnum status;
     private LocalDate dataLimite;
 
-    @OneToMany(mappedBy = "tarefa", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tarefa")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TarefaCasal> tarefaCasals;
 
 }
