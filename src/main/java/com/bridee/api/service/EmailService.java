@@ -14,6 +14,7 @@ import com.bridee.api.entity.enums.email.template.EmailTemplate;
 import com.bridee.api.pattern.strategy.message.impl.EmailSender;
 import com.bridee.api.utils.AzureBlobStorageProperties;
 import com.bridee.api.utils.EmailTemplateBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@Slf4j
 public class EmailService {
 
     @Value("${email.register.url}")
@@ -43,15 +45,15 @@ public class EmailService {
         this.usuarioService = usuarioService;
     }
 
-    public String sendEmail(EmailDto emailDto){
-            return emailSender.sendMessage(emailDto);
+    public void sendEmail(EmailDto emailDto){
+        emailSender.sendMessage(emailDto);
     }
 
     public void sendRegistrationEmail(String email){
-
         Usuario usuario = usuarioService.findByEmail(email);
         var verificationToken = verificationTokenService.generateVerificationToken(usuario);
 
+        log.info("EMAIL: envio de e-mail de registro");
         CompletableFuture.runAsync(() -> {
             var emailFields = buildEmailRegistrationFields(usuario, verificationToken);
 
