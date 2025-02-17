@@ -4,7 +4,9 @@ import com.bridee.api.dto.security.SecurityUser;
 import com.bridee.api.entity.Usuario;
 import com.bridee.api.entity.VerificationToken;
 import com.bridee.api.exception.ResourceNotFoundException;
+import com.bridee.api.mapper.response.UsuarioResponseMapper;
 import com.bridee.api.repository.UsuarioRoleRepository;
+import com.bridee.api.repository.projection.usuario.UserDetailsProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,10 +24,13 @@ public class UsuarioService implements UserDetailsService {
     private final UsuarioRepository repository;
     private final UsuarioRoleRepository usuarioRoleRepository;
     private final VerificationTokenService verificationTokenService;
+    private final UsuarioResponseMapper responseMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = repository.findByEmail(username).orElseThrow(ResourceNotFoundException::new);
+        UserDetailsProjection projection = repository.findAllProjectedByEmail(username)
+                .orElseThrow(ResourceNotFoundException::new);
+        Usuario usuario = responseMapper.fromProjection(projection);
         return new SecurityUser(usuario, usuarioRoleRepository);
     }
 

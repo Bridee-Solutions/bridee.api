@@ -1,5 +1,6 @@
 package com.bridee.api.service;
 
+import com.bridee.api.configuration.cache.CacheConstants;
 import com.bridee.api.dto.request.ValidateAssessorFieldsRequestDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
@@ -20,6 +21,7 @@ import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.PatchHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,6 +63,7 @@ public class AssessorService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CacheConstants.ASSESSOR)
     public Page<AssociadoResponseDto> findAssessoresDetails(Pageable pageable){
         Page<AssociadoResponseProjection> assessorDetails = assessorRepository.findAssessorDetails(pageable);
         List<AssociadoResponseDto> associadoResponse = geralResponseMapper.toResponseDto(assessorDetails.getContent());
@@ -105,18 +108,26 @@ public class AssessorService {
     }
 
     public Assessor save(Assessor assessor){
-        if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
+        if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())){
+            throw new ResourceAlreadyExists("Email já cadastrado");
+        }
+
         Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         assessor.setSenha(passwordEncoder.encode(assessor.getSenha()));
+
         Assessor createdAssessor = assessorRepository.save(assessor);
         UsuarioRole usuarioRole = new UsuarioRole(null, role, createdAssessor);
         usuarioRoleRepository.save(usuarioRole);
-        emailService.sendRegistrationEmail(createdAssessor);
+
+        emailService.sendRegistrationEmail(createdAssessor.getEmail());
         return createdAssessor;
     }
 
     public Assessor saveExternal(Assessor assessor){
-        if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())) throw new ResourceAlreadyExists("Email já cadastrado");
+        if (assessorRepository.existsByCnpjOrEmail(assessor.getCnpj(), assessor.getEmail())){
+            throw new ResourceAlreadyExists("Email já cadastrado");
+        }
+
         Role role = roleRepository.findByNome(RoleEnum.ROLE_ASSESSOR).orElseThrow(() -> new ResourceNotFoundException("Role não encontrada"));
         assessor.setEnabled(true);
         Assessor createdAssessor = assessorRepository.save(assessor);

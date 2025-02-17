@@ -51,7 +51,7 @@ public class OrcamentoFornecedorControllerImpl {
                                                                                        @WeddingIdentifier Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
-        OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto);
+        OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto, casal);
         orcamentoFornecedor = service.saveOrcamentoFornecedorCasal(orcamentoFornecedor, categoriaId);
         OrcamentoFornecedorResponseDto responseDto = responseMapper.toDomain(orcamentoFornecedor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);

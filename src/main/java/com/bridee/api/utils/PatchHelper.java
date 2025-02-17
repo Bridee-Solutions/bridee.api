@@ -25,13 +25,7 @@ public class PatchHelper {
 
     public PatchHelper(ObjectMapper objectMapper, Validator validator) {
         this.validator = validator;
-        this.objectMapper =  JsonMapper.builder()
-                .serializationInclusion(JsonInclude.Include.NON_NULL)
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .findAndAddModules()
-                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
-                .build();
+        this.objectMapper = objectMapper;
     }
 
     public void mergeNonNull(Object source, Object destination){

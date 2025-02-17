@@ -32,21 +32,24 @@ public class EmailService {
     private final VerificationTokenService verificationTokenService;
     private final AssessorService assessorService;
     private final OrcamentoService orcamentoService;
+    private final UsuarioService usuarioService;
 
-    public EmailService(AzureBlobStorageProperties azureBlobStorageProperties, EmailSender emailSender, VerificationTokenService verificationTokenService, @Lazy AssessorService assessorService, OrcamentoService orcamentoService) {
+    public EmailService(AzureBlobStorageProperties azureBlobStorageProperties, EmailSender emailSender, VerificationTokenService verificationTokenService, @Lazy AssessorService assessorService, OrcamentoService orcamentoService, UsuarioService usuarioService) {
         this.azureBlobStorageProperties = azureBlobStorageProperties;
         this.emailSender = emailSender;
         this.verificationTokenService = verificationTokenService;
         this.assessorService = assessorService;
         this.orcamentoService = orcamentoService;
+        this.usuarioService = usuarioService;
     }
 
     public String sendEmail(EmailDto emailDto){
             return emailSender.sendMessage(emailDto);
     }
 
-    public void sendRegistrationEmail(Usuario usuario){
+    public void sendRegistrationEmail(String email){
 
+        Usuario usuario = usuarioService.findByEmail(email);
         var verificationToken = verificationTokenService.generateVerificationToken(usuario);
 
         CompletableFuture.runAsync(() -> {

@@ -66,8 +66,7 @@ public class UsuarioControllerImpl implements UsuarioController {
 
     @GetMapping("/resend/verification-email/{email}")
     public ResponseEntity<Void> resendVerificationEmail(@PathVariable String email){
-        Usuario usuario = usuarioService.findByEmail(email);
-        emailService.sendRegistrationEmail(usuario);
+        emailService.sendRegistrationEmail(email);
         return ResponseEntity.noContent().build();
     }
 
