@@ -10,6 +10,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationControllerImpl implements AuthenticationController {
 
     @Value("${httpOnly.cookie.host}")
@@ -36,6 +38,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @PostMapping("/authentication")
     public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody @Valid AuthenticationRequestDto authenticationRequest){
+        log.info("AUTENTICAÇÃO: autenticando o usuario com e-mail: {}", authenticationRequest.getEmail());
         AuthenticationResponseDto authenticationResponse = authenticationService.authenticate(authenticationRequest);
         HttpCookie accessTokenCookie = CookieUtils.createCookie("access_token", authenticationResponse.getAccessToken(), true, Duration.ofHours(1),host);
         HttpCookie refreshTokenCookie = CookieUtils.createCookie("refresh_token", authenticationResponse.getRefreshToken(), true, Duration.ofDays(7), host);
