@@ -22,6 +22,7 @@ import com.bridee.api.utils.UriUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -35,6 +36,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/casais")
 @RequiredArgsConstructor
+@Slf4j
 public class CasalControllerImpl implements CasalController {
 
     private final CasalService service;
@@ -49,18 +51,21 @@ public class CasalControllerImpl implements CasalController {
 
     @GetMapping
     public ResponseEntity<Page<CasalResponseDto>> findAll(Pageable pageable){
+        log.info("CASAL: buscando todos os casais.");
         Page<CasalResponseDto> responseDto = responseMapper.toDomain(service.findAll(pageable));
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CasalResponseDto> findById(@PathVariable Integer id){
+        log.info("CASAL: buscando o casal de id: {}", id);
         Casal casal = service.findById(id);
         return ResponseEntity.ok(responseMapper.toDomain(casal));
     }
 
     @PostMapping
     public ResponseEntity<CasalResponseDto> save(@RequestBody @Valid CasalRequestDto requestDto){
+        log.info("CASAL: persistindo o casal de email: {}", requestDto.getEmail());
         Casal casal = requestMapper.toEntity(requestDto);
         casal = service.save(casal);
         casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento(),
@@ -71,6 +76,7 @@ public class CasalControllerImpl implements CasalController {
 
     @PostMapping("/externo")
     public ResponseEntity<CasalExternoResponseDto> saveExterno(@RequestBody @Valid CasalExternoRequestDto requestDto){
+        log.info("CASAL: persistindo o casal externo de email: {}", requestDto.getEmail());
         Casal casal = externoRequestMapper.toEntity(requestDto);
         casal = service.saveExternal(casal);
         casamentoService.save(casal, requestDto.getQuantidadeConvidados(), requestDto.getDataCasamento(),
@@ -83,6 +89,7 @@ public class CasalControllerImpl implements CasalController {
     public ResponseEntity<Void> uploadImage(@WeddingIdentifier Integer casamentoId,
                                             @RequestParam(value = "metadata") String metadataJson,
                                             @RequestPart("file") MultipartFile file) throws JsonProcessingException {
+        log.info("CASAL: upload da imagem de perfil do casamento de id: {}", casamentoId);
         ImageMetadata imageMetadata = jsonConverter.fromJson(metadataJson, ImageMetadata.class);
         imagemCasalService.uploadCasalImage(casamentoId, imageMetadata, file);
         return ResponseEntity.ok().build();
@@ -90,6 +97,7 @@ public class CasalControllerImpl implements CasalController {
 
     @PatchMapping(value = "/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id){
+        log.info("CASAL: atualizando informações do casal de id: {}", id);
         Casal casal = patchHelper.mergePatch(jsonMergePatch, new Casal(), Casal.class);
         CasalResponseDto responseDto = responseMapper.toDomain(service.update(casal, id));
         return ResponseEntity.ok(responseDto);
@@ -97,6 +105,7 @@ public class CasalControllerImpl implements CasalController {
 
     @PutMapping("/orcamento-total")
     public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@WeddingIdentifier Integer id, @RequestBody @Valid OrcamentoTotalRequestDto orcamentoTotal){
+        log.info("CASAL: atualizando orcamento do casal de id: {} com o valor {}", id, orcamentoTotal.getOrcamentoTotal());
         Casal casal = service.updateOrcamentoTotal(id, orcamentoTotal.getOrcamentoTotal());
         return ResponseEntity.ok(responseMapper.toDomain(casal));
     }

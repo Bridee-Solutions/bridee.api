@@ -56,32 +56,32 @@ public class AssessorControllerImpl implements AssessorController {
 
     @GetMapping
     public ResponseEntity<Page<AssessorResponseDto>> findAll(Pageable pageable, String nome){
-        log.info("ASSESSOR: requisição para buscar todos os assessor com o nome: {}", nome);
+        log.info("ASSESSOR: buscando todos os assessores com o nome: {}", nome);
         return ResponseEntity.ok(responseMapper.toDomain(service.findAllByNome(nome, pageable)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AssessorResponseDto> findById(@PathVariable Integer id){
-        log.info("ASSESSOR: requisição para buscar o assessor pelo id: {}", id);
+        log.info("ASSESSOR: buscando o assessor pelo id: {}", id);
         return ResponseEntity.ok(responseMapper.toDomain(service.findById(id)));
     }
 
     @GetMapping("/details")
     public ResponseEntity<Page<AssociadoResponseDto>> findAssessoresDetails(Pageable pageable){
-        log.info("ASSESSOR: requisição para buscar os detalhes do assessor");
+        log.info("ASSESSOR: buscando os detalhes do assessor");
         return ResponseEntity.ok(service.findAssessoresDetails(pageable));
     }
 
     @GetMapping("/information/{id}")
     public ResponseEntity<AssociadoGeralResponseDto> findAssessorInformation(@PathVariable Integer id){
-        log.info("ASSESSOR: requisição para buscar todas as informações do assessor pelo id: {}", id);
+        log.info("ASSESSOR: buscando todas as informações do assessor pelo id: {}", id);
         return ResponseEntity.ok(service.findAssessorInformation(id));
     }
 
     @GetMapping("/casais/pendentes")
     public ResponseEntity<Page<CasamentoResponseDto>> findAllCasamentosPendentes(@AdvisorIdentifier Integer assessorId,
                                                                              Pageable pageable){
-        log.info("ASSESSOR: requisição para buscar todos os pedidos pendentes de aprovação do assessor: {}", assessorId);
+        log.info("ASSESSOR: buscando todos os pedidos pendentes de aprovação do assessor: {}", assessorId);
         Page<Casamento> casais = pedidoAssessoriaService.findCasamentosPendenteByAssessorId(assessorId, pageable);
         Page<CasamentoResponseDto> response = casamentoResponseMapper.toDomain(casais);
         return ResponseEntity.ok(response);
@@ -90,7 +90,7 @@ public class AssessorControllerImpl implements AssessorController {
     @GetMapping("/casamentos/assessorados")
     public ResponseEntity<List<CasamentoResponseDto>> findAllCasamentosAssessorados(@RequestParam Integer ano,
                                                                                     @AdvisorIdentifier Integer assessorId){
-        log.info("ASSESSOR: requisição para buscar todos os casamentos assessorados pelo assessor: {}", assessorId);
+        log.info("ASSESSOR: buscando todos os casamentos assessorados pelo assessor: {}", assessorId);
         List<Casamento> casamentos = pedidoAssessoriaService
                 .findCasamentosAssessorados(assessorId, ano);
         List<CasamentoResponseDto> responseDto = casamentoResponseMapper.toDomain(casamentos);
@@ -100,14 +100,14 @@ public class AssessorControllerImpl implements AssessorController {
     @PostMapping("/solicitar-orcamento/{assessorId}")
     public ResponseEntity<Void> sendOrcamentoEmail(@PathVariable Integer assessorId,
                                                    @RequestBody @Valid SolicitacaoOrcamentoRequestDto requestDto){
-        log.info("ASSESSOR: requisição para enviar o e-mail de solicitação de orçamento para o assessor: {}", assessorId);
+        log.info("ASSESSOR: enviando o e-mail de solicitação de orçamento para o assessor: {}", assessorId);
         emailService.sendOrcamentoEmail(requestDto, assessorId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping
     public ResponseEntity<AssessorResponseDto> save(@RequestBody @Valid AssessorRequestDto requestDto){
-        log.info("ASSESSOR: requisição para persistir as informações do assessor com email: {}", requestDto.getEmail());
+        log.info("ASSESSOR: persistindo as informações do assessor com email: {}", requestDto.getEmail());
         Assessor assessor = service.save(requestMapper.toEntity(requestDto));
         AssessorResponseDto responseDto = responseMapper.toDomain(assessor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
@@ -115,7 +115,7 @@ public class AssessorControllerImpl implements AssessorController {
 
     @PostMapping("/externo")
     public ResponseEntity<AssessorExternoResponseDto> saveExternal(@RequestBody @Valid AssessorExternoRequestDto requestDto){
-        log.info("ASSESSOR: requisição para persistir as informações do assessor externo com email: {}", requestDto.getEmail());
+        log.info("ASSESSOR: persistindo as informações do assessor externo com email: {}", requestDto.getEmail());
         Assessor assessor = service.saveExternal(externoRequestMapper.toEntity(requestDto));
         AssessorExternoResponseDto responseDto = externoResponseMapper.toDomain(assessor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);
@@ -124,7 +124,7 @@ public class AssessorControllerImpl implements AssessorController {
 
     @PostMapping("/validate-fields")
     public ResponseEntity<ValidateAssessorFieldsResponseDto> validateFields(@RequestBody @Valid ValidateAssessorFieldsRequestDto requestDto){
-        log.info("ASSESSOR: requisição para validar a existência do assessor pelo emailEmpresa {} e cnpj {}",
+        log.info("ASSESSOR: validando a existência do assessor pelo emailEmpresa {} e cnpj {}",
                 requestDto.getEmailEmpresa(), requestDto.getCnpj());
         ValidateAssessorFieldsResponseDto responseDto = service.validateAssessorFields(requestDto);
         return ResponseEntity.ok(responseDto);
@@ -132,7 +132,7 @@ public class AssessorControllerImpl implements AssessorController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<AssessorResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id){
-        log.info("ASSESSOR: requisição para atualizar as informações do assessor com id: {}", id);
+        log.info("ASSESSOR: validando as informações do assessor com id: {}", id);
         Assessor assessor = patchHelper.mergePatch(jsonMergePatch, new Assessor(), Assessor.class);
         assessor = service.update(assessor, id);
         return ResponseEntity.ok(responseMapper.toDomain(assessor));
@@ -143,7 +143,7 @@ public class AssessorControllerImpl implements AssessorController {
                                                     @WeddingIdentifier Integer casamentoId,
                                                     @RequestBody @Valid AssociadoPrecoRequestDto requestDto
                                                     ){
-        log.info("ASSESSOR: requisição para atualizar o preco do serviço do assessor de id: {}, para o casal {}",
+        log.info("ASSESSOR: atualizando o preco do serviço do assessor de id: {}, para o casal {}",
                 assessorId, casamentoId);
         pedidoAssessoriaService.updatePrecoCasamentoAssessor(assessorId, casamentoId, requestDto.getPreco());
         return ResponseEntity.noContent().build();
@@ -151,7 +151,7 @@ public class AssessorControllerImpl implements AssessorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
-        log.info("ASSESSOR: requisição para deletar o assessor com id: {}", id);
+        log.info("ASSESSOR: deletando o assessor com id: {}", id);
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
