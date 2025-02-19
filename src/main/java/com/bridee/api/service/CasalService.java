@@ -43,7 +43,13 @@ public class CasalService {
     }
 
     public Casal findById(Integer id){
-        return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        return repository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public Integer findCasalIdByCasamentoId(Integer casamentoId){
+        return repository.findCasalIdByCasamentoId(casamentoId)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public Casal save(Casal casal){

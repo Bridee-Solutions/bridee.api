@@ -7,10 +7,10 @@ import com.bridee.api.entity.PedidoAssessoria;
 import com.bridee.api.entity.enums.PedidoAssessoriaStatusEnum;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
-import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.CustoRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
+import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +26,7 @@ import java.util.Optional;
 public class CasamentoService {
 
     private final CasamentoRepository repository;
+    private final CasalService casalService;
     private final OrcamentoFornecedorRepository orcamentoFornecedorRepository;
     private final CustoRepository custoRepository;
     private final PedidoAssessoriaService pedidoAssessoriaService;
@@ -102,10 +102,9 @@ public class CasamentoService {
     }
 
     public BigDecimal calculateOrcamento(Integer casamentoId) {
-        Casamento casamento = findById(casamentoId);
-        Casal casal = casamento.getCasal();
-        Long totalPriceItens = custoRepository.totalPriceItens(casal.getId());
-        Long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casal.getId());
+        Integer casalId = casalService.findCasalIdByCasamentoId(casamentoId);
+        Long totalPriceItens = custoRepository.totalPriceItens(casalId);
+        Long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casalId);
         return calculateOrcamento(totalPriceItens, totalPriceOrcamento);
     }
 
