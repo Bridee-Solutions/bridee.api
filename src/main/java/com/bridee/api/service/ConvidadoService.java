@@ -11,6 +11,7 @@ import com.bridee.api.repository.specification.ConvidadoFilter;
 import com.bridee.api.utils.PatchHelper;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -63,7 +65,9 @@ public class ConvidadoService {
 
     public void vinculateConvidadosToMesa(List<MesaConvidadoRequestDto> mesaConvidadoDto){
 
-        List<Integer> convidadosIds = mesaConvidadoDto.stream().map(MesaConvidadoRequestDto::getConvidadoId).toList();
+        List<Integer> convidadosIds = mesaConvidadoDto.stream()
+                .map(MesaConvidadoRequestDto::getConvidadoId)
+                .toList();
         List<Convidado> convidados = repository.findAllById(convidadosIds);
 
         if (convidados.isEmpty()){
@@ -141,6 +145,7 @@ public class ConvidadoService {
 
     private void validateConvidadoConvite(Convidado convidado, Integer conviteId){
         if (repository.existsByTelefoneAndConviteId(convidado.getTelefone(), conviteId)){
+            log.error("CONVIDADO: convidado de id {}, já cadastrado para esse convite", convidado.getId());
             throw new ResourceAlreadyExists("Convidado já cadastrado para esse convite!");
         }
         vinculateConvidadoToConvite(convidado, conviteId);
