@@ -13,6 +13,7 @@ import com.bridee.api.repository.projection.associado.AssociadoResponseProjectio
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -112,6 +114,7 @@ public class FornecedorService {
 
     public Fornecedor update(Fornecedor fornecedor, Integer id){
         if (!repository.existsById(id)){
+            log.error("FORNECEDOR: fornecedor não encontrado.");
             throw new ResourceNotFoundException("Fornecedor não encontrado!");
         }
         fornecedor.setId(id);
