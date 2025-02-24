@@ -27,6 +27,7 @@ public class CronogramaService {
 
     public Cronograma save(Cronograma cronograma){
         if(repository.existsByCasamentoId(cronograma.getCasamento().getId())){
+            log.error("CRONOGRAMA: já existe um cronograma para esse casamento.");
             throw new ResourceAlreadyExists("Já existe um cronograma para esse casamento");
         }
         return repository.save(cronograma);
