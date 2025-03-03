@@ -13,6 +13,7 @@ import com.bridee.api.repository.OrcamentoFornecedorRepository;
 import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 @Transactional
@@ -67,6 +69,7 @@ public class CasamentoService {
 
     public void existsById(Integer casamentoId){
         if (!repository.existsById(casamentoId)){
+            log.error("CASAMENTO: casamento não encontrado com id {}", casamentoId);
             throw new ResourceNotFoundException("Casamento não encontrado!");
         }
     }

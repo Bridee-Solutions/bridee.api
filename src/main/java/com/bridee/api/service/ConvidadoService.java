@@ -115,7 +115,6 @@ public class ConvidadoService {
     }
 
     private List<Convidado> extractConvidadosWithoutMesa(List<Mesa> mesas, String nome, Integer casamentoId){
-
         List<Convidado> allConvidados = findByCasamentoIdAndNome(casamentoId, nome);
         List<Convidado> convidadosWithMesa = convidadosWithMesa(mesas);
 
