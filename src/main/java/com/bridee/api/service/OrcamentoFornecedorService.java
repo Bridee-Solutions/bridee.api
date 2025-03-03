@@ -8,6 +8,7 @@ import com.bridee.api.mapper.response.OrcamentoFornecedorResponseMapper;
 import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -35,21 +37,23 @@ public class OrcamentoFornecedorService {
     }
 
     public List<OrcamentoFornecedor> saveAll(List<OrcamentoFornecedor> orcamentoFornecedores){
+        Integer casalId = orcamentoFornecedores.get(0).getCasal().getId();
+        log.info("ORCAMENTO FORNECEDOR: salvando o orcamento dos fornecedores, para o casal de id {}", casalId);
         if (orcamentoFornecedores.isEmpty()) {
+            log.error("ORCAMENTO FORNECEDOR: nenhum orcamento fornecedor informado");
             throw new UnprocessableEntityException("Nenhum orcamentoFornecedor informado!");
         }
-
         removeInactivesOrcamentoFornecedor(orcamentoFornecedores);
         return repository.saveAll(orcamentoFornecedores);
     }
 
     private void removeInactivesOrcamentoFornecedor(List<OrcamentoFornecedor> orcamentoFornecedores){
-
         Integer casalId = orcamentoFornecedores.get(0).getCasal().getId();
         List<OrcamentoFornecedor> allOrcamentoFornecedores = responseMapper
                 .fromProjection(repository.findAllBaseProjectionByCasalId(casalId));
-
         List<Integer> orcamentoFornecedoresIdsToBeRemoved = orcamentoFornecedoresToBeRemoved(allOrcamentoFornecedores, orcamentoFornecedores);
+
+        log.info("ORCAMENTO FORNECEDOR: removendo {} orcamento fornecedores inativos", orcamentoFornecedoresIdsToBeRemoved.size());
         repository.deleteAllById(orcamentoFornecedoresIdsToBeRemoved);
     }
 
@@ -61,7 +65,6 @@ public class OrcamentoFornecedorService {
     }
 
     public OrcamentoFornecedor saveOrcamentoFornecedorCasal(OrcamentoFornecedor orcamentoFornecedor, Integer categoriaId) {
-
         Integer fornecedorId = orcamentoFornecedor.getFornecedor().getId();
         SubcategoriaServico subcategoria = findSubcategoriaFornecedor(fornecedorId, categoriaId);
         removePreviousOrcamentoFornecedorIfExists(orcamentoFornecedor, subcategoria);
@@ -89,6 +92,7 @@ public class OrcamentoFornecedorService {
                 .findFirst();
 
         if (subcategoriaOpt.isEmpty()){
+            log.error("SUBCATEGORIA FORNECEDOR: subcategoria não encotrada com a categoria de id {}", categoriaId);
             throw new ResourceNotFoundException("Subcategoria não encontrada para a categoria informada");
         }
 
