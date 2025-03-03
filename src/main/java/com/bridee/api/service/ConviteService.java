@@ -60,7 +60,6 @@ public class ConviteService {
     }
 
     public void sendConvidadosConvites(ConviteMessageDto conviteMessageDto){
-
         Casamento casamento = casamentoService.findById(conviteMessageDto.getCasamentoId());
         Casal casal = casamento.getCasal();
         Convite convite = findById(conviteMessageDto.getConviteId());
@@ -76,7 +75,6 @@ public class ConviteService {
 
     @Transactional
     public Convite save(Convite convite, Integer casamentoId, String telefoneTitular){
-
         if (repository.existsByNomeAndCasamentoId(convite.getNome(), casamentoId)){
             log.error("CONVITE: convite já cadastrado para esse convite");
             throw new ResourceAlreadyExists("Convite já cadastrado para esse casamento.");
@@ -169,6 +167,7 @@ public class ConviteService {
 
     private void validateConviteCasamento(Casamento casamento, Convite convite){
         if (!convite.getCasamento().equals(casamento)) {
+            log.error("CONVITE: convite de id {}, não pertence ao casamento {}", convite.getId(), casamento.getId());
             throw new BadRequestEntityException("Convite não pertence ao casamento especificado");
         }
     }
@@ -177,11 +176,13 @@ public class ConviteService {
         HashSet<Convidado> convidadosConvite = new HashSet<>(convite.getConvidados());
 
         if (convidados.isEmpty() || convidadosConvite.isEmpty()){
+            log.error("CONVITE: não foi encontrado nenhum dos convidados informados no convite de id {}", convite.getId());
             throw new ResourceNotFoundException("Não foi encontrado nenhum dos convidados informados para o convite de id %d"
                     .formatted(convite.getId()));
         }
 
         if (!convidadosConvite.containsAll(convidados)){
+            log.error("CONVITE: Um ou mais convidados não associados ao convite de id {}", convite.getId());
             throw new BadRequestEntityException("Um ou mais convidados não associados ao convite.");
         }
 
