@@ -149,7 +149,7 @@ public class OrcamentoService {
 
         byte[] csv = null;
         try {
-            csv = CsvUtils.createResumeCostsCsv(orcamentoProjection);
+            csv = CsvUtils.createResumeCostsCsv(orcamentoProjection, id);
         } catch (IOException e) {
             throw new CsvDownloadErro("Não foi possível gerar o arquivo csv para o casal %d".formatted(id));
         }

@@ -9,6 +9,7 @@ import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.service.OrcamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/orcamentos")
 @RequiredArgsConstructor
@@ -30,13 +32,14 @@ public class OrcamentoControllerImpl implements OrcamentoController {
 
     @GetMapping("/casamento/{id}")
     public ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@PathVariable Integer id){
+        log.info("ORCAMENTO: buscando orcamento do casamento de id {}", id);
         OrcamentoProjection projection = orcamentoService.findCasamentoOrcamento(id);
         return ResponseEntity.ok(projection);
     }
 
     @GetMapping(value = "/csv/casamento/{id}", produces = "text/plain")
     public ResponseEntity<byte[]> downloadOrcamentoCsv(@PathVariable Integer id){
-
+        log.info("ORCAMENTO: criando csv com dados relacionados ao orcamento do casamento");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.TEXT_PLAIN);
         httpHeaders.setContentDispositionFormData("attachment", "orcamento.csv");
@@ -46,6 +49,7 @@ public class OrcamentoControllerImpl implements OrcamentoController {
 
     @PostMapping("/casal")
     public ResponseEntity<CasalOrcamentoResponseDto> saveItemOrcamento(@RequestBody @Valid OrcamentoCasalRequestDto requestDto){
+        log.info("ORCAMENTO: salvando itens do orçamento");
         Casal casal = orcamentoService.saveOrcamentoCasal(requestDto);
         return ResponseEntity.ok(casalOrcamentoResponseMapper.toDomain(casal));
     }
