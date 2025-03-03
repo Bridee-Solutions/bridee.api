@@ -7,12 +7,14 @@ import com.bridee.api.exception.ImagesNotFoundException;
 import com.bridee.api.utils.ListaObj;
 import com.bridee.api.utils.MergeSort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PexelsService {
@@ -24,7 +26,11 @@ public class PexelsService {
     public PexelsImageResponseDto findPexelsImages(String query){
         ResponseEntity<PexelsImageResponseDto> images = pexelsClient.getImages(query, apiKey);
         PexelsImageResponseDto responseDto = Objects.nonNull(images) ? images.getBody() : null;
-        if (responseDto == null) throw new ImagesNotFoundException();
+        if (responseDto == null) {
+            log.error("PEXELS: nenhuma imagem encontrada para a query {}", query);
+            throw new ImagesNotFoundException();
+        }
+        log.info("PEXELS: {} imagens encontradas", responseDto.getTotalResults());
         return responseDto;
     };
 
