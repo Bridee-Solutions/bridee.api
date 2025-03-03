@@ -16,6 +16,7 @@ import com.bridee.api.service.OrcamentoFornecedorService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/orcamento-fornecedor")
 @RequiredArgsConstructor
@@ -64,6 +66,7 @@ public class OrcamentoFornecedorControllerImpl {
     @PutMapping("/preco/{id}")
     public ResponseEntity<Void> updateOrcamentoFornecedor(@PathVariable Integer id,
                                                           @RequestBody @Valid AssociadoPrecoRequestDto requestDto){
+        log.info("ORCAMENTO FORNECEDOR: atualizando preço do orcamento fornecedor.");
         service.updateOrcamentoFornecedorPreco(id, requestDto.getPreco());
         return ResponseEntity.noContent().build();
     }
