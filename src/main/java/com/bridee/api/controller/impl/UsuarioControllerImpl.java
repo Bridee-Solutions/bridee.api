@@ -65,7 +65,7 @@ public class UsuarioControllerImpl implements UsuarioController {
         return ResponseEntity.status(httpStatus).build();
     }
 
-    @GetMapping("/resend/verification-email/{email}")
+    @PostMapping("/resend/verification-email/{email}")
     public ResponseEntity<Void> resendVerificationEmail(@PathVariable String email){
         log.info("USUARIO: reenviando email de confirmação de usuário");
         emailService.sendRegistrationEmail(email);
