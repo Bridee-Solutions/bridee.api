@@ -15,6 +15,7 @@ import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/convites")
 @RequiredArgsConstructor
@@ -42,6 +44,7 @@ public class ConviteControllerImpl implements ConviteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ConvitesResponseDto> findById(@PathVariable Integer id){
+        log.info("CONVITE: buscando convite de id: {}", id);
         Convite convite = conviteService.findById(id);
         return ResponseEntity.ok(responseMapper.toDomain(convite));
     }
@@ -49,6 +52,7 @@ public class ConviteControllerImpl implements ConviteController {
     @GetMapping
     public ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter,
                                                                     @WeddingIdentifier Integer casamentoId){
+        log.info("CONVITE: buscando todos os convites filtrados por {}", filter.keySet());
         List<Convite> convites = conviteService.findAllByCasamentoId(filter, casamentoId);
         Pageable pageable = PageUtils.buildPageable(filter);
         return ResponseEntity.ok(responseMapper.toDomainPage(convites, pageable));
@@ -56,16 +60,20 @@ public class ConviteControllerImpl implements ConviteController {
 
     @GetMapping("/relatorio")
     public ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@WeddingIdentifier Integer casamentoId){
+        log.info("CONVITE: gerando relatório de convites do casamento: {}", casamentoId);
         return ResponseEntity.ok(conviteService.gerarRelatorioCasamento(casamentoId));
     }
 
     @GetMapping("/resumo")
     public ResponseEntity<ConviteResumoResponseDto> resumo(@WeddingIdentifier Integer casamentoId){
+        log.info("CONVITE: gerando resumo de convites do casamento {}", casamentoId);
         return ResponseEntity.ok(conviteService.inviteResume(casamentoId));
     }
 
     @PostMapping
     public ResponseEntity<ConvitesResponseDto> save(@RequestBody @Valid ConviteRequestDto requestDto){
+        log.info("CONVITE: salvando convite de titular {}, para o casamento {}",
+                requestDto.getTelefoneTitular(), requestDto.getCasamentoId());
         Convite convite = requestMapper.toEntity(requestDto);
         convite = conviteService.save(convite, requestDto.getCasamentoId(), requestDto.getTelefoneTitular());
         ConvitesResponseDto convitesResponseDto = responseMapper.toDomain(convite);
@@ -75,6 +83,7 @@ public class ConviteControllerImpl implements ConviteController {
     @PutMapping("/{id}")
     public ResponseEntity<ConviteResponseDto> update(@RequestBody @Valid ConviteRequestDto requestDto,
                                                      @PathVariable Integer id){
+        log.info("CONVITE: atualizando convite de id {}", id);
         Convite convite = requestMapper.toEntity(requestDto);
         convite = conviteService.update(convite, requestDto.getTelefoneTitular(), id);
         ConviteResponseDto responseDto = responseMapper.toConviteResponse(convite);
@@ -84,12 +93,14 @@ public class ConviteControllerImpl implements ConviteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
+        log.info("CONVITE: deletando convite de id {}", id);
         conviteService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteAll(@WeddingIdentifier Integer casamentoId){
+        log.info("CONVITE: deletando todos os convites do casamento {}", casamentoId);
         conviteService.deleteAllWeddingInvites(casamentoId);
         return ResponseEntity.noContent().build();
     }

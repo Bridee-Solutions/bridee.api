@@ -9,6 +9,7 @@ import com.bridee.api.mapper.response.SubcategoriaServicoResponseMapper;
 import com.bridee.api.service.CategoriaServicoService;
 import com.bridee.api.service.SubcategoriaServicoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/categorias-servicos")
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class CategoriaServicoControllerImpl implements CategoriaServicoControlle
 
     @GetMapping
     public ResponseEntity<Page<CategoriaServicoResponseDto>> findAll(Pageable pageable){
+        log.info("CATEGORIA SERVICO: buscando todas as categorias do serviço.");
         Page<CategoriaServico> categoriaServicos = service.findAll(pageable);
         Page<CategoriaServicoResponseDto> responseDtoPage = responseMapper.toDomain(categoriaServicos);
         responseDtoPage.getContent().forEach(content -> {

@@ -35,6 +35,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/error/**").permitAll()
                                 .requestMatchers("/authentication", "/refresh-token").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/usuarios/**").permitAll()
+                                .requestMatchers(HttpMethod.POST,
+                                        "/usuarios/resend/verification-email/{email}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/casais",
                                         "/assessores",
                                         "/casais/externo",

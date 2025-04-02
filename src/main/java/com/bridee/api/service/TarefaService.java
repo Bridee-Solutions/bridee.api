@@ -11,6 +11,8 @@ import com.bridee.api.repository.TarefaCasalRepository;
 import com.bridee.api.repository.TarefaRepository;
 import com.bridee.api.repository.specification.TarefaFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -26,12 +29,13 @@ public class TarefaService {
     private final TarefaRepository repository;
     private final CasamentoService casamentoService;
     private final TarefaCasalRepository tarefaCasalRepository;
+    private final CasalService casalService;
 
     @Transactional(readOnly = true)
     public List<Tarefa> findAllByCasalId(Integer casamentoId, Map<String, Object> params){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
-
+        log.info("TAREFA: filtro a serem aplicados {}", params.keySet());
         TarefaFilter tarefaFilter = buildTarefaFilter(casal.getId(), params);
         return repository.findAll(tarefaFilter);
     }
@@ -61,8 +65,10 @@ public class TarefaService {
 
     public Tarefa save(Integer casamentoId, Tarefa tarefa){
         Casamento casamento = casamentoService.findById(casamentoId);
-        Casal casal = casamento.getCasal();
+        Integer casalId = casalService.findCasalIdByCasamentoId(casamentoId);
+        Casal casal = new Casal(casalId);
         if (tarefaCasalRepository.existsByTarefaNomeAndCasalId(tarefa.getNome(), casal.getId())){
+            log.error("Tarefa já cadastrado com o nome {}, para o casal de id {}", tarefa.getNome(), casal.getId());
             throw new ResourceAlreadyExists("Tarefa já cadastrada no casamento!");
         }
 
@@ -70,7 +76,6 @@ public class TarefaService {
         tarefa = repository.save(tarefa);
         TarefaCasal tarefaCasal = new TarefaCasal(null, tarefa, casal);
         tarefaCasalRepository.save(tarefaCasal);
-
         return tarefa;
     }
 

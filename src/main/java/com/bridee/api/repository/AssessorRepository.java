@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
@@ -33,7 +32,7 @@ public interface AssessorRepository extends JpaRepository<Assessor, Integer> {
             ifs.tamanhoCasamento as qtdConvidados
             FROM InformacaoAssociado ifs WHERE ifs.assessor.id = :id
             """)
-    AssociadoGeralResponseProjection findFornecedorInformations(Integer id);
+    AssociadoGeralResponseProjection findAssessorInformations(Integer id);
 
     @Query("""
             SELECT ifs.assessor.nome as nome,

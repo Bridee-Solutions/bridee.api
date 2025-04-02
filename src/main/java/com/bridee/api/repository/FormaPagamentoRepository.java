@@ -9,12 +9,12 @@ import java.util.List;
 public interface FormaPagamentoRepository extends JpaRepository<FormaPagamento, Integer> {
 
     @Query("""
-            SELECT fpa.formaPagamento FROM FormaPagamentoAssociado fpa WHERE fpa.informacaoAssociado.fornecedor.id = :fornecedorId
+            SELECT fpa.formaPagamento.nome FROM FormaPagamentoAssociado fpa WHERE fpa.informacaoAssociado.fornecedor.id = :fornecedorId
             """)
-    List<FormaPagamento> findByFornecedorId(Integer fornecedorId);
+    List<String> findByFornecedorId(Integer fornecedorId);
 
     @Query("""
-            SELECT fpa.formaPagamento FROM FormaPagamentoAssociado fpa WHERE fpa.informacaoAssociado.assessor.id = :assessorId
+            SELECT fpa.formaPagamento.nome FROM FormaPagamentoAssociado fpa WHERE fpa.informacaoAssociado.assessor.id = :assessorId
             """)
-    List<FormaPagamento> findByAssessorId(Integer assessorId);
+    List<String> findByAssessorId(Integer assessorId);
 }

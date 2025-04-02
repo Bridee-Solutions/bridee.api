@@ -6,11 +6,13 @@ import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.repository.MesaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -35,6 +37,7 @@ public class MesaService {
         mesa.setCasamento(Casamento.builder()
                 .id(casamentoId)
                 .build());
+        log.info("MESA: salvando mesa para o casamento {}", casamentoId);
         return repository.save(mesa);
     }
 

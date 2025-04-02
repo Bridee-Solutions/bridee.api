@@ -10,11 +10,13 @@ import com.bridee.api.repository.projection.orcamento.ItemOrcamentoProjection;
 import com.bridee.api.repository.ItemOrcamentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,9 +33,13 @@ public class ItemOrcamentoService {
     public ItemOrcamento save(ItemOrcamento itemOrcamento){
         Integer casalId = itemOrcamento.getCasal().getId();
         String tipo = itemOrcamento.getTipo();
+
+        log.info("ITEM ORCAMENTO: salvando item orcamento do tipo {} para o casal {}", itemOrcamento.getTipo(), casalId);
         if (repository.existsByTipoAndCasalId(tipo, casalId)){
+            log.error("ITEM ORCAMENTO: item orçamento com tipo {} já existe para o casal {}", tipo, casalId);
             throw new ResourceAlreadyExists("Item orçamento com tipo %s já existe para o casal de id %d".formatted(tipo, casalId));
         }
+
         return repository.save(itemOrcamento);
     }
 
@@ -73,6 +79,7 @@ public class ItemOrcamentoService {
 
     private void addNewItemOrcamento(ItemOrcamento item){
         List<Custo> custosItem = item.getCustos();
+        log.info("ITEM ORCAMENTO: Item orcamento de tipo {}, tem {} custos", item, custosItem.size());
         if (Objects.isNull(item.getId())){
             item = save(item);
         }
@@ -99,16 +106,19 @@ public class ItemOrcamentoService {
 
     private void removeInactivesCustos(List<Custo> custos) {
         if (custos.isEmpty()){
+            log.error("ITEM ORCAMENTO: nenhum custo relacionado ao item orcamento");
             throw new UnprocessableEntityException("Custos não encontrados!");
         }
+
         Integer itemOrcamentoId = custos.get(0).getItemOrcamento().getId();
         List<Custo> allCustos = custoService.findAllByItemOrcamentoId(itemOrcamentoId);
         List<Integer> custosToBeDeleted = inactivesCustosIds(allCustos, custos);
+
+        log.info("ITEM ORCAMENTO: removendo {} custos inativos", custosToBeDeleted.size());
         custoService.deleteAllByIds(custosToBeDeleted);
     }
 
     private List<Integer> inactivesCustosIds(List<Custo> allCustos, List<Custo> custos){
-
         List<Integer> allCustosIds = allCustos.stream().map(Custo::getId).toList();
         List<Integer> custosIds = custos.stream().map(Custo::getId).toList();
 

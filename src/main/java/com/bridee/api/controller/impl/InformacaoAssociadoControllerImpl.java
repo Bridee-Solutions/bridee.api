@@ -11,6 +11,7 @@ import com.bridee.api.utils.JsonConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/informacao-associados")
 @RequiredArgsConstructor
@@ -44,6 +46,7 @@ public class InformacaoAssociadoControllerImpl {
 
         InformacaoAssociadoDto informacaoAssociado = jsonConverter
                 .fromJson(informacaoAssociadoDto, InformacaoAssociadoDto.class);
+        log.info("INFORMAÇÃO ASSOCIADO: criando informação associado para o assessor de id {}", assessorId);
         InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal,
                 imagemSecundaria, imagemTerciaria, imagemQuaternaria, imagemQuinaria);
         InformacaoAssociado info = service.save(informacaoPerfil, assessorId);
@@ -60,6 +63,7 @@ public class InformacaoAssociadoControllerImpl {
                                                                @RequestPart("imagemQuinaria") MultipartFile imagemQuinaria) throws JsonProcessingException {
 
         InformacaoAssociadoDto informacaoAssociado = jsonConverter.fromJson(informacaoAssociadoDto, InformacaoAssociadoDto.class);
+        log.info("INFORMAÇÃO ASSOCIADO: criando informação associado para o fornecedor de id {}", fornecedorId);
         InformacaoAssociadoPerfilDto informacaoPerfil = new InformacaoAssociadoPerfilDto(informacaoAssociado, imagemPrincipal,
                 imagemSecundaria, imagemTerciaria, imagemQuaternaria, imagemQuinaria);
         InformacaoAssociado info = service.saveFornecedor(informacaoPerfil, fornecedorId);
@@ -68,6 +72,7 @@ public class InformacaoAssociadoControllerImpl {
 
     @GetMapping("/{id}")
     public ResponseEntity<InformacaoAssociadoResponseDto> findByAssessorId(@PathVariable Integer id){
+        log.info("INFORMAÇÃO ASSOCIADO: buscando informação associado de id {}", id);
         InformacaoAssociado info = service.findByAssessorId(id);
         InformacaoAssociadoResponseDto response = responseMapper.toDomain(info);
         response.setDetalhes(service.buildInformacaoAssociadoDetalhes(info));

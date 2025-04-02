@@ -10,6 +10,7 @@ import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UsuarioExternoException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
     private final UsuarioService usuarioService;
@@ -29,17 +31,20 @@ public class AuthenticationService {
         UserDetails userAuthenticated = new SecurityUser(usuario);
         validatePasswords(requestDto, userAuthenticated);
         validateUser(usuario);
+        log.info("AUTENTICAÇÃO: usuário autenticado com sucesso.");
         return buildAuthenticationResponse(usuario, userAuthenticated);
     }
 
     private void validatePasswords(AuthenticationRequestDto requestDto, UserDetails userAuthenticated){
         if (!passwordEncoder.matches(requestDto.getSenha(), userAuthenticated.getPassword())){
+            log.error("USUÁRIO: credenciais informadas não são válidas");
             throw new ResourceNotFoundException("Usuário inválido");
         }
     }
 
     private void validateUser(Usuario usuario){
         if (usuario.getExterno()){
+            log.error("AUTENTICAÇÃO: usuário não cadastrado pela aplicação.");
             throw new UsuarioExternoException("Usuário não cadastro pela aplicação");
         }
     }
