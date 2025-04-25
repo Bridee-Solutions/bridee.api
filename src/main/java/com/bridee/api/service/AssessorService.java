@@ -173,4 +173,10 @@ public class AssessorService {
                 .emailEmpresaExists(existsByEmailEmpresa)
                 .build();
     }
+
+    public void existsByEmailEmpresa(String emailAssessorEmpresa) {
+        if (!assessorRepository.existsByEmailEmpresa(emailAssessorEmpresa)){
+            throw new ResourceNotFoundException("Não existe assessor com esse e-mail");
+        }
+    }
 }

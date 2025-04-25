@@ -27,6 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,12 +87,11 @@ public class CasalControllerImpl implements CasalController {
     }
 
     @PostMapping(value = "/imagem-perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> uploadImage(@WeddingIdentifier Integer casamentoId,
-                                            @RequestParam(value = "metadata") String metadataJson,
+    public ResponseEntity<Void> uploadImage(@RequestParam(value = "metadata") String metadataJson,
                                             @RequestPart("file") MultipartFile file) throws JsonProcessingException {
-        log.info("CASAL: upload da imagem de perfil do casamento de id: {}", casamentoId);
+
         ImageMetadata imageMetadata = jsonConverter.fromJson(metadataJson, ImageMetadata.class);
-        imagemCasalService.uploadCasalImage(casamentoId, imageMetadata, file);
+        imagemCasalService.uploadCasalImage(imageMetadata, file);
         return ResponseEntity.ok().build();
     }
 

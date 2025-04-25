@@ -31,7 +31,7 @@ public class OrcamentoControllerImpl implements OrcamentoController {
     private final CasalOrcamentoResponseMapper casalOrcamentoResponseMapper;
     private final OrcamentoService orcamentoService;
 
-    @GetMapping("/casamento}")
+    @GetMapping("/casamento")
     public ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@CoupleIdentifier Integer casalId){
         log.info("ORCAMENTO: buscando orcamento do casal de id {}", casalId);
         OrcamentoProjection projection = orcamentoService.findCasalOrcamento(casalId);
