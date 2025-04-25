@@ -4,7 +4,6 @@ import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.request.SolicitacaoOrcamentoRequestDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
-import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Custo;
 import com.bridee.api.entity.ItemOrcamento;
 import com.bridee.api.entity.OrcamentoFornecedor;
@@ -12,10 +11,9 @@ import com.bridee.api.exception.CsvDownloadErro;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.FornecedorOrcamentoRequestMapper;
 import com.bridee.api.mapper.request.ItemOrcamentoRequestMapper;
-import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.CasalRepository;
-import com.bridee.api.repository.CasamentoRepository;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.utils.CsvUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +30,7 @@ import java.util.Objects;
 public class OrcamentoService {
 
     private final AssessorRepository assessorRepository;
+    private final CasalService casalService;
     private final CasalRepository casalRepository;
     private final ItemOrcamentoRequestMapper itemOrcamentoRequestMapper;
     private final ItemOrcamentoService itemOrcamentoService;
@@ -39,28 +38,19 @@ public class OrcamentoService {
     private final FornecedorOrcamentoRequestMapper orcamentoRequestMapper;
     private final OrcamentoFornecedorService orcamentoFornecedorService;
     private final SubcategoriaServicoService subcategoriaServicoService;
-    private final CasamentoRepository casamentoRepository;
 
     @Transactional(readOnly = true)
-    public OrcamentoProjection findCasamentoOrcamento(Integer casamentoId){
-        Integer casalId = extractCasalId(casamentoId);
+    public OrcamentoProjection findCasalOrcamento(Integer casalId){
         orcamentoFornecedorService.findByCasalId(casalId);
         subcategoriaServicoService.findAll();
         itemOrcamentoService.findAllByCasalId(casalId);
-        return casalRepository.findOrcamentoByCasalId(casalId);
-    }
-
-    public Integer extractCasalId(Integer casamentoId){
-        Casamento casamento = casamentoRepository.findById(casamentoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado"));
-        Casal casal = casamento.getCasal();
-        return casal.getId();
+        return casalService.findOrcamentoById(casalId);
     }
 
     @Transactional
     public Casal saveOrcamentoCasal(OrcamentoCasalRequestDto orcamentoCasalRequestDto){
-
-        Casal casal = casalRepository.findById(orcamentoCasalRequestDto.getCasalId()).orElseThrow(() -> new ResourceNotFoundException("Casal não encontrado!"));
+        Integer casalId = orcamentoCasalRequestDto.getCasalId();
+        Casal casal = casalService.findById(casalId);
         List<ItemOrcamento> itens = itemOrcamentoRequestMapper.toEntity(orcamentoCasalRequestDto.getItemOrcamentos());
         List<OrcamentoFornecedor> orcamentoFornecedores = orcamentoRequestMapper.toEntity(orcamentoCasalRequestDto.getOrcamentoFornecedores());
 
@@ -145,7 +135,7 @@ public class OrcamentoService {
 
     public byte[] generateCsvFile(Integer id) {
 
-        OrcamentoProjection orcamentoProjection = findCasamentoOrcamento(id);
+        OrcamentoProjection orcamentoProjection = findCasalOrcamento(id);
 
         byte[] csv = null;
         try {

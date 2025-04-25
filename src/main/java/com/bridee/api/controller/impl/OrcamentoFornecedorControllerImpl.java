@@ -1,23 +1,18 @@
 package com.bridee.api.controller.impl;
 
-import com.bridee.api.aop.WeddingIdentifier;
+import com.bridee.api.aop.CoupleIdentifier;
 import com.bridee.api.dto.request.AssociadoPrecoRequestDto;
 import com.bridee.api.dto.request.OrcamentoFornecedorRequestDto;
 import com.bridee.api.dto.response.OrcamentoFornecedorResponseDto;
-import com.bridee.api.entity.Casal;
-import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.OrcamentoFornecedor;
 import com.bridee.api.mapper.request.OrcamentoFornecedorRequestMapper;
 import com.bridee.api.mapper.response.OrcamentoFornecedorResponseMapper;
-import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.service.CasalService;
-import com.bridee.api.service.CasamentoService;
 import com.bridee.api.service.OrcamentoFornecedorService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,15 +32,13 @@ public class OrcamentoFornecedorControllerImpl {
     private final OrcamentoFornecedorService service;
     private final OrcamentoFornecedorRequestMapper requestMapper;
     private final OrcamentoFornecedorResponseMapper responseMapper;
-    private final CasamentoService casamentoService;
     private final CasalService casalService;
 
     @PostMapping
     public ResponseEntity<List<OrcamentoFornecedorResponseDto>> associateFornecedoresCasal(@RequestBody @Valid List<OrcamentoFornecedorRequestDto> requestDto,
-                                                                                           @WeddingIdentifier Integer casamentoId){
-        Integer casalId = casalService.findCasalIdByCasamentoId(casamentoId);
-        Casal casal = new Casal(casalId);
-        List<OrcamentoFornecedor> orcamentoFornecedores = requestMapper.toEntity(requestDto, casal);
+                                                                                           @CoupleIdentifier Integer casalId){
+
+        List<OrcamentoFornecedor> orcamentoFornecedores = requestMapper.toEntity(requestDto, casalId);
         orcamentoFornecedores = service.saveAll(orcamentoFornecedores);
         List<OrcamentoFornecedorResponseDto> responseDto = responseMapper.toDomain(orcamentoFornecedores);
         return ResponseEntity.ok(responseDto);
@@ -54,10 +47,8 @@ public class OrcamentoFornecedorControllerImpl {
     @PostMapping("/categoria/{categoriaId}")
     public ResponseEntity<OrcamentoFornecedorResponseDto> saveOrcamentoFornecedorCasal(@RequestBody @Valid OrcamentoFornecedorRequestDto requestDto,
                                                                                        @PathVariable Integer categoriaId,
-                                                                                       @WeddingIdentifier Integer casamentoId){
-        Integer casalId = casalService.findCasalIdByCasamentoId(casamentoId);
-        Casal casal = new Casal(casalId);
-        OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto, casal);
+                                                                                       @CoupleIdentifier Integer casalId){
+        OrcamentoFornecedor orcamentoFornecedor = requestMapper.toEntity(requestDto, casalId);
         orcamentoFornecedor = service.saveOrcamentoFornecedorCasal(orcamentoFornecedor, categoriaId);
         OrcamentoFornecedorResponseDto responseDto = responseMapper.toDomain(orcamentoFornecedor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto.getId())).body(responseDto);

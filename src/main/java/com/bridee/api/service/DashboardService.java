@@ -51,7 +51,7 @@ public class DashboardService {
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
 
-        OrcamentoProjection orcamentoProjection = orcamentoService.findCasamentoOrcamento(casamentoId);
+        OrcamentoProjection orcamentoProjection = orcamentoService.findCasalOrcamento(casamentoId);
         var orcamentoFornecedores = fornecedorOrcamentoResponseMapper.fromProjection(orcamentoProjection.getOrcamentoFornecedores());
 
         return DashboardResponseDto.builder()
@@ -66,12 +66,14 @@ public class DashboardService {
 
     private DashboardResponseDto.DashboardAssentos buildDashboardAssentos(Integer casamentoId){
         log.info("DASHBOARD: construindo as informações de assentos do casamento {}", casamentoId);
+
         List<Mesa> mesasCasamento = mesaService.findAllByCasamentoId(casamentoId);
         Integer totalAssentos = mesasCasamento.size();
         List<Convidado> convidadosCasamento = convidadoService.findByCasamentoIdAndNome(casamentoId, null);
         List<Convidado> convidadosWithMesa = convidadoService.convidadosWithMesa(mesasCasamento);
         log.debug("DASHBOARD: total de assentos {}, total de convidados {}, total de convidados com mesa {}",
                 totalAssentos, convidadosCasamento, convidadosWithMesa);
+
         return DashboardResponseDto.DashboardAssentos.builder()
                 .convidadosSentados(convidadosWithMesa.size())
                 .totalMesas(totalAssentos)
@@ -81,11 +83,20 @@ public class DashboardService {
 
     private DashboardResponseDto.DashboardTarefa buildDashboardTarefas(Integer casalId){
         log.info("DASHBOARD: construindo as informações das tarefas do casal {}", casalId);
+
         List<Tarefa> tarefasCasal = tarefaService.findAllByCasalId(casalId);
         Integer totalTarefas = tarefasCasal.size();
-        Integer totalTarefasCompletas = (int) tarefasCasal.stream().filter(tarefa -> tarefa.getStatus().equals(TarefaStatusEnum.CONCLUIDO)).count();
+        Integer totalTarefasCompletas = (int) tarefasCasal
+                .stream()
+                .filter(tarefa -> tarefa.getStatus().equals(TarefaStatusEnum.CONCLUIDO))
+                .count();
         tarefasCasal.sort(Comparator.comparing(Tarefa::getId));
-        List<TarefaResponseDto> last3Tarefas = tarefasCasal.stream().map(tarefaResponseMapper::toDomain).limit(3).toList();
+        List<TarefaResponseDto> last3Tarefas = tarefasCasal
+                .stream()
+                .map(tarefaResponseMapper::toDomain)
+                .limit(3)
+                .toList();
+
         log.debug("DASHBOARD: total de tarefas {}, total de tarefas completas {}",
                 totalTarefas, totalTarefasCompletas);
         return DashboardResponseDto.DashboardTarefa.builder()
