@@ -12,6 +12,7 @@ import com.bridee.api.repository.CasalRepository;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.utils.PatchHelper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,14 @@ public class CasalService {
     public Integer findCasalIdByCasamentoId(Integer casamentoId){
         return repository.findCasalIdByCasamentoId(casamentoId)
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public Integer findIdByEmail(String email){
+        return repository.findIdByEmail(email);
+    }
+
+    public OrcamentoProjection findOrcamentoById(Integer casalId){
+        return repository.findOrcamentoByCasalId(casalId);
     }
 
     public Casal save(Casal casal){
@@ -122,5 +131,12 @@ public class CasalService {
         Casal casal = casamento.getCasal();
         casal.setOrcamentoTotal(orcamentoTotal);
         return repository.save(casal);
+    }
+
+    public Casal findByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() ->
+                       new ResourceNotFoundException("Casal não encontrado com e-mail %s".formatted(email))
+                );
     }
 }

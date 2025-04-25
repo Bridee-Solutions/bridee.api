@@ -16,12 +16,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ItemOrcamentoRequestMapper extends BaseMapper<ItemOrcamentoRequestDto, ItemOrcamento> {
 
-    @Mapping(target = "casal", source = "casamentoId", qualifiedByName = "createCasalEntity")
-    default List<ItemOrcamento> toEntity(List<ItemOrcamentoRequestDto> domain, Casal casal){
+    default List<ItemOrcamento> toEntity(List<ItemOrcamentoRequestDto> domain, Integer casalId){
         if (domain == null){
             return null;
         }
-
+        Casal casal = new Casal(casalId);
         return domain.stream().map((item) -> {
             return ItemOrcamento.builder()
                     .id(item.getId())
@@ -47,11 +46,6 @@ public interface ItemOrcamentoRequestMapper extends BaseMapper<ItemOrcamentoRequ
                     .precoAtual(custo.getPrecoAtual())
                     .build();
         }).toList();
-    }
-
-    @Named("createCasalEntity")
-    default Casal createCasal(Integer casalId){
-        return new Casal(casalId);
     }
 
 }

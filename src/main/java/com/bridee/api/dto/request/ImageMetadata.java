@@ -1,15 +1,15 @@
 package com.bridee.api.dto.request;
 
+import com.bridee.api.entity.enums.ImagemCasalEnum;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Data
 public class ImageMetadata {
 
     private Integer id;
     private String nome;
-    private String tipo;
+    private String url;
+    private ImagemCasalEnum tipo;
     private String extensao;
 
 }

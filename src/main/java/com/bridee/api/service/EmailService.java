@@ -36,7 +36,9 @@ public class EmailService {
     private final OrcamentoService orcamentoService;
     private final UsuarioService usuarioService;
 
-    public EmailService(AzureBlobStorageProperties azureBlobStorageProperties, EmailSender emailSender, VerificationTokenService verificationTokenService, @Lazy AssessorService assessorService, OrcamentoService orcamentoService, UsuarioService usuarioService) {
+    public EmailService(AzureBlobStorageProperties azureBlobStorageProperties, EmailSender emailSender,
+                        VerificationTokenService verificationTokenService, @Lazy AssessorService assessorService,
+                        @Lazy OrcamentoService orcamentoService, UsuarioService usuarioService) {
         this.azureBlobStorageProperties = azureBlobStorageProperties;
         this.emailSender = emailSender;
         this.verificationTokenService = verificationTokenService;

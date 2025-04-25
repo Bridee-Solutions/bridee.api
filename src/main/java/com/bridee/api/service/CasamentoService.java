@@ -28,7 +28,6 @@ import java.util.Objects;
 public class CasamentoService {
 
     private final CasamentoRepository repository;
-    private final CasalService casalService;
     private final OrcamentoFornecedorRepository orcamentoFornecedorRepository;
     private final CustoRepository custoRepository;
     private final PedidoAssessoriaService pedidoAssessoriaService;
@@ -104,8 +103,7 @@ public class CasamentoService {
                 .build();
     }
 
-    public BigDecimal calculateOrcamento(Integer casamentoId) {
-        Integer casalId = casalService.findCasalIdByCasamentoId(casamentoId);
+    public BigDecimal calculateOrcamento(Integer casalId) {
         Long totalPriceItens = custoRepository.totalPriceItens(casalId);
         Long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casalId);
         return calculateOrcamento(totalPriceItens, totalPriceOrcamento);

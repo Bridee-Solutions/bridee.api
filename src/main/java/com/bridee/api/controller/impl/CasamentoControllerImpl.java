@@ -1,6 +1,7 @@
 package com.bridee.api.controller.impl;
 
 import com.bridee.api.aop.AdvisorIdentifier;
+import com.bridee.api.aop.CoupleIdentifier;
 import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.dto.request.UpdateCasalMessageDto;
 import com.bridee.api.dto.response.AssessorResponseDto;
@@ -30,9 +31,9 @@ public class CasamentoControllerImpl {
     private final AssessorResponseMapper responseMapper;
 
     @GetMapping("/orcamento")
-    public ResponseEntity<BigDecimal> calculateCasamentoOrcamento(@WeddingIdentifier Integer casamentoId){
-        log.info("CASAMENTO: calculando o orçamento do casamento de id: {}", casamentoId);
-        return ResponseEntity.ok(casamentoService.calculateOrcamento(casamentoId));
+    public ResponseEntity<BigDecimal> calculateCasamentoOrcamento(@CoupleIdentifier Integer casalId){
+        log.info("CASAMENTO: calculando o orçamento do casal de id: {}", casalId);
+        return ResponseEntity.ok(casamentoService.calculateOrcamento(casalId));
     }
 
     @PutMapping("/assessor/{assessorId}/vincular")

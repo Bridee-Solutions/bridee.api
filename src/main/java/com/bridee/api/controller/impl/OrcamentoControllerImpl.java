@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.CoupleIdentifier;
 import com.bridee.api.controller.OrcamentoController;
 import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.response.CasalOrcamentoResponseDto;
@@ -30,21 +31,21 @@ public class OrcamentoControllerImpl implements OrcamentoController {
     private final CasalOrcamentoResponseMapper casalOrcamentoResponseMapper;
     private final OrcamentoService orcamentoService;
 
-    @GetMapping("/casamento/{id}")
-    public ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@PathVariable Integer id){
-        log.info("ORCAMENTO: buscando orcamento do casamento de id {}", id);
-        OrcamentoProjection projection = orcamentoService.findCasamentoOrcamento(id);
+    @GetMapping("/casamento")
+    public ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@CoupleIdentifier Integer casalId){
+        log.info("ORCAMENTO: buscando orcamento do casal de id {}", casalId);
+        OrcamentoProjection projection = orcamentoService.findCasalOrcamento(casalId);
         return ResponseEntity.ok(projection);
     }
 
-    @GetMapping(value = "/csv/casamento/{id}", produces = "text/plain")
-    public ResponseEntity<byte[]> downloadOrcamentoCsv(@PathVariable Integer id){
+    @GetMapping(value = "/csv/casamento", produces = "text/plain")
+    public ResponseEntity<byte[]> downloadOrcamentoCsv(@CoupleIdentifier Integer casalId){
         log.info("ORCAMENTO: criando csv com dados relacionados ao orcamento do casamento");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.TEXT_PLAIN);
         httpHeaders.setContentDispositionFormData("attachment", "orcamento.csv");
 
-        return new ResponseEntity<>(orcamentoService.generateCsvFile(id), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(orcamentoService.generateCsvFile(casalId), httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/casal")
