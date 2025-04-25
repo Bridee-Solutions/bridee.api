@@ -1,6 +1,7 @@
 package com.bridee.api.aop;
 
 import com.bridee.api.service.AssessorService;
+import com.bridee.api.service.CasalService;
 import com.bridee.api.service.CasamentoService;
 import com.bridee.api.service.JwtService;
 import org.aspectj.lang.JoinPoint;
@@ -20,13 +21,13 @@ import java.lang.reflect.Method;
 public class UserIdentifierAspect {
 
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
     private CasamentoService casamentoService;
 
     @Autowired
     private AssessorService assessorService;
+
+    @Autowired
+    private CasalService casalService;
 
     @Around("within(com.bridee.api.controller.impl..*)")
     public Object userIdentifier(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -53,6 +54,8 @@ public class UserIdentifierAspect {
                 }else if(annotation.annotationType().equals(AdvisorIdentifier.class)){
                     args[i] = assessorService.getAdviserIdFromEmail(email);
                     break;
+                }else if(annotation.annotationType().equals(CoupleIdentifier.class)){
+                    args[i] = casalService.findIdByEmail(email);
                 }
             }
         }
