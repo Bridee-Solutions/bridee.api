@@ -28,7 +28,6 @@ import java.util.Objects;
 public class CasamentoService {
 
     private final CasamentoRepository repository;
-    private final CasalService casalService;
     private final OrcamentoFornecedorRepository orcamentoFornecedorRepository;
     private final CustoRepository custoRepository;
     private final PedidoAssessoriaService pedidoAssessoriaService;

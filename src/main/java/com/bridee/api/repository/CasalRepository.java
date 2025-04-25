@@ -22,7 +22,9 @@ public interface CasalRepository extends JpaRepository<Casal, Integer> {
     Optional<Integer> findCasalIdByCasamentoId(Integer casamentoId);
 
     @Query("""
-            SELECT c.id FROM Casamento c WHERE c.email = :email
+            SELECT c.id FROM Casal c WHERE c.email = :email
             """)
     Integer findIdByEmail(String email);
+
+    Optional<Casal> findByEmail(String email);
 }

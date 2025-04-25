@@ -132,4 +132,11 @@ public class CasalService {
         casal.setOrcamentoTotal(orcamentoTotal);
         return repository.save(casal);
     }
+
+    public Casal findByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() ->
+                       new ResourceNotFoundException("Casal não encontrado com e-mail %s".formatted(email))
+                );
+    }
 }
