@@ -36,7 +36,7 @@ public interface OrcamentoController {
             @ApiResponse(responseCode = "404", description = "Orçamento não encontrado",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<byte[]> downloadOrcamentoCsv(@PathVariable Integer id);
+    ResponseEntity<byte[]> downloadOrcamentoCsv(Integer casalId);
 
     @Operation(summary = "Salva um item para o orçamento",
             description = "Salva um item para o orçamento de um casal")

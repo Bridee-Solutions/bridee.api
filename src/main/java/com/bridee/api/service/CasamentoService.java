@@ -104,8 +104,7 @@ public class CasamentoService {
                 .build();
     }
 
-    public BigDecimal calculateOrcamento(Integer casamentoId) {
-        Integer casalId = casalService.findCasalIdByCasamentoId(casamentoId);
+    public BigDecimal calculateOrcamento(Integer casalId) {
         Long totalPriceItens = custoRepository.totalPriceItens(casalId);
         Long totalPriceOrcamento = orcamentoFornecedorRepository.totalOrcamentoFornecedorPrice(casalId);
         return calculateOrcamento(totalPriceItens, totalPriceOrcamento);

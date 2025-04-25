@@ -1,5 +1,7 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.CoupleIdentifier;
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.dto.request.ItemOrcamentoRequestDto;
 import com.bridee.api.dto.response.ItemOrcamentoResponseDto;
 import com.bridee.api.entity.Casal;
@@ -33,15 +35,11 @@ public class ItemOrcamentoControllerImpl {
     private final CustoService custoService;
     private final ItemOrcamentoRequestMapper requestMapper;
     private final ItemOrcamentoResponseMapper responseMapper;
-    private final CasalService casalService;
 
     @PostMapping
-    public ResponseEntity<List<ItemOrcamentoResponseDto>> vinculateItensOrcamento(@RequestBody @Valid List<ItemOrcamentoRequestDto> requestDto){
-        Integer casamentoId = requestDto.get(0).getId();
-        Integer casalId = casalService.findCasalIdByCasamentoId(casamentoId);
-        Casal casal = new Casal(casalId);
-
-        List<ItemOrcamento> itemOrcamento = requestMapper.toEntity(requestDto, casal);
+    public ResponseEntity<List<ItemOrcamentoResponseDto>> vinculateItensOrcamento(@RequestBody @Valid List<ItemOrcamentoRequestDto> requestDto,
+                                                                                  @CoupleIdentifier Integer casalId){
+        List<ItemOrcamento> itemOrcamento = requestMapper.toEntity(requestDto, casalId);
         itemOrcamento = service.saveAllItemOrcamento(itemOrcamento);
         List<ItemOrcamentoResponseDto> responseDto = responseMapper.toDomain(itemOrcamento);
         return ResponseEntity.ok(responseDto);
