@@ -3,11 +3,13 @@ name: Build and deploy JAR app to Azure Web App - bridee-api
 on:
   push:
     branches:
-      - main
+      - feat/ci-cd-pipeline
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{steps.generate_tag.outputs.sha}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,6 +21,7 @@ jobs:
           echo "sha=$SHA" >> $GITHUB_OUTPUT
 
       - name: Configure aws credentials
+        id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: "${{secrets.AWS_ACCESS_KEY}}"
@@ -41,3 +44,34 @@ jobs:
           docker push --all-tags $REGISTRY/bridee-api
           IMAGE=$(echo $REGISTRY/bridee-api:$TAG)
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    if: success()
+    steps:
+      - name: Checkout actions
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: "${{secrets.AWS_ACCESS_KEY}}"
+          aws-secret-access-key: "${{secrets.AWS_SECRET_ACCESS_KEY}}"
+          aws-session-token: "${{secrets.AWS_SESSION_TOKEN}}"
+          aws-region: "${{secrets.AWS_REGION}}"
+
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: deploy
+        env:
+          REGISTRY: ${{steps.login-ecr.outputs.registry}}
+          TAG: ${{needs.build.outputs.image-tag}}
+        run: |
+          docker pull $REGISTRY/bridee-api:$TAG
+          docker stop api
+          
+          docker rm api
+          
+          docker run --name api -d -p 8080:8080 $REGISTRY/bridee-api:$TAG
