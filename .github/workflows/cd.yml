@@ -52,6 +52,9 @@ jobs:
       - name: Checkout actions
         uses: actions/checkout@v4
 
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
