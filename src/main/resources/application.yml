@@ -16,11 +16,6 @@ spring:
     url: ${MYSQL_URL:jdbc:mysql://localhost:3307/bridee}
     username: ${MYSQL_USERNAME:bridee}
     password: ${MYSQL_PASSWORD:bridee}
-  cloud:
-    azure:
-      storage:
-        blob:
-          container-name: ${AZURE_DATASTORAGE_CONTAINER_NAME:""}
 
 services:
   bridee:
@@ -47,21 +42,13 @@ jwt:
 
 email:
   register:
-    url: ${EMAIL_REGISTER_URL:http://localhost:8080/usuarios/ativar-conta}
+    url: ${EMAIL_REGISTER_URL:http://localhost:8080/api/usuarios/ativar-conta}
 
 registration:
   success:
     redirectUri: ${REGISTRATION_SUCCESS_REDIRECT_URI:http://localhost:5173/login}
   fail:
     redirectUri: ${REGISTRATION_FAIL_REDIRECT_URI:http://localhost:5173/reenviar-email}
-
-azure:
-  data-storage:
-    container:
-      url: ${AZURE_DATASTORAGE_CONTAINER_URL:""}
-      sasToken: ${AZURE_DATASTORAGE_CONTAINER_TOKEN:""}
-  blob-storage:
-    connection-string: ${AZURE_DATASTORAGE_CONNECTION_STRING:""}
 
 httpOnly:
   cookie:

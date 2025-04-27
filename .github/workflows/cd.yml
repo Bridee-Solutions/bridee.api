@@ -83,6 +83,15 @@ jobs:
           REGISTRY: ${{steps.login-ecr.outputs.registry}}
           TAG: ${{needs.build.outputs.image-tag}}
         run: |
+          REGISTRATION_REDIRECT_URL=${{secrets.REGISTRATION_REDIRECT_URL}}
           docker rmi $REGISTRY/bridee-api:latest || true
           docker pull $REGISTRY/bridee-api:latest
-          docker run --name api -d -p 8080:8080 $REGISTRY/bridee-api:latest
+          docker run --name api -d -p 8080:8080 \
+          -e MYSQL_URL=${{secrets.MYSQL_URL}} \
+          -e MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}} \
+          -e MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}} \
+          -e EMAIL_REGISTER_URL=${{secrets.EMAIL_REGISTER_URL}} \
+          -e REGISTRATION_SUCCESS_REDIRECT_URI=$REGISTRATION_REDIRECT_URL/login \
+          -e REGISTRATION_FAIL_REDIRECT_URI=$REGISTRATION_REDIRECT_URL/reenviar-email \
+          -e HTTPONLY_COOKIE_DOMAIN=${{secrets.DOMAIN}} \
+          $REGISTRY/bridee-api:latest
