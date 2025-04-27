@@ -18,6 +18,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -33,15 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = getJwtFromCookie(request);
-        String email;
-
-        if(jwt == null){
+        String jwt = getJwtFromRequest(request);
+        if(Objects.isNull(jwt)){
             filterChain.doFilter(request, response);
             return;
         }
         SecurityContext context = SecurityContextHolder.getContext();
-        email = jwtService.extractUsername(jwt);
+        String email = jwtService.extractUsername(jwt);
         if (email != null && context.getAuthentication() == null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             if (jwtService.isTokenValid(jwt, userDetails)){
@@ -51,6 +51,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private String getJwtFromRequest(HttpServletRequest request){
+        String jwt = getJwtFromCookie(request);
+        if(Objects.isNull(jwt)){
+            String headerValue = getJwtFromHeaders(request);
+            if(Objects.nonNull(headerValue)){
+                jwt = headerValue.substring(7);
+            }
+        }
+        return jwt;
+    }
+
+    private String getJwtFromHeaders(HttpServletRequest request){
+        return request.getHeader("Bridee-Token");
     }
 
     private String getJwtFromCookie(HttpServletRequest request) {
@@ -67,7 +82,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
     private boolean isNonFilteredRequest(HttpServletRequest request){
         String method = request.getMethod();
-        if(method.equals("POST") && (request.getServletPath().equals("/assessores") || request.getServletPath().equals("/casais") || request.getServletPath().equals("/authentication"))){
+        if(method.equals("POST")
+                && (request.getServletPath().equals("/assessores")
+                || request.getServletPath().equals("/casais")
+                || request.getServletPath().equals("/authentication"))){
             return true;
         }
         return false;

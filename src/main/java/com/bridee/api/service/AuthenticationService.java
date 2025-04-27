@@ -9,13 +9,18 @@ import com.bridee.api.entity.enums.UsuarioEnum;
 import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UsuarioExternoException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +86,32 @@ public class AuthenticationService {
     private UserDetails createUserDetails(String refreshToken){
         String username = jwtService.extractUsername(refreshToken);
         return usuarioService.loadUserByUsername(username);
+    }
+
+    public String extractRefreshTokenFromRequest(HttpServletRequest request){
+        String refreshToken = extractRefreshTokenFromCookie(request);
+
+        if(Objects.isNull(refreshToken)){
+            refreshToken = extractRefreshTokenFromHeader(request);
+        }
+
+        if(Objects.isNull(refreshToken)){
+            throw new ResourceNotFoundException("Refresh Token não encontrado");
+        }
+        return refreshToken;
+    }
+
+    private String extractRefreshTokenFromHeader(HttpServletRequest request){
+        return request.getHeader("refresh-token");
+    }
+
+    private String extractRefreshTokenFromCookie(HttpServletRequest request){
+        List<Cookie> cookies = Arrays.asList(request.getCookies());
+        return cookies.stream()
+                .filter(cookie -> cookie.getName().equals("refresh_token"))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
     }
 
 }

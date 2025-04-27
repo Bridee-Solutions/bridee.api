@@ -25,7 +25,7 @@ public interface OrcamentoController {
             @ApiResponse(responseCode = "404", description = "Casal não encontrado",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<OrcamentoProjection> findOrcamentoCasal(@PathVariable Integer id);
+    ResponseEntity<OrcamentoProjection> findOrcamentoCasal(Integer id);
 
     @Operation(summary = "Download do CSV",
             description = "Realiza o download de um arquivo csv com o orçamento do casal")
