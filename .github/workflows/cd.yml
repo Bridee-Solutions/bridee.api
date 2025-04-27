@@ -64,14 +64,25 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Stop Docker container
+        run: |
+          CONTAINER_NAME=$(docker ps -q --filter "name=api")
+          if [ ! -z "$CONTAINER_NAME" ]; then
+            docker stop $CONTAINER_NAME
+          fi
+
+      - name: Remove Docker container
+        run: |
+          CONTAINER_NAME=$(docker ps -a -q --filter "name=api")
+          if [ ! -z "$CONTAINER_NAME" ]; then
+            docker rm $CONTAINER_NAME
+          fi
+
       - name: deploy
         env:
           REGISTRY: ${{steps.login-ecr.outputs.registry}}
           TAG: ${{needs.build.outputs.image-tag}}
         run: |
-          docker pull $REGISTRY/bridee-api:$TAG
-          docker stop api
-          
-          docker rm api
-          
-          docker run --name api -d -p 8080:8080 $REGISTRY/bridee-api:$TAG
+          docker rmi $REGISTRY/bridee-api:latest || true
+          docker pull $REGISTRY/bridee-api:latest
+          docker run --name api -d -p 8080:8080 $REGISTRY/bridee-api:latest
