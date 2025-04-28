@@ -3,7 +3,7 @@ name: Build and deploy JAR app to Azure Web App - bridee-api
 on:
   push:
     branches:
-      - feat/ci-cd-pipeline
+      - desenvolvimento
 
 jobs:
   build:
