@@ -1,63 +1,97 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy JAR app to Azure Web App - bridee-api
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - desenvolvimento
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    outputs:
+      image-tag: ${{steps.generate_tag.outputs.sha}}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Java version
-        uses: actions/setup-java@v4
+      - name: Generating tag
+        id: generate_tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Configure aws credentials
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          java-version: '17'
-          distribution: 'microsoft'
+          aws-access-key-id: "${{secrets.AWS_ACCESS_KEY}}"
+          aws-secret-access-key: "${{secrets.AWS_SECRET_ACCESS_KEY}}"
+          aws-session-token: "${{secrets.AWS_SESSION_TOKEN}}"
+          aws-region: "${{secrets.AWS_REGION}}"
 
-      - name: Build with Maven
-        run: mvn clean install -DskipTests
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
-
+      - name: Build and Push
+        id: docker-image
+        env:
+          REGISTRY: ${{steps.login-ecr.outputs.registry}}
+          TAG: ${{steps.generate_tag.outputs.sha}}
+        run: |
+          docker build -t $REGISTRY/bridee-api:$TAG .
+          docker tag $REGISTRY/bridee-api:$TAG $REGISTRY/bridee-api:latest
+          docker push --all-tags $REGISTRY/bridee-api
+          IMAGE=$(echo $REGISTRY/bridee-api:$TAG)
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-  
+    if: success()
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: java-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_37D8699FB30B45A48A94DB8DE3EE987D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0E1C1EC148644D16ACA538709EF386B1 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C3017860207C41CCAF306610A8E8ABBD }}
+      - name: Checkout actions
+        uses: actions/checkout@v4
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          app-name: 'bridee-api'
-          slot-name: 'Production'
-          package: '*.jar'
-          
+          aws-access-key-id: "${{secrets.AWS_ACCESS_KEY}}"
+          aws-secret-access-key: "${{secrets.AWS_SECRET_ACCESS_KEY}}"
+          aws-session-token: "${{secrets.AWS_SESSION_TOKEN}}"
+          aws-region: "${{secrets.AWS_REGION}}"
+
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Stop Docker container
+        run: |
+          CONTAINER_NAME=$(docker ps -q --filter "name=api")
+          if [ ! -z "$CONTAINER_NAME" ]; then
+            docker stop $CONTAINER_NAME
+          fi
+
+      - name: Remove Docker container
+        run: |
+          CONTAINER_NAME=$(docker ps -a -q --filter "name=api")
+          if [ ! -z "$CONTAINER_NAME" ]; then
+            docker rm $CONTAINER_NAME
+          fi
+
+      - name: deploy
+        env:
+          REGISTRY: ${{steps.login-ecr.outputs.registry}}
+          TAG: ${{needs.build.outputs.image-tag}}
+        run: |
+          REGISTRATION_REDIRECT_URL=${{secrets.REGISTRATION_REDIRECT_URL}}
+          docker rmi $REGISTRY/bridee-api:latest || true
+          docker pull $REGISTRY/bridee-api:latest
+          docker run --name api -d -p 8080:8080 \
+          -e MYSQL_URL=${{secrets.MYSQL_URL}} \
+          -e MYSQL_USERNAME=${{secrets.MYSQL_USERNAME}} \
+          -e MYSQL_PASSWORD=${{secrets.MYSQL_PASSWORD}} \
+          -e EMAIL_REGISTER_URL=${{secrets.EMAIL_REGISTER_URL}} \
+          -e REGISTRATION_SUCCESS_REDIRECT_URI=$REGISTRATION_REDIRECT_URL/login \
+          -e REGISTRATION_FAIL_REDIRECT_URI=$REGISTRATION_REDIRECT_URL/reenviar-email \
+          -e HTTPONLY_COOKIE_DOMAIN=${{secrets.DOMAIN}} \
+          $REGISTRY/bridee-api:latest

@@ -1,8 +1,9 @@
 name: Bridee CI pipeline
+
 on:
   pull_request:
     branches:
-      - master
+      - main
       - desenvolvimento
       - homologacao
     types: [opened, reopened]
@@ -21,7 +22,7 @@ jobs:
           cache: maven
 
       - name: Build with maven
-        run: mvn -B package -DskipTests
+        run: mvn -B package
 
   test:
     runs-on: ubuntu-latest

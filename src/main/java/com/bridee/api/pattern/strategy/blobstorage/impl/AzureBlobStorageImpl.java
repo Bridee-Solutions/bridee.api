@@ -52,7 +52,6 @@ public class AzureBlobStorageImpl implements BlobStorageStrategy {
         }catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 }

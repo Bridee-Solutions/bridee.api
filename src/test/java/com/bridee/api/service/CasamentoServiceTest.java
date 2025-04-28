@@ -23,22 +23,20 @@ public class CasamentoServiceTest {
 
     @InjectMocks
     private CasamentoService casamentoService;
+
     @Mock
     private CasamentoRepository repository;
-    @Mock
-    private AssessorService assessorService;
     @Mock
     private OrcamentoFornecedorRepository orcamentoFornecedorRepository;
     @Mock
     private CustoRepository custoRepository;
     @Mock
     private PedidoAssessoriaService pedidoAssessoriaService;
-    @Mock
-    private CasalService casalService;
+
 
     @BeforeEach
     void setUp(){
-        casamentoService = new CasamentoService(repository, casalService,
+        casamentoService = new CasamentoService(repository,
                 orcamentoFornecedorRepository, custoRepository, pedidoAssessoriaService);
     }
 
