@@ -1,6 +1,5 @@
 package com.bridee.api.client.dto.response;
 
-import com.bridee.api.utils.ListaObj;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 

@@ -90,5 +90,5 @@ public interface CasalController {
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
     )
-    ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@PathVariable Integer id, @RequestBody OrcamentoTotalRequestDto orcamentoTotal);
+    ResponseEntity<CasalResponseDto> updateOrcamentoTotal(Integer id, @RequestBody OrcamentoTotalRequestDto orcamentoTotal);
 }
