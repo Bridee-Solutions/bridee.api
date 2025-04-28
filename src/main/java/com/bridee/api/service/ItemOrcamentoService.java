@@ -107,7 +107,7 @@ public class ItemOrcamentoService {
     private void removeInactivesCustos(List<Custo> custos) {
         if (custos.isEmpty()){
             log.error("ITEM ORCAMENTO: nenhum custo relacionado ao item orcamento");
-            throw new UnprocessableEntityException("Custos não encontrados!");
+            return;
         }
 
         Integer itemOrcamentoId = custos.get(0).getItemOrcamento().getId();

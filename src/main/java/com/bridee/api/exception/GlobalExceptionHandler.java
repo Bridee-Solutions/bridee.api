@@ -134,18 +134,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(errorResponseDto);
     }
 
-    @ExceptionHandler(UnauthorizedUserException.class)
-    public ResponseEntity<ErrorResponseDto> userUnauthorized(UnauthorizedUserException e, HttpServletRequest request){
-
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
-        errorResponseDto.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-        errorResponseDto.setMessage(e.getMessage());
-        errorResponseDto.setPath(request.getContextPath());
-        errorResponseDto.setTimestamp(Instant.now());
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDto);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationError> argumentsNotValidException(MethodArgumentNotValidException e, HttpServletRequest request){
 

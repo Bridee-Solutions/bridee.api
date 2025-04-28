@@ -5,8 +5,10 @@ import com.bridee.api.client.dto.response.PexelsImageResponseDto;
 import com.bridee.api.controller.PexelsController;
 import com.bridee.api.dto.request.ImageMetadata;
 import com.bridee.api.dto.response.ImagemResponseDto;
+import com.bridee.api.dto.response.PexelsImageResponse;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.mapper.request.ImageMapper;
+import com.bridee.api.mapper.response.externo.PexelMapper;
 import com.bridee.api.service.ImagemCasalService;
 import com.bridee.api.service.PexelsService;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +32,13 @@ public class PexelsControllerImpl implements PexelsController {
     private final PexelsService pexelsService;
     private final ImagemCasalService imagemCasalService;
     private final ImageMapper imageMapper;
+    private final PexelMapper pexelMapper;
 
     @GetMapping("/images")
-    public ResponseEntity<PexelsImageResponseDto> findImages(@RequestParam String query){
+    public ResponseEntity<PexelsImageResponse> findImages(@RequestParam String query){
         log.info("PEXELS: buscando imagens com query {}", query);
-        return ResponseEntity.ok(pexelsService.findPexelsImages(query));
+        PexelsImageResponse response = pexelMapper.toResponse(pexelsService.findPexelsImages(query));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/favoritos")
