@@ -22,6 +22,6 @@ public interface PexelsController {
             @ApiResponse(responseCode = "404", description = "Imagem não encontrada",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<PexelsImageResponse> findImages(@RequestParam String query);
+    ResponseEntity<PexelsImageResponse> findImages(String query, Integer casalId);
 
 }

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,9 +36,11 @@ public class PexelsControllerImpl implements PexelsController {
     private final PexelMapper pexelMapper;
 
     @GetMapping("/images")
-    public ResponseEntity<PexelsImageResponse> findImages(@RequestParam String query){
+    public ResponseEntity<PexelsImageResponse> findImages(@RequestParam String query,
+                                                          @CoupleIdentifier Integer casalId){
         log.info("PEXELS: buscando imagens com query {}", query);
-        PexelsImageResponse response = pexelMapper.toResponse(pexelsService.findPexelsImages(query));
+        PexelsImageResponseDto pexelsImages = pexelsService.findPexelsImages(query, casalId);
+        PexelsImageResponse response = pexelMapper.toResponse(pexelsImages);
         return ResponseEntity.ok(response);
     }
 
@@ -45,6 +48,13 @@ public class PexelsControllerImpl implements PexelsController {
     public ResponseEntity<Void> favorite(@RequestBody ImageMetadata metadata,
                                          @CoupleIdentifier Integer casalId){
         pexelsService.favoriteImage(casalId, metadata);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/desfavoritar/{id}")
+    public ResponseEntity<Void> desfavoritar(@PathVariable Integer id,
+                                             @CoupleIdentifier Integer casalId){
+        pexelsService.desfavorite(id, casalId);
         return ResponseEntity.noContent().build();
     }
 

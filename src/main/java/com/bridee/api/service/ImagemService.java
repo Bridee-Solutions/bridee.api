@@ -9,6 +9,7 @@ import com.bridee.api.repository.ImagemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
@@ -71,6 +72,7 @@ public class ImagemService {
         return repository.findByAssessorId(assessorId);
     }
 
+    @Transactional
     public Imagem save(Imagem imagem) {
         return repository.save(imagem);
     }
@@ -81,5 +83,13 @@ public class ImagemService {
 
     public void uploadImage(MultipartFile image, String imageName){
         blobStorageStrategy.uploadFile(image, imageName);
+    }
+
+    @Transactional
+    public void deleteById(Integer id){
+        if(!repository.existsById(id)){
+            throw new ResourceNotFoundException("Imagem não encontrada");
+        }
+        repository.deleteById(id);
     }
 }
