@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface ConvidadoRepository extends JpaRepository<Convidado, Integer>, JpaSpecificationExecutor<Convidado> {
     boolean existsByTelefoneAndConviteId(String telefone, Integer conviteId);
 
-//    @Query("""
-//            SELECT c FROM Convidado c WHERE c.convite.casamento.id = :casamentoId
-//            """)
-//    List<Convidado> findAllByCasamentoId(Integer casamentoId);
+    @Query("""
+            SELECT c.convidados FROM Convite c JOIN FETCH c.convidados WHERE c.id = :id
+            """)
+    List<Convidado> findAllByConviteId(Integer conviteId);
 }
 
 

@@ -71,6 +71,15 @@ public class ConviteService {
         List<ConviteTopicDto> convidadosTopics = convidados.stream()
                 .map(convidado -> conviteMessageMapper.toTopicDto(convite, casal, convidado)).toList();
         conviteTopic.postMessage(convidadosTopics);
+        updateConvidadosStatus(convite, convidados);
+    }
+
+    private void updateConvidadosStatus(Convite convite, List<Convidado> confirmatedGuests){
+        List<Convidado> allInvites = convidadoService.findAllByConviteId(convite.getId());
+        allInvites.stream()
+                .filter(invite -> !confirmatedGuests.contains(invite))
+                .forEach(invite -> invite.setStatus("RECUSADO"));
+        convidadoService.saveAll(allInvites);
     }
 
     @Transactional
@@ -92,7 +101,8 @@ public class ConviteService {
 
     private void definirConviteTitular(Convite convite, String telefoneTitular, Integer casamentoId) {
         Optional<Convidado> optionalConvidado = convite.getConvidados().stream()
-                .filter(convidado -> convidado.getTelefone().equals(telefoneTitular)).findFirst();
+                .filter(convidado -> convidado.getTelefone().equals(telefoneTitular))
+                .findFirst();
 
         convite.getConvidados().forEach(convidado -> convidado.setTipo(TipoConvidado.NAO_TITULAR));
         if (optionalConvidado.isEmpty()){
