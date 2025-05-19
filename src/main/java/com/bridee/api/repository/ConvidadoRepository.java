@@ -13,7 +13,7 @@ public interface ConvidadoRepository extends JpaRepository<Convidado, Integer>, 
     boolean existsByTelefoneAndConviteId(String telefone, Integer conviteId);
 
     @Query("""
-            SELECT c.convidados FROM Convite c JOIN FETCH c.convidados WHERE c.id = :id
+            SELECT c FROM Convidado c WHERE c.convite.id = :conviteId
             """)
     List<Convidado> findAllByConviteId(Integer conviteId);
 }
