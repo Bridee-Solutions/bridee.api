@@ -72,8 +72,8 @@ public class CasamentoControllerImpl {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{casamentoId}")
-    public ResponseEntity<Void> updateCasamentoMessage(@PathVariable Integer casamentoId,
+    @PutMapping("/mensagem")
+    public ResponseEntity<Void> updateCasamentoMessage(@WeddingIdentifier Integer casamentoId,
                                                        @RequestBody @Valid UpdateCasalMessageDto request){
         log.info("CASAMENTO: atualizando mensagem do casamento: {}", casamentoId);
         casamentoService.updateMessage(casamentoId, request.getMessage());
