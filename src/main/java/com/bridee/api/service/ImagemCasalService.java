@@ -56,10 +56,11 @@ public class ImagemCasalService {
         return blobStorageStrategy.downloadFile(casalImage.getNome());
     }
 
-    public void favoriteImage(Integer casalId, ImageMetadata metadata){
+    public Imagem favoriteImage(Integer casalId, ImageMetadata metadata){
         validateFavoriteImage(casalId, metadata);
         Imagem imagem = findImageToFavorite(metadata);
         createImagemCasal(casalId, imagem);
+        return imagem;
     }
 
     public void uploadCasalImage(ImageMetadata imageMetadata,

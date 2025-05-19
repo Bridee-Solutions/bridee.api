@@ -4,6 +4,7 @@ import com.bridee.api.aop.CoupleIdentifier;
 import com.bridee.api.client.dto.response.PexelsImageResponseDto;
 import com.bridee.api.controller.PexelsController;
 import com.bridee.api.dto.request.ImageMetadata;
+import com.bridee.api.dto.request.PexelsRequestDto;
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.dto.response.PexelsImageResponse;
 import com.bridee.api.entity.Imagem;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @Slf4j
 @RequestMapping("/pexels")
 @RestController
@@ -37,18 +40,22 @@ public class PexelsControllerImpl implements PexelsController {
 
     @GetMapping("/images")
     public ResponseEntity<PexelsImageResponse> findImages(@RequestParam String query,
+                                                          @RequestParam String page,
+                                                          @RequestParam String perPage,
                                                           @CoupleIdentifier Integer casalId){
+        PexelsRequestDto requestDto = new PexelsRequestDto(query, perPage, page);
         log.info("PEXELS: buscando imagens com query {}", query);
-        PexelsImageResponseDto pexelsImages = pexelsService.findPexelsImages(query, casalId);
+        PexelsImageResponseDto pexelsImages = pexelsService.findPexelsImages(requestDto, casalId);
         PexelsImageResponse response = pexelMapper.toResponse(pexelsImages);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/favoritos")
-    public ResponseEntity<Void> favorite(@RequestBody ImageMetadata metadata,
+    public ResponseEntity<ImagemResponseDto> favorite(@RequestBody ImageMetadata metadata,
                                          @CoupleIdentifier Integer casalId){
-        pexelsService.favoriteImage(casalId, metadata);
-        return ResponseEntity.noContent().build();
+        Imagem imagem = pexelsService.favoriteImage(casalId, metadata);
+        ImagemResponseDto responseDto = imageMapper.toResponseDto(imagem);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/desfavoritar/{id}")

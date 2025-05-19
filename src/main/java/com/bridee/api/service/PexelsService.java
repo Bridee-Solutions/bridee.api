@@ -5,6 +5,7 @@ import com.bridee.api.client.dto.response.PexelsImageResponseDto;
 import com.bridee.api.client.dto.response.PexelsPhotos;
 import com.bridee.api.configuration.cache.CacheConstants;
 import com.bridee.api.dto.request.ImageMetadata;
+import com.bridee.api.dto.request.PexelsRequestDto;
 import com.bridee.api.entity.Imagem;
 import com.bridee.api.exception.ImagesNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,12 @@ public class PexelsService {
     @Value("${services.bridee.pexels.apiKey}")
     private String apiKey;
 
-    public PexelsImageResponseDto findPexelsImages(String query, Integer casalId){
-        ResponseEntity<PexelsImageResponseDto> images = pexelsClient.getImages(query, apiKey);
+    public PexelsImageResponseDto findPexelsImages(PexelsRequestDto query, Integer casalId){
+        Map<String, String> queryFilter = query.getFilter();
+        ResponseEntity<PexelsImageResponseDto> images = pexelsClient.getImages(queryFilter, apiKey);
         PexelsImageResponseDto responseDto = Objects.nonNull(images) ? images.getBody() : null;
 
-        validatePexelsResponse(responseDto, query);
+        validatePexelsResponse(responseDto, query.getQuery());
         verifyCoupleFavoriteImages(responseDto, casalId);
         log.info("PEXELS: {} imagens encontradas", responseDto.getTotalResults());
 
@@ -69,8 +71,8 @@ public class PexelsService {
     }
 
     @CacheEvict(cacheNames = CacheConstants.FAVORITE_IMAGE, allEntries = true)
-    public void favoriteImage(Integer casalId, ImageMetadata imageMetadata){
-        imagemCasalService.favoriteImage(casalId, imageMetadata);
+    public Imagem favoriteImage(Integer casalId, ImageMetadata imageMetadata){
+        return imagemCasalService.favoriteImage(casalId, imageMetadata);
     }
 
     @CacheEvict(cacheNames = CacheConstants.FAVORITE_IMAGE, allEntries = true)
