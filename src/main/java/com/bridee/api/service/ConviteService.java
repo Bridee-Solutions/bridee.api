@@ -202,4 +202,9 @@ public class ConviteService {
         List<Convite> convites = repository.findAllByCasamentoId(casamentoId);
         repository.deleteAll(convites);
     }
+
+    public Convite findByPin(Integer pin) {
+        return repository.findByPin(pin)
+                .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
+    }
 }

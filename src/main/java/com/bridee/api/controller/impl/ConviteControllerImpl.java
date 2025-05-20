@@ -58,6 +58,13 @@ public class ConviteControllerImpl implements ConviteController {
         return ResponseEntity.ok(responseMapper.toDomainPage(convites, pageable));
     }
 
+    @GetMapping("/pin/{pin}")
+    public ResponseEntity<ConvitesResponseDto> findByPin(@PathVariable Integer pin){
+        Convite convite = conviteService.findByPin(pin);
+        ConvitesResponseDto responseDto = responseMapper.toDomain(convite);
+        return ResponseEntity.ok(responseDto);
+    }
+
     @GetMapping("/relatorio")
     public ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@WeddingIdentifier Integer casamentoId){
         log.info("CONVITE: gerando relatório de convites do casamento: {}", casamentoId);

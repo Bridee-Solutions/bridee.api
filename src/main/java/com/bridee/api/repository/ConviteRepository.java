@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ConviteRepository extends JpaRepository<Convite, Integer>, JpaSpecificationExecutor<Convite> {
@@ -57,4 +58,9 @@ public interface ConviteRepository extends JpaRepository<Convite, Integer>, JpaS
             FROM Convite c WHERE c.casamento.id = :casamentoId
             """)
     CategoriaConvidadoProjection resumoCategoriaInvite(Integer casamentoId, CategoriaConvidadoEnum categoriaConvidado);
+
+    @Query("""
+            SELECT c FROM Convite c JOIN FETCH c.convidados WHERE c.pin = :pin
+            """)
+    Optional<Convite> findByPin(Integer pin);
 }
