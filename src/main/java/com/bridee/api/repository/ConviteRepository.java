@@ -15,7 +15,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface ConviteRepository extends JpaRepository<Convite, Integer>, JpaSpecificationExecutor<Convite> {
 
     boolean existsByNomeAndCasamentoId(String nome, Integer casamentoId);
@@ -57,7 +56,7 @@ public interface ConviteRepository extends JpaRepository<Convite, Integer>, JpaS
             (SELECT COUNT(co) FROM Convidado co WHERE co.categoriaConvidado.nome = :categoriaConvidado AND co.convite.id = c.id) as total
             FROM Convite c WHERE c.casamento.id = :casamentoId
             """)
-    CategoriaConvidadoProjection resumoCategoriaInvite(Integer casamentoId, CategoriaConvidadoEnum categoriaConvidado);
+    List<CategoriaConvidadoProjection> resumoCategoriaInvite(Integer casamentoId, CategoriaConvidadoEnum categoriaConvidado);
 
     @Query("""
             SELECT c FROM Convite c JOIN FETCH c.convidados WHERE c.pin = :pin
