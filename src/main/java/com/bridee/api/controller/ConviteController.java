@@ -48,7 +48,7 @@ public interface ConviteController {
             @ApiResponse(responseCode = "404", description = "Não encontrou os dados para gerar o relatório",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@PathVariable Integer casamentoId);
+    ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(Integer casamentoId);
 
     @Operation(summary = "Cria um convite para um casamento",
             description = "Cria um convite para um casamento já cadastrado")
