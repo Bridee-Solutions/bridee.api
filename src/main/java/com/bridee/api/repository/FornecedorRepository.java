@@ -32,17 +32,12 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
     Page<AssociadoResponseProjection> findFornecedorDetailsBySubcategoria(Integer subcategoriaId, Pageable pageable);
 
     @Query("""
-            SELECT ifs.fornecedor.nome as nome,
-            ifs.fornecedor.id as id,
-            ifs.id as informacaoAssociadoId,
-            ifs.visaoGeral as visaoGeral,
-            ifs.cidade as cidade,
-            ifs.bairro as bairro,
-            (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as notaMedia,
-            (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as totalAvaliacoes
-            FROM InformacaoAssociado ifs WHERE ifs.fornecedor.subcategoriaServico.categoriaServico.id = :categoriaId AND UPPER(ifs.fornecedor.nome) like UPPER(concat('%', :nome, '%'))
+            SELECT f
+            FROM Fornecedor f
+            WHERE UPPER(f.nome) LIKE CONCAT('%',UPPER(:nome),'%')
+            AND f.subcategoriaServico.categoriaServico.id = :categoriaId
             """)
-    Page<AssociadoResponseProjection> findFornecedorDetailsByCategoriaAndNome(Integer categoriaId, String nome,Pageable pageable);
+    Page<Fornecedor> findFornecedoresByCategoriaAndNome(Integer categoriaId, String nome,Pageable pageable);
 
     @Query("""
             SELECT ifs.fornecedor.nome as nome,

@@ -39,7 +39,7 @@ public interface FornecedorController {
     @Operation(summary = "Busca os detalhes do fornecedor",
             description = "Busca os detalhes de um fornecedor pela categoria")
     @ApiResponse(responseCode = "200", description = "Retorna os detalhes do fornecedor")
-    ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId,
+    ResponseEntity<Page<FornecedorResponseDto>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId,
                                                                                 @RequestParam String nome,
                                                                                 Pageable pageable);
 

@@ -1,7 +1,6 @@
 package com.bridee.api.client;
 
 import com.bridee.api.client.dto.response.PexelsImageResponseDto;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,5 +14,6 @@ import java.util.Map;
 public interface PexelsClient {
 
     @GetMapping("/v1/search")
-    ResponseEntity<PexelsImageResponseDto> getImages(@RequestParam Map<String, String> query, @RequestHeader("Authorization") String apiKey);
+    ResponseEntity<PexelsImageResponseDto> getImages(@RequestParam Map<String, String> query,
+                                                     @RequestHeader("Authorization") String apiKey);
 }
