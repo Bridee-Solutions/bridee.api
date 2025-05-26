@@ -3,7 +3,6 @@ package com.bridee.api.service;
 import com.bridee.api.configuration.cache.CacheConstants;
 import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.repository.projection.orcamento.SubcategoriaProjection;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.SubcategoriaServicoRepository;
 import com.bridee.api.utils.PageUtils;
@@ -41,6 +40,7 @@ public class SubcategoriaServicoService {
         return PageUtils.collectionToPage(subcategorias, pageable);
     }
 
+    @Cacheable(cacheNames = CacheConstants.SUBCATEGORIA_SERVICO, keyGenerator = "customKeyGenerator")
     public List<SubcategoriaServico> findAllByCategoria(Integer categoriaId){
         categoriaServicoService.existsById(categoriaId);
         return cacheAssistent.findAll()
