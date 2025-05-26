@@ -12,6 +12,7 @@ import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.entity.Tarefa;
 import com.bridee.api.entity.enums.TarefaStatusEnum;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.FornecedorOrcamentoResponseMapper;
@@ -51,7 +52,10 @@ public class DashboardService {
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
 
-        OrcamentoProjection orcamentoProjection = orcamentoService.findCasalOrcamento(casamentoId);
+        OrcamentoProjection orcamentoProjection = orcamentoService.findCasalOrcamento(casal.getId());
+        if(Objects.isNull(orcamentoProjection)){
+            throw new ResourceNotFoundException("Orcamento não encontrado");
+        }
         var orcamentoFornecedores = fornecedorOrcamentoResponseMapper.fromProjection(orcamentoProjection.getOrcamentoFornecedores());
 
         return DashboardResponseDto.builder()
