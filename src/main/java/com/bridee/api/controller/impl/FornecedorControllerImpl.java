@@ -59,9 +59,11 @@ public class FornecedorControllerImpl implements FornecedorController {
     }
 
     @GetMapping("/details/subcategoria/{subcategoriaId}")
-    public ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable){
+    public ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetails(@PathVariable Integer subcategoriaId,
+                                                                            @RequestParam(defaultValue = "") String nome,
+                                                                            Pageable pageable){
         log.info("FORNECEDOR: buscando os detalhes dos fornecedores pela subcategoria: {}", subcategoriaId);
-        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(subcategoriaId, pageable));
+        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(nome, subcategoriaId, pageable));
     }
 
     @GetMapping("/information/{id}")
