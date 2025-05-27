@@ -28,12 +28,22 @@ public class ImagemAssociadoService {
         if (Objects.isNull(imagemPrincipal)){
             return null;
         }
+        String data = downloadImage(imagemPrincipal);
+        return new ImagemResponseDto(imagemPrincipal.getId(), data);
+    }
+
+    private String downloadImage(ImagemAssociadoProjection imagemPrincipal){
         byte[] imagem = imagemService.downloadImage(imagemPrincipal.getNome());
         if (Objects.isNull(imagem)){
             return null;
         }
-        String data = Base64.getEncoder().encodeToString(imagem);
-        return new ImagemResponseDto(imagemPrincipal.getId(), data);
+        return encodeImage(imagem);
+    }
+
+    private String encodeImage(byte[] imagem){
+        String encodedImage = Base64.getEncoder().encodeToString(imagem);
+        encodedImage = Objects.nonNull(encodedImage) ? encodedImage : "";
+        return encodedImage;
     }
 
     public List<ImagemResponseDto> findImagensSecundarias(Integer id) {

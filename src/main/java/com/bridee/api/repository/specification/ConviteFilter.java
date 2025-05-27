@@ -68,7 +68,8 @@ public class ConviteFilter implements Specification<Convite> {
     }
 
     public void fillSpecification(Map<String, Object> params){
-        params.forEach((key, value) -> fieldNames().forEach(field -> {
+        List<Field> fieldNames = fieldNames();
+        params.forEach((key, value) -> fieldNames.forEach(field -> {
             if (field.getName().equals(key)) {
                 fillField(field, value);
             }
@@ -85,6 +86,8 @@ public class ConviteFilter implements Specification<Convite> {
             field.set(this, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        }finally {
+            field.setAccessible(false);
         }
     }
 }

@@ -29,8 +29,11 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer>
             (SELECT AVG(a.nota) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as notaMedia,
             (SELECT COUNT(a) FROM Avaliacao a WHERE a.fornecedor.id = ifs.fornecedor.id) as totalAvaliacoes
             FROM InformacaoAssociado ifs WHERE ifs.fornecedor.subcategoriaServico.id = :subcategoriaId
+            AND UPPER(ifs.fornecedor.nome) LIKE CONCAT('%',UPPER(:nomeFornecedor),'%')
             """)
-    Page<AssociadoResponseProjection> findFornecedorDetailsBySubcategoria(Integer subcategoriaId, Pageable pageable);
+    Page<AssociadoResponseProjection> findFornecedorDetailsBySubcategoriaAndNome(Integer subcategoriaId,
+                                                                                 String nomeFornecedor,
+                                                                                 Pageable pageable);
 
     @Query("""
             SELECT f

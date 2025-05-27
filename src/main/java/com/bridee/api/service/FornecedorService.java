@@ -11,18 +11,15 @@ import com.bridee.api.repository.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.repository.projection.associado.AssociadoGeralResponseProjection;
 import com.bridee.api.repository.projection.associado.AssociadoResponseDto;
 import com.bridee.api.repository.projection.associado.AssociadoResponseProjection;
-import com.bridee.api.repository.specification.FornecedorSpecification;
 import com.bridee.api.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.ConnectException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,29 +52,22 @@ public class FornecedorService {
     @Cacheable(cacheNames = CacheConstants.FORNECEDOR)
     public Page<AssociadoResponseDto> findFornecedorDetails(String nome, Integer subcategoriaId, Pageable pageable){
         subcategoriaServicoService.existsById(subcategoriaId);
-        Page<AssociadoResponseProjection> fornecedorDetailsPage = findFornecedorDetailsPage(nome, subcategoriaId, pageable);
+        Page<AssociadoResponseProjection> fornecedorDetailsPage = repository
+                .findFornecedorDetailsBySubcategoriaAndNome(subcategoriaId, nome, pageable);
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
 
-        try{
-            fillFornecedorDetailsImages(associadoResponseDto);
-        }catch (Exception e){
-            log.error("Houve um erro ao buscar as informações do assessor %s".formatted(e.getMessage()));
-            e.printStackTrace();
-        }
+//        try{
+//            fillFornecedorDetailsImages(associadoResponseDto);
+//        }catch (Exception e){
+//            log.error("Houve um erro ao buscar as informações do assessor %s".formatted(e.getMessage()));
+//            e.printStackTrace();
+//        }
 
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage);
     }
 
-    private Page<AssociadoResponseProjection> findFornecedorDetailsPage(String nome, Integer subcategoriaId, Pageable pageable) {
-        FornecedorSpecification specification = new FornecedorSpecification(nome, subcategoriaId);
-        return repository.findBy(specification, (query) ->
-                query.as(AssociadoResponseProjection.class)
-                        .page(pageable)
-        );
-    }
-
-    @Transactional(readOnly = true, noRollbackFor = ConnectException.class)
+    @Transactional(readOnly = true)
     public Page<Fornecedor> findFornecedoresByCategoriaAndNome(Integer categoriaId, String nome, Pageable pageable){
         categoriaServicoService.existsById(categoriaId);
         return repository.findFornecedoresByCategoriaAndNome(categoriaId, nome, pageable);
