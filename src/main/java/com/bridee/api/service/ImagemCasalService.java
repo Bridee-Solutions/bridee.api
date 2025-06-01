@@ -12,19 +12,18 @@ import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.ImageMapper;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.repository.ImagemCasalRepository;
+import com.bridee.api.utils.ApplicationCloudProvider;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,21 +33,23 @@ import java.util.Optional;
 @Slf4j
 public class ImagemCasalService {
 
+    private final ApplicationCloudProvider applicationCloudProvider;
     private final ImagemCasalRepository repository;
     private final ImageMapper imageMapper;
     private final ImagemService imagemService;
-    private final BlobStorageStrategy blobStorageStrategy;
+    private BlobStorageStrategy blobStorageStrategy;
     private final CasalService casalService;
 
-    public String casalImage64Encoded(Integer casalId){
-        byte[] casalImage = downloadCasalImage(casalId);
-        if (Objects.isNull(casalImage)){
-            return null;
-        }
-        return Base64.getEncoder().encodeToString(casalImage);
+    @PostConstruct
+    public void init(){
+        blobStorageStrategy = applicationCloudProvider.getBlobImplementation();
     }
 
-    private byte[] downloadCasalImage(Integer casalId){
+    public String casalImage64Encoded(Integer casalId){
+        return downloadCasalImage(casalId);
+    }
+
+    private String downloadCasalImage(Integer casalId){
         Imagem casalImage = repository.findProfileImageByCasalId(casalId);
         if (Objects.isNull(casalImage)){
             return null;

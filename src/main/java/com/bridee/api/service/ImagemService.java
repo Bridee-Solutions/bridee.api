@@ -6,6 +6,8 @@ import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.ImagemRepository;
+import com.bridee.api.utils.ApplicationCloudProvider;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,27 +19,27 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class ImagemService {
 
+    private final ApplicationCloudProvider applicationCloudProvider;
     private final ImagemRepository repository;
     private final FornecedorRepository fornecedorRepository;
     private final AssessorRepository assessorRepository;
-    private final BlobStorageStrategy blobStorageStrategy;
+    private BlobStorageStrategy blobStorageStrategy;
+
+    @PostConstruct
+    public void init(){
+        blobStorageStrategy = applicationCloudProvider.getBlobImplementation();
+    }
 
     public List<String> findUrlBase64ImagensFornecedor(Integer fornecedorId){
         log.info("FORNECEDOR: buscando as imagens do fornecedor com id: {}", fornecedorId);
-        return findUrlImagensFornecedor(fornecedorId).stream()
-                .map(imagem -> {
-                    if (Objects.nonNull(imagem)){
-                        return Base64.getEncoder().encodeToString(imagem);
-                    }
-                    return null;
-                }).filter(Objects::nonNull).toList();
+        return findUrlImagensFornecedor(fornecedorId);
     };
 
-    public List<byte[]> findUrlImagensFornecedor(Integer fornecedorId){
+    public List<String> findUrlImagensFornecedor(Integer fornecedorId){
         return findImagensFornecedor(fornecedorId).stream()
                 .map(imagem -> blobStorageStrategy.downloadFile(imagem.getNome())).toList();
     }
@@ -51,16 +53,10 @@ public class ImagemService {
 
     public List<String> findBase64UrlImagensAssessor(Integer assessorId){
         log.info("ASSESSOR: buscando as imagens do assessor com id: {}", assessorId);
-        return findUrlImagensAssessor(assessorId).stream()
-                .map(imagem -> {
-                    if (Objects.nonNull(imagem)){
-                        return Base64.getEncoder().encodeToString(imagem);
-                    }
-                    return null;
-                }).filter(Objects::nonNull).toList();
+        return findUrlImagensAssessor(assessorId);
     }
 
-    public List<byte[]> findUrlImagensAssessor(Integer assessorId){
+    public List<String> findUrlImagensAssessor(Integer assessorId){
         return findImagensAssessor(assessorId).stream()
                 .map(imagem -> blobStorageStrategy.downloadFile(imagem.getNome())).toList();
     }
@@ -77,7 +73,7 @@ public class ImagemService {
         return repository.save(imagem);
     }
 
-    public byte[] downloadImage(String imageName){
+    public String downloadImage(String imageName){
         return blobStorageStrategy.downloadFile(imageName);
     };
 
