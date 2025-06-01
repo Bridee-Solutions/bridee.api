@@ -1,0 +1,47 @@
+package com.bridee.api.pattern.strategy.blobstorage.impl;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.bridee.api.exception.BucketDownloadException;
+import com.bridee.api.exception.BucketUploadException;
+import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
+import com.bridee.api.utils.AwsConfigInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URL;
+
+@Component
+public class AwsS3Storage implements BlobStorageStrategy {
+
+    private final AwsConfigInfo config;
+    private final AmazonS3 s3Client;
+    private final Logger logger = LoggerFactory.getLogger(AwsS3Storage.class);
+
+    public AwsS3Storage(AmazonS3 s3Client, AwsConfigInfo config) {
+        this.s3Client = s3Client;
+        this.config = config;
+    }
+
+    public void uploadFile(MultipartFile multipartFile, String content){
+        String fileName = multipartFile.getName();
+        try{
+            s3Client.putObject(config.name(), fileName,content);
+        }catch (Exception e){
+            logger.error("Houve um erro ao realizar o upload do arquivo {}, com o seguinte erro {}",
+                    fileName, e.getMessage());
+            throw new BucketUploadException(e.getMessage());
+        }
+    }
+
+    public String downloadFile(String objectName){
+        try{
+            URL s3Object = s3Client.getUrl(config.name(), "133829795949466110.jpg");
+            return s3Object.toString();
+        }catch (Exception e){
+            logger.error("Houve um erro ao tentar realizar o download do arquivo {}, com o seguinte erro {}", "133829795949466110.jpg", e.getMessage());
+            throw new BucketDownloadException(e.getMessage());
+        }
+    }
+}
