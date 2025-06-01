@@ -31,7 +31,6 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 						email = "brideesolutions@gmail.com")
 		)
 )
-@EnableScheduling
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties(AwsConfigInfo.class)
 public class Application {
