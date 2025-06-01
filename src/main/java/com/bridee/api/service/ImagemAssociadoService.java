@@ -33,17 +33,7 @@ public class ImagemAssociadoService {
     }
 
     private String downloadImage(ImagemAssociadoProjection imagemPrincipal){
-        byte[] imagem = imagemService.downloadImage(imagemPrincipal.getNome());
-        if (Objects.isNull(imagem)){
-            return null;
-        }
-        return encodeImage(imagem);
-    }
-
-    private String encodeImage(byte[] imagem){
-        String encodedImage = Base64.getEncoder().encodeToString(imagem);
-        encodedImage = Objects.nonNull(encodedImage) ? encodedImage : "";
-        return encodedImage;
+        return imagemService.downloadImage(imagemPrincipal.getNome());
     }
 
     public List<ImagemResponseDto> findImagensSecundarias(Integer id) {
@@ -55,12 +45,7 @@ public class ImagemAssociadoService {
     }
 
     private ImagemResponseDto buildImagemSecundaria(ImagemAssociadoProjection imagem){
-        String data = "";
-        byte[] image = imagemService.downloadImage(imagem.getNome());
-        if (Objects.nonNull(image)){
-            data = Base64.getEncoder()
-                    .encodeToString(image);
-        }
+        String data = imagemService.downloadImage(imagem.getNome());
         return new ImagemResponseDto(imagem.getId(), data);
     }
 }

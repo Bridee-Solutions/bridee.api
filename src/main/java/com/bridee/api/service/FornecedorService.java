@@ -56,12 +56,12 @@ public class FornecedorService {
                 .findFornecedorDetailsBySubcategoriaAndNome(subcategoriaId, nome, pageable);
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
 
-//        try{
-//            fillFornecedorDetailsImages(associadoResponseDto);
-//        }catch (Exception e){
-//            log.error("Houve um erro ao buscar as informações do assessor %s".formatted(e.getMessage()));
-//            e.printStackTrace();
-//        }
+        try{
+            fillFornecedorDetailsImages(associadoResponseDto);
+        }catch (Exception e){
+            log.error("Houve um erro ao buscar as informações do assessor %s".formatted(e.getMessage()));
+            e.printStackTrace();
+        }
 
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage);

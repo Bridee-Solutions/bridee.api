@@ -33,12 +33,10 @@ public class CasamentoServiceTest {
     private CustoRepository custoRepository;
     @Mock
     private PedidoAssessoriaService pedidoAssessoriaService;
-    @Mock
-    private CasalService casalService;
 
     @BeforeEach
     void setUp(){
-        casamentoService = new CasamentoService(repository, casalService,
+        casamentoService = new CasamentoService(repository,
                 orcamentoFornecedorRepository, custoRepository, pedidoAssessoriaService);
     }
 
