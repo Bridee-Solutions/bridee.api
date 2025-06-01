@@ -2,6 +2,9 @@ server:
   servlet:
     context-path: /api
 
+cloud:
+  provider: AWS
+
 spring:
   jpa:
     show-sql: true
@@ -62,6 +65,13 @@ azure:
       sasToken: ${AZURE_DATASTORAGE_CONTAINER_TOKEN:""}
   blob-storage:
     connection-string: ${AZURE_DATASTORAGE_CONNECTION_STRING:""}
+
+bucket:
+  name: ${AWS_BUCKET_NAME:""}
+  accessKey: ${AWS_ACCESS_KEY:""}
+  secretKey: ${AWS_SECRET_KEY:""}
+  sessionToken: ${AWS_SESSION_TOKEN:""}
+  region: ${AWS_REGION:""}
 
 httpOnly:
   cookie:
