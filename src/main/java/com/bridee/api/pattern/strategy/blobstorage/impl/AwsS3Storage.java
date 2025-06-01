@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.net.URL;
 
 @Component
@@ -24,23 +25,23 @@ public class AwsS3Storage implements BlobStorageStrategy {
         this.config = config;
     }
 
-    public void uploadFile(MultipartFile multipartFile, String content){
-        String fileName = multipartFile.getName();
+    public void uploadFile(MultipartFile multipartFile, String imageName){
         try{
-            s3Client.putObject(config.name(), fileName,content);
+            InputStream inputStream = multipartFile.getInputStream();
+            s3Client.putObject(config.name(), imageName, inputStream, null);
         }catch (Exception e){
             logger.error("Houve um erro ao realizar o upload do arquivo {}, com o seguinte erro {}",
-                    fileName, e.getMessage());
+                    imageName, e.getMessage());
             throw new BucketUploadException(e.getMessage());
         }
     }
 
     public String downloadFile(String objectName){
         try{
-            URL s3Object = s3Client.getUrl(config.name(), "133829795949466110.jpg");
+            URL s3Object = s3Client.getUrl(config.name(), objectName);
             return s3Object.toString();
         }catch (Exception e){
-            logger.error("Houve um erro ao tentar realizar o download do arquivo {}, com o seguinte erro {}", "133829795949466110.jpg", e.getMessage());
+            logger.error("Houve um erro ao tentar realizar o download do arquivo {}, com o seguinte erro {}", objectName, e.getMessage());
             throw new BucketDownloadException(e.getMessage());
         }
     }
