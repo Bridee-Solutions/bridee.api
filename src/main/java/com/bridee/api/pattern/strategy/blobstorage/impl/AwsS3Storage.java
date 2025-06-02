@@ -1,6 +1,7 @@
 package com.bridee.api.pattern.strategy.blobstorage.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.bridee.api.exception.BucketDownloadException;
 import com.bridee.api.exception.BucketUploadException;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
@@ -28,7 +29,8 @@ public class AwsS3Storage implements BlobStorageStrategy {
     public void uploadFile(MultipartFile multipartFile, String imageName){
         try{
             InputStream inputStream = multipartFile.getInputStream();
-            s3Client.putObject(config.name(), imageName, inputStream, null);
+            ObjectMetadata metadata = new ObjectMetadata();
+            s3Client.putObject(config.name(), imageName, inputStream, metadata);
         }catch (Exception e){
             logger.error("Houve um erro ao realizar o upload do arquivo {}, com o seguinte erro {}",
                     imageName, e.getMessage());
