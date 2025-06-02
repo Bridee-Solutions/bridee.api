@@ -6,7 +6,6 @@ import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.mapper.response.ItemOrcamentoResponseMapper;
-import com.bridee.api.repository.projection.orcamento.ItemOrcamentoProjection;
 import com.bridee.api.repository.ItemOrcamentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class ItemOrcamentoService {
     private final CustoService custoService;
     private final ItemOrcamentoResponseMapper responseMapper;
 
-    public List<ItemOrcamentoProjection> findAllByCasalId(Integer casalId){
+    public List<ItemOrcamento> findAllByCasalId(Integer casalId){
         return repository.findAllByCasalId(casalId);
     }
 
@@ -70,7 +69,7 @@ public class ItemOrcamentoService {
     private List<Integer> itensOrcamentoToBeRemoved(List<ItemOrcamento> itensOrcamento){
         Integer casalId = itensOrcamento.get(0).getCasal().getId();
 
-        List<ItemOrcamento> allItemOrcamento = responseMapper.fromProjection(repository.findAllByCasalId(casalId));
+        List<ItemOrcamento> allItemOrcamento = findAllByCasalId(casalId);
         List<Integer> itemOrcamentoIds = itensOrcamento.stream().map(ItemOrcamento::getId).toList();
         List<Integer> allItemOrcamentoIds = allItemOrcamento.stream().map(ItemOrcamento::getId).toList();
 

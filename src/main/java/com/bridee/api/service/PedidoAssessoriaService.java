@@ -42,7 +42,6 @@ public class PedidoAssessoriaService {
         if (pedidosPendentes.isEmpty()){
             return null;
         }
-        pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId).reversed());
 
         return pedidosPendentes.get(0);
     }

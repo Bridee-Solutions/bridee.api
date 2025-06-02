@@ -26,7 +26,7 @@ public class SubcategoriaServicoService {
     private final SubcategoriaServicoServiceCacheAssistent cacheAssistent;
 
     public List<SubcategoriaServico> findAll(){
-        return cacheAssistent.findAll();
+        return subcategoriaServicoRepository.findAllSubcategories();
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +40,6 @@ public class SubcategoriaServicoService {
         return PageUtils.collectionToPage(subcategorias, pageable);
     }
 
-    @Cacheable(cacheNames = CacheConstants.SUBCATEGORIA_SERVICO, keyGenerator = "customKeyGenerator")
     public List<SubcategoriaServico> findAllByCategoria(Integer categoriaId){
         categoriaServicoService.existsById(categoriaId);
         return cacheAssistent.findAll()
