@@ -47,12 +47,14 @@ public class DashboardService {
     private final TarefaResponseMapper tarefaResponseMapper;
     private final CasalResponseMapper casalResponseMapper;
     private final SubcategoriaServicoService subcategoriaServicoService;
+    private final OrcamentoFornecedorService orcamentoFornecedorService;
 
     @Transactional(readOnly = true)
     public DashboardResponseDto buildDashboard(Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
         subcategoriaServicoService.findAll();
+        orcamentoFornecedorService.findByCasalId(casal.getId());
 
         OrcamentoProjection orcamentoProjection = orcamentoService.findCasalOrcamento(casal.getId());
         if(Objects.isNull(orcamentoProjection)){

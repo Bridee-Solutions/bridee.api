@@ -41,7 +41,6 @@ public class SubcategoriaServicoService {
     }
 
     public List<SubcategoriaServico> findAllByCategoria(Integer categoriaId){
-        categoriaServicoService.existsById(categoriaId);
         return cacheAssistent.findAll()
                 .stream()
                 .filter(subcategoria ->
