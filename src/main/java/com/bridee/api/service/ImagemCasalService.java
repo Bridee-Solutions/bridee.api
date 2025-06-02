@@ -94,13 +94,13 @@ public class ImagemCasalService {
     }
 
     private Imagem buildCasalImage(Integer casalId, ImageMetadata imageMetadata){
-        removePreviousProfileImageCasal(casalId, imageMetadata);
+        removePreviousProfileImageCasal(casalId);
         Imagem imagem = createImage(imageMetadata);
         createImagemCasal(casalId, imagem);
         return imagem;
     }
 
-    private void removePreviousProfileImageCasal(Integer casalId, ImageMetadata imageMetadata) {
+    private void removePreviousProfileImageCasal(Integer casalId) {
         Optional<ImagemCasal> profileImageCasalOpt = repository
                 .findProfileCasalImageByCasalId(casalId);
         profileImageCasalOpt.ifPresent(repository::delete);
