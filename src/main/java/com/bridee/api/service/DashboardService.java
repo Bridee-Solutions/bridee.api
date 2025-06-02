@@ -117,7 +117,7 @@ public class DashboardService {
         String totalConvidados = casamento.getTamanhoCasamento();
         LocalDate dataCasamento = casamento.getDataFim();
         String local = casamento.getLocal();
-        String casalImage = imagemCasalService.casalImage64Encoded(casal.getId());
+        String casalImage = imagemCasalService.getCasalImage(casal.getId());
 
         log.debug("DASHBOARD: total convidados {}, dataCasamento {}, local {}, para o casamento {}",
                 totalConvidados, dataCasamento, local, casamento.getId());

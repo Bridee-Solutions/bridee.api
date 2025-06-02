@@ -45,7 +45,7 @@ public class ImagemCasalService {
         blobStorageStrategy = applicationCloudProvider.getBlobImplementation();
     }
 
-    public String casalImage64Encoded(Integer casalId){
+    public String getCasalImage(Integer casalId){
         return downloadCasalImage(casalId);
     }
 
