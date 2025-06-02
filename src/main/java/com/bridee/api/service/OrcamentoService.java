@@ -41,9 +41,6 @@ public class OrcamentoService {
 
     @Transactional(readOnly = true)
     public OrcamentoProjection findCasalOrcamento(Integer casalId){
-        orcamentoFornecedorService.findByCasalId(casalId);
-        subcategoriaServicoService.findAll();
-        itemOrcamentoService.findAllByCasalId(casalId);
         return casalService.findOrcamentoById(casalId);
     }
 
