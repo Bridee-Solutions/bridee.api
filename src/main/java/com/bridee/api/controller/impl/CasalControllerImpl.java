@@ -88,7 +88,7 @@ public class CasalControllerImpl implements CasalController {
 
     @PostMapping(value = "/imagem-perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadImage(@RequestParam(value = "metadata") String metadataJson,
-                                            @RequestPart("file") MultipartFile file) throws JsonProcessingException {
+                                            @RequestPart("file") MultipartFile file){
 
         ImageMetadata imageMetadata = jsonConverter.fromJson(metadataJson, ImageMetadata.class);
         imagemCasalService.uploadCasalImage(imageMetadata, file);

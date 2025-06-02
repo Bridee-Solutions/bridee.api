@@ -22,7 +22,7 @@ public interface CasamentoRepository extends JpaRepository<Casamento, Integer> {
     Integer findCasamentoIdByCasalId(Integer casalId);
 
     @Query("""
-            SELECT c.dataFim FROM Casamento c WHERE c.id = :id
+            SELECT c FROM Casamento c WHERE c.id = :id
             """)
     CasamentoDateProjection findDataFimByCasamentoId(Integer id);
 
