@@ -11,6 +11,7 @@ import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.CustoRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
 import com.bridee.api.repository.projection.casamento.CasamentoDateProjection;
+import com.bridee.api.utils.PatchHelper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ public class CasamentoService {
     private final OrcamentoFornecedorRepository orcamentoFornecedorRepository;
     private final CustoRepository custoRepository;
     private final PedidoAssessoriaService pedidoAssessoriaService;
+    private final PatchHelper patchHelper;
 
     public Casamento findById(Integer id){
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado!"));
@@ -132,5 +134,11 @@ public class CasamentoService {
 
     public void removeWeddingAdvise(Integer casamentoId, Integer assessorId) {
         pedidoAssessoriaService.removeWeddingAdvise(casamentoId, assessorId);
+    }
+
+    public Casamento updateCasamento(Casamento casamento, Integer casamentoId) {
+        Casamento casamentoToBeUpdated = findById(casamentoId);
+        patchHelper.mergeNonNull(casamento, casamentoToBeUpdated);
+        return repository.save(casamentoToBeUpdated);
     }
 }
