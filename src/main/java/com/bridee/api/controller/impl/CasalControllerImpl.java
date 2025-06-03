@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.CoupleIdentifier;
 import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.controller.CasalController;
 import com.bridee.api.dto.request.CasalRequestDto;
@@ -95,8 +96,8 @@ public class CasalControllerImpl implements CasalController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "/{id}", consumes = "application/merge-patch+json")
-    public ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id){
+    @PatchMapping(consumes = "application/merge-patch+json")
+    public ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @CoupleIdentifier Integer id){
         log.info("CASAL: atualizando informações do casal de id: {}", id);
         Casal casal = patchHelper.mergePatch(jsonMergePatch, new Casal(), Casal.class);
         CasalResponseDto responseDto = responseMapper.toDomain(service.update(casal, id));
