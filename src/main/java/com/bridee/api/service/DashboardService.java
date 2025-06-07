@@ -12,6 +12,7 @@ import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.entity.Tarefa;
 import com.bridee.api.entity.enums.TarefaStatusEnum;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.FornecedorOrcamentoResponseMapper;
@@ -45,13 +46,20 @@ public class DashboardService {
     private final AssessorResponseMapper assessorResponseMapper;
     private final TarefaResponseMapper tarefaResponseMapper;
     private final CasalResponseMapper casalResponseMapper;
+    private final SubcategoriaServicoService subcategoriaServicoService;
+    private final OrcamentoFornecedorService orcamentoFornecedorService;
 
     @Transactional(readOnly = true)
     public DashboardResponseDto buildDashboard(Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
+        subcategoriaServicoService.findAll();
+        orcamentoFornecedorService.findByCasalId(casal.getId());
 
-        OrcamentoProjection orcamentoProjection = orcamentoService.findCasalOrcamento(casamentoId);
+        OrcamentoProjection orcamentoProjection = orcamentoService.findCasalOrcamento(casal.getId());
+        if(Objects.isNull(orcamentoProjection)){
+            throw new ResourceNotFoundException("Orcamento não encontrado");
+        }
         var orcamentoFornecedores = fornecedorOrcamentoResponseMapper.fromProjection(orcamentoProjection.getOrcamentoFornecedores());
 
         return DashboardResponseDto.builder()
@@ -113,7 +121,7 @@ public class DashboardService {
         String totalConvidados = casamento.getTamanhoCasamento();
         LocalDate dataCasamento = casamento.getDataFim();
         String local = casamento.getLocal();
-        String casalImage = imagemCasalService.casalImage64Encoded(casal.getId());
+        String casalImage = imagemCasalService.getCasalImage(casal.getId());
 
         log.debug("DASHBOARD: total convidados {}, dataCasamento {}, local {}, para o casamento {}",
                 totalConvidados, dataCasamento, local, casamento.getId());

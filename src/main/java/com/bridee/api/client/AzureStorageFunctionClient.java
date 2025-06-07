@@ -17,6 +17,6 @@ public interface AzureStorageFunctionClient {
                                     @RequestHeader("x-api-key") String apiKey);
 
     @GetMapping("/downloadFile")
-    ResponseEntity<byte[]> downloadFile(@RequestBody FileRequest request,
+    ResponseEntity<String> downloadFile(@RequestBody FileRequest request,
                                         @RequestHeader("x-api-key") String apiKey);
 }

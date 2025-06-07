@@ -28,12 +28,12 @@ public class ImagemAssociadoService {
         if (Objects.isNull(imagemPrincipal)){
             return null;
         }
-        byte[] imagem = imagemService.downloadImage(imagemPrincipal.getNome());
-        if (Objects.isNull(imagem)){
-            return null;
-        }
-        String data = Base64.getEncoder().encodeToString(imagem);
+        String data = downloadImage(imagemPrincipal);
         return new ImagemResponseDto(imagemPrincipal.getId(), data);
+    }
+
+    private String downloadImage(ImagemAssociadoProjection imagemPrincipal){
+        return imagemService.downloadImage(imagemPrincipal.getNome());
     }
 
     public List<ImagemResponseDto> findImagensSecundarias(Integer id) {
@@ -45,12 +45,7 @@ public class ImagemAssociadoService {
     }
 
     private ImagemResponseDto buildImagemSecundaria(ImagemAssociadoProjection imagem){
-        String data = "";
-        byte[] image = imagemService.downloadImage(imagem.getNome());
-        if (Objects.nonNull(image)){
-            data = Base64.getEncoder()
-                    .encodeToString(image);
-        }
+        String data = imagemService.downloadImage(imagem.getNome());
         return new ImagemResponseDto(imagem.getId(), data);
     }
 }

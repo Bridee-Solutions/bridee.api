@@ -5,7 +5,6 @@ import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.mapper.response.OrcamentoFornecedorResponseMapper;
-import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +26,8 @@ public class OrcamentoFornecedorService {
     private final SubcategoriaServicoService subcategoriaServicoService;
     private final FornecedorService fornecedorService;
 
-    public void findByCasalId(Integer casalId){
+    public List<OrcamentoFornecedor> findByCasalId(Integer casalId){
         repository.findAllFornecedoresByCasalId(casalId);
-        repository.findAllByCasalId(casalId);
-    }
-
-    public List<OrcamentoFornecedorProjection> findAllOrcamentoFornecedorByCasalId(Integer casalId){
         return repository.findAllByCasalId(casalId);
     }
 

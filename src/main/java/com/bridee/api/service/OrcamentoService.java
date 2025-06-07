@@ -41,9 +41,6 @@ public class OrcamentoService {
 
     @Transactional(readOnly = true)
     public OrcamentoProjection findCasalOrcamento(Integer casalId){
-        orcamentoFornecedorService.findByCasalId(casalId);
-        subcategoriaServicoService.findAll();
-        itemOrcamentoService.findAllByCasalId(casalId);
         return casalService.findOrcamentoById(casalId);
     }
 
@@ -109,25 +106,25 @@ public class OrcamentoService {
     }
 
     @Transactional
-    public BigDecimal calculateTotalOrcamento(Casal casal){
-        if (Objects.isNull(casal)){
+    public BigDecimal calculateTotalOrcamento(Integer casalId){
+        if (Objects.isNull(casalId)){
             throw new ResourceNotFoundException("Não foi possível calcular o orcamento de um casal não cadastrado");
         }
 
-        BigDecimal totalItens = calculateTotalItens(casal);
-        BigDecimal totalFornecedores = calculateTotalFornecedores(casal);
+        BigDecimal totalItens = calculateTotalItens(casalId);
+        BigDecimal totalFornecedores = calculateTotalFornecedores(casalId);
         return totalItens.add(totalFornecedores);
     }
 
-    private  BigDecimal calculateTotalItens(Casal casal){
-        List<ItemOrcamento> itensOrcamento = casal.getItemOrcamentos();
+    private  BigDecimal calculateTotalItens(Integer casalId){
+        List<ItemOrcamento> itensOrcamento = itemOrcamentoService.findAllByCasalId(casalId);
         double valorTotalItens = itensOrcamento.stream().mapToDouble(item -> item.getCustos().stream()
                 .mapToDouble(custo -> Double.parseDouble(custo.getPrecoAtual().toString())).sum()).sum();
         return new BigDecimal(valorTotalItens);
     }
 
-    private BigDecimal calculateTotalFornecedores(Casal casal){
-        List<OrcamentoFornecedor> orcamentoFornecedores = casal.getOrcamentoFornecedores();
+    private BigDecimal calculateTotalFornecedores(Integer casalId){
+        List<OrcamentoFornecedor> orcamentoFornecedores = orcamentoFornecedorService.findByCasalId(casalId);
         double valorTotalFornecedores = orcamentoFornecedores.stream()
                 .mapToDouble(orcamento -> Double.parseDouble(orcamento.getPreco().toString())).sum();
         return new BigDecimal(valorTotalFornecedores);

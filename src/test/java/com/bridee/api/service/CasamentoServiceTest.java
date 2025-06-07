@@ -5,6 +5,7 @@ import com.bridee.api.entity.Casamento;
 import com.bridee.api.repository.CasamentoRepository;
 import com.bridee.api.repository.CustoRepository;
 import com.bridee.api.repository.OrcamentoFornecedorRepository;
+import com.bridee.api.utils.PatchHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,12 +33,13 @@ public class CasamentoServiceTest {
     private CustoRepository custoRepository;
     @Mock
     private PedidoAssessoriaService pedidoAssessoriaService;
-
+    @Mock
+    private PatchHelper patchHelper;
 
     @BeforeEach
     void setUp(){
         casamentoService = new CasamentoService(repository,
-                orcamentoFornecedorRepository, custoRepository, pedidoAssessoriaService);
+                orcamentoFornecedorRepository, custoRepository, pedidoAssessoriaService, patchHelper);
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.bridee.api.entity.enums.PedidoAssessoriaStatusEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,7 +37,7 @@ public class PedidoAssessoria {
     @Enumerated(EnumType.STRING)
     private PedidoAssessoriaStatusEnum status;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "casamento_id")
     private Casamento casamento;
 
