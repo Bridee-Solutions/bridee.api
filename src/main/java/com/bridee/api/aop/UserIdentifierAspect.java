@@ -3,7 +3,6 @@ package com.bridee.api.aop;
 import com.bridee.api.service.AssessorService;
 import com.bridee.api.service.CasalService;
 import com.bridee.api.service.CasamentoService;
-import com.bridee.api.service.JwtService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

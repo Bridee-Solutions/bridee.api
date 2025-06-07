@@ -34,6 +34,7 @@ public class AuthenticationService {
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto requestDto){
         Usuario usuario = usuarioService.findByEmail(requestDto.getEmail());
         UserDetails userAuthenticated = new SecurityUser(usuario);
+
         validatePasswords(requestDto, userAuthenticated);
         validateUser(usuario);
         log.info("AUTENTICAÇÃO: usuário autenticado com sucesso.");

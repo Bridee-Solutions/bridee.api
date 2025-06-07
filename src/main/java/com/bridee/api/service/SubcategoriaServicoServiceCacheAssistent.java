@@ -15,7 +15,7 @@ public class SubcategoriaServicoServiceCacheAssistent {
 
     private final SubcategoriaServicoRepository repository;
 
-    @Cacheable(cacheNames = CacheConstants.SUBCATEGORIA_SERVICO)
+    @Cacheable(cacheNames = CacheConstants.SUBCATEGORIA_SERVICO, keyGenerator = "customKeyGenerator")
     List<SubcategoriaServico> findAll(){
         return repository.findAllSubcategories();
     }

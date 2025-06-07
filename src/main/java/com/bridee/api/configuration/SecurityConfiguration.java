@@ -3,7 +3,6 @@ package com.bridee.api.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -74,7 +73,7 @@ public class SecurityConfiguration {
         config.addAllowedOriginPattern("*");
         config.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
                 "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers")  );
+                "Access-Control-Request-Method", "Access-Control-Request-Headers", "Bridee-Token")  );
         config.setAllowedMethods(Arrays.asList("DELETE", "GET", "PUT", "POST", "OPTIONS"));
         source.registerCorsConfiguration("/**", config);
 

@@ -21,6 +21,7 @@ public class PexelsPhotos implements Comparable<PexelsPhotos> {
     private PhotoSource source;
     @JsonProperty("alt")
     private String altText;
+    private boolean isFavorite;
 
     @Override
     public int compareTo(@NonNull PexelsPhotos o) {

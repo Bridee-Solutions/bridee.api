@@ -2,6 +2,9 @@ server:
   servlet:
     context-path: /api
 
+cloud:
+  provider: AWS
+
 spring:
   jpa:
     show-sql: true
@@ -16,6 +19,11 @@ spring:
     url: ${MYSQL_URL:jdbc:mysql://localhost:3307/bridee}
     username: ${MYSQL_USERNAME:bridee}
     password: ${MYSQL_PASSWORD:bridee}
+  cloud:
+    azure:
+      storage:
+        blob:
+          container-name: ${AZURE_DATASTORAGE_CONTAINER_NAME:""}
 
 services:
   bridee:
@@ -49,6 +57,21 @@ registration:
     redirectUri: ${REGISTRATION_SUCCESS_REDIRECT_URI:http://localhost:5173/login}
   fail:
     redirectUri: ${REGISTRATION_FAIL_REDIRECT_URI:http://localhost:5173/reenviar-email}
+
+azure:
+  data-storage:
+    container:
+      url: ${AZURE_DATASTORAGE_CONTAINER_URL:""}
+      sasToken: ${AZURE_DATASTORAGE_CONTAINER_TOKEN:""}
+  blob-storage:
+    connection-string: ${AZURE_DATASTORAGE_CONNECTION_STRING:""}
+
+bucket:
+  name: ${AWS_BUCKET_NAME:""}
+  accessKey: ${AWS_ACCESS_KEY:""}
+  secretKey: ${AWS_SECRET_KEY:""}
+  sessionToken: ${AWS_SESSION_TOKEN:""}
+  region: ${AWS_REGION:""}
 
 httpOnly:
   cookie:

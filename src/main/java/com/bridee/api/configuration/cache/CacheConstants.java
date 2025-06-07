@@ -8,6 +8,7 @@ public class CacheConstants {
     public static final String CATEGORIA_SERVICO = "CATEGORIA_SERVICO";
     public static final String SUBCATEGORIA_SERVICO = "SUBCATEGORIA_SERVICO";
     public static final String USER = "USER";
+    public static final String FAVORITE_IMAGE = "FAVORITE_IMAGE";
 
     public static String[] asArray(){
         return new String[]{
@@ -16,7 +17,8 @@ public class CacheConstants {
           CATEGORIA_CONVIDADO,
           CATEGORIA_SERVICO,
           SUBCATEGORIA_SERVICO,
-          USER
+          USER,
+          FAVORITE_IMAGE
         };
     }
 }

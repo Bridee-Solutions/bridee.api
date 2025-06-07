@@ -29,8 +29,5 @@ public interface SubcategoriaServicoRepository extends JpaRepository<Subcategori
     @Query("""
             SELECT s FROM SubcategoriaServico s JOIN FETCH s.categoriaServico
             """)
-    @QueryHints(value = {
-            @QueryHint(name = "org.hibernate.readOnly", value="true")
-    })
     List<SubcategoriaServico> findAllSubcategories();
 }

@@ -29,6 +29,7 @@ public interface PexelMapper {
             response.setPhotographerUrl(photo.getPhotographerUrl());
             response.setAltText(photo.getAltText());
             response.setSource(photo.getSource());
+            response.setFavorite(photo.isFavorite());
             return response;
         }).toList();
     }

@@ -3,6 +3,8 @@ package com.bridee.api.client.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PhotoSource {
 
@@ -16,4 +18,15 @@ public class PhotoSource {
     private String medium;
     @JsonProperty("small")
     private String small;
+
+    public List<String> findAllUrls(){
+        return List.of(
+                original,
+                large2x,
+                large,
+                medium,
+                small
+        );
+    }
+
 }

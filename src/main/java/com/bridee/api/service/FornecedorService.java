@@ -6,11 +6,11 @@ import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
+import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.projection.associado.AssociadoGeralResponseDto;
 import com.bridee.api.repository.projection.associado.AssociadoGeralResponseProjection;
 import com.bridee.api.repository.projection.associado.AssociadoResponseDto;
 import com.bridee.api.repository.projection.associado.AssociadoResponseProjection;
-import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,25 +50,27 @@ public class FornecedorService {
 
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = CacheConstants.FORNECEDOR)
-    public Page<AssociadoResponseDto> findFornecedorDetails(Integer subcategoriaId, Pageable pageable){
+    public Page<AssociadoResponseDto> findFornecedorDetails(String nome, Integer subcategoriaId, Pageable pageable){
         subcategoriaServicoService.existsById(subcategoriaId);
-        Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsBySubcategoria(subcategoriaId, pageable);
-
+        Page<AssociadoResponseProjection> fornecedorDetailsPage = repository
+                .findFornecedorDetailsBySubcategoriaAndNome(subcategoriaId, nome, pageable);
         List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        fillFornecedorDetailsImages(associadoResponseDto);
+
+        try{
+            fillFornecedorDetailsImages(associadoResponseDto);
+        }catch (Exception e){
+            log.error("Houve um erro ao buscar as informações do assessor %s".formatted(e.getMessage()));
+            e.printStackTrace();
+        }
+
         return PageUtils.collectionToPage(associadoResponseDto,
                 fornecedorDetailsPage);
     }
 
     @Transactional(readOnly = true)
-    public Page<AssociadoResponseDto> findFornecedorDetailsByCategoria(Integer categoriaId,String nome, Pageable pageable){
+    public Page<Fornecedor> findFornecedoresByCategoriaAndNome(Integer categoriaId, String nome, Pageable pageable){
         categoriaServicoService.existsById(categoriaId);
-        Page<AssociadoResponseProjection> fornecedorDetailsPage = repository.findFornecedorDetailsByCategoriaAndNome(categoriaId, nome,pageable);
-
-        List<AssociadoResponseDto> associadoResponseDto = geralResponseMapper.toResponseDto(fornecedorDetailsPage.getContent());
-        fillFornecedorDetailsImages(associadoResponseDto);
-        return PageUtils.collectionToPage(associadoResponseDto,
-                fornecedorDetailsPage);
+        return repository.findFornecedoresByCategoriaAndNome(categoriaId, nome, pageable);
     }
 
     private void fillFornecedorDetailsImages(List<AssociadoResponseDto> associadoResponse){

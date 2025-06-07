@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Slf4j
@@ -25,7 +26,8 @@ public class CsvUtils {
             throw new ResourceNotFoundException("Orcamento não encontrado para gerar o relátorio csv");
         }
 
-        String nomeArquivo = "%s orcamento %s".formatted(orcamentoProjection.getNomeCasal(),LocalDate.now().toString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss");
+        String nomeArquivo = "%s_orcamento_%s".formatted(orcamentoProjection.getNomeCasal(), LocalDateTime.now().format(formatter));
         String tmpDir = System.getProperty("java.io.tmpdir");
 
         String filename = "%s/%s.csv".formatted(tmpDir, nomeArquivo);
@@ -44,11 +46,12 @@ public class CsvUtils {
         writer.close();
 
         InputStream inputStream = new FileInputStream(filename);
-
+        byte[] fileBytes = inputStream.readAllBytes();
+        inputStream.close();
         log.info("ORCAMENTO: removendo arquivo.");
         Files.delete(Path.of(filename));
 
-        return inputStream.readAllBytes();
+        return fileBytes;
     }
 
     private static void createCsvHeader(OrcamentoProjection orcamentoProjection, StringBuilder stringBuilder) {

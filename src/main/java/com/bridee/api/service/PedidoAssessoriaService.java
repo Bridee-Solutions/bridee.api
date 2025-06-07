@@ -42,7 +42,6 @@ public class PedidoAssessoriaService {
         if (pedidosPendentes.isEmpty()){
             return null;
         }
-        pedidosPendentes.sort(Comparator.comparing(PedidoAssessoria::getId).reversed());
 
         return pedidosPendentes.get(0);
     }
@@ -54,9 +53,8 @@ public class PedidoAssessoriaService {
     }
 
     private PedidoAssessoria validatePedidoAssessoria(PedidoAssessoria pedidoAssessoria){
-        Integer assessorId = pedidoAssessoria.getAssessor().getId();
         Integer casamentoId = pedidoAssessoria.getCasamento().getId();
-        Optional<PedidoAssessoria> pedidoAssessoriaOptional = repository.findByCasamentoAndAssessor(casamentoId, assessorId);
+        Optional<PedidoAssessoria> pedidoAssessoriaOptional = repository.findByCasamentoAndAssessor(casamentoId);
         if (pedidoAssessoriaOptional.isEmpty()){
             return pedidoAssessoria;
         }
