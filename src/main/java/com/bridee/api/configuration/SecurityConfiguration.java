@@ -73,7 +73,7 @@ public class SecurityConfiguration {
         config.addAllowedOriginPattern("*");
         config.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
                 "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers", "Bridee-Token")  );
+                "Access-Control-Request-Method", "Access-Control-Request-Headers", "Bridee-Token", "refresh-token")  );
         config.setAllowedMethods(Arrays.asList("DELETE", "GET", "PUT", "POST", "OPTIONS"));
         source.registerCorsConfiguration("/**", config);
 
