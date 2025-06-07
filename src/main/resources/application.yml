@@ -33,8 +33,8 @@ services:
         api-key: ${BRIDEE_STORAGE_FUNCTION_API-KEY:"DEFAULT"}
     email:
       host: ${BRIDEE_EMAIL_HOST:smtp.gmail.com}
-      user: ${BRIDEE_EMAIL_USERNAME:""}
-      password: ${BRIDEE_EMAIL_PASSWORD:""}
+      user: ${BRIDEE_EMAIL_USERNAME:brideesolutions@gmail.com}
+      password: ${BRIDEE_EMAIL_PASSWORD:qruj vlul gxai yxnw}
     whatsapp:
       inviteUrl: ${BRIDEE_INVITE_URL:http://localhost:8080}
       url: ${WHATSAPP_API_URL:https://app.whatsgw.com.br/api/WhatsGw}
