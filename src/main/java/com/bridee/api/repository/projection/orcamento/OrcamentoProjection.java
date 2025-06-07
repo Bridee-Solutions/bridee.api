@@ -9,7 +9,7 @@ import java.util.LinkedList;
 public interface OrcamentoProjection {
 
     BigDecimal getOrcamentoTotal();
-    @Value("#{target.nome + \" \" + target.nomeParceiro }")
+    @Value("#{target.nome + \"&\" + target.nomeParceiro }")
     String getNomeCasal();
     @Value("#{@orcamentoService.calculateTotalOrcamento(target.id)}")
     BigDecimal getOrcamentoGasto();

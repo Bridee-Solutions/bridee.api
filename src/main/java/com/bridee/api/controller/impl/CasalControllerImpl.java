@@ -20,7 +20,6 @@ import com.bridee.api.service.ImagemCasalService;
 import com.bridee.api.utils.JsonConverter;
 import com.bridee.api.utils.PatchHelper;
 import com.bridee.api.utils.UriUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +27,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.json.JsonMergePatch;
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/casais")
@@ -97,7 +103,8 @@ public class CasalControllerImpl implements CasalController {
     }
 
     @PatchMapping(consumes = "application/merge-patch+json")
-    public ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @CoupleIdentifier Integer id){
+    public ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch,
+                                                   @CoupleIdentifier Integer id){
         log.info("CASAL: atualizando informações do casal de id: {}", id);
         Casal casal = patchHelper.mergePatch(jsonMergePatch, new Casal(), Casal.class);
         CasalResponseDto responseDto = responseMapper.toDomain(service.update(casal, id));
@@ -105,7 +112,8 @@ public class CasalControllerImpl implements CasalController {
     }
 
     @PutMapping("/orcamento-total")
-    public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@WeddingIdentifier Integer id, @RequestBody @Valid OrcamentoTotalRequestDto orcamentoTotal){
+    public ResponseEntity<CasalResponseDto> updateOrcamentoTotal(@WeddingIdentifier Integer id,
+                                                                 @RequestBody @Valid OrcamentoTotalRequestDto orcamentoTotal){
         log.info("CASAL: atualizando orcamento do casal de id: {} com o valor {}", id, orcamentoTotal.getOrcamentoTotal());
         Casal casal = service.updateOrcamentoTotal(id, orcamentoTotal.getOrcamentoTotal());
         return ResponseEntity.ok(responseMapper.toDomain(casal));
