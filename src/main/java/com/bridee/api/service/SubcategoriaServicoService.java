@@ -63,7 +63,9 @@ public class SubcategoriaServicoService {
     @Transactional(readOnly = true)
     public Page<SubcategoriaServico> findAllByCategoriaName(String nome, Pageable pageable) {
         List<SubcategoriaServico> subcategorias = cacheAssistent.findAll().stream()
-                .filter(subcategoria -> subcategoria.getCategoriaServico().getNome().equals(nome))
+                .filter(subcategoria -> subcategoria.getCategoriaServico()
+                        .getNome()
+                        .equalsIgnoreCase(nome))
                 .toList();
 
         return PageUtils.collectionToPage(subcategorias, pageable);
