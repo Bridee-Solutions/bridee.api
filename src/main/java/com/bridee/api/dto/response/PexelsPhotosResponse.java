@@ -12,5 +12,6 @@ public class PexelsPhotosResponse {
     private Long photographerId;
     private PhotoSource source;
     private String altText;
+    private boolean isFavorite;
 
 }

@@ -3,7 +3,6 @@ package com.bridee.api.service;
 import com.bridee.api.configuration.cache.CacheConstants;
 import com.bridee.api.entity.SubcategoriaServico;
 import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.repository.projection.orcamento.SubcategoriaProjection;
 import com.bridee.api.repository.FornecedorRepository;
 import com.bridee.api.repository.SubcategoriaServicoRepository;
 import com.bridee.api.utils.PageUtils;
@@ -27,7 +26,7 @@ public class SubcategoriaServicoService {
     private final SubcategoriaServicoServiceCacheAssistent cacheAssistent;
 
     public List<SubcategoriaServico> findAll(){
-        return cacheAssistent.findAll();
+        return subcategoriaServicoRepository.findAllSubcategories();
     }
 
     @Transactional(readOnly = true)
@@ -42,7 +41,6 @@ public class SubcategoriaServicoService {
     }
 
     public List<SubcategoriaServico> findAllByCategoria(Integer categoriaId){
-        categoriaServicoService.existsById(categoriaId);
         return cacheAssistent.findAll()
                 .stream()
                 .filter(subcategoria ->
@@ -65,7 +63,9 @@ public class SubcategoriaServicoService {
     @Transactional(readOnly = true)
     public Page<SubcategoriaServico> findAllByCategoriaName(String nome, Pageable pageable) {
         List<SubcategoriaServico> subcategorias = cacheAssistent.findAll().stream()
-                .filter(subcategoria -> subcategoria.getCategoriaServico().getNome().equals(nome))
+                .filter(subcategoria -> subcategoria.getCategoriaServico()
+                        .getNome()
+                        .equalsIgnoreCase(nome))
                 .toList();
 
         return PageUtils.collectionToPage(subcategorias, pageable);

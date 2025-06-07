@@ -39,6 +39,10 @@ public class ConvidadoService {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Convidado não encontrado!"));
     }
 
+    public List<Convidado> findAllByConviteId(Integer conviteId){
+        return repository.findAllByConviteId(conviteId);
+    }
+
     public Convidado save(Convidado convidado, Integer conviteId) {
         validateConvidadoConvite(convidado, conviteId);
         convidado.setConvite(Convite.builder()
@@ -59,7 +63,7 @@ public class ConvidadoService {
     }
 
     public List<Convidado> saveAll(List<Convidado> convidados){
-        removeDuplicatedConvidados(convidados);
+        convidados = removeDuplicatedConvidados(convidados);
         return repository.saveAll(convidados);
     }
 

@@ -39,9 +39,9 @@ public interface PedidoAssessoriaRepository extends JpaRepository<PedidoAssessor
 
 
     @Query("""
-            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId AND pa.assessor.id = :assessorId
+            SELECT pa FROM PedidoAssessoria pa WHERE pa.casamento.id = :casamentoId
             """)
-    Optional<PedidoAssessoria> findByCasamentoAndAssessor(Integer casamentoId, Integer assessorId);
+    Optional<PedidoAssessoria> findByCasamentoAndAssessor(Integer casamentoId);
 
     boolean existsByAssessorIdAndCasamentoIdAndStatus(Integer assessorId, Integer casamentoId, PedidoAssessoriaStatusEnum status);
 

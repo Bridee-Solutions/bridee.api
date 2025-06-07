@@ -39,7 +39,7 @@ public interface ConviteController {
             @ApiResponse(responseCode = "404", description = "Casamento não encontrado",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter, @PathVariable Integer casamentoId);
+    ResponseEntity<Page<ConvitesResponseDto>> findAllInvites(@RequestParam Map<String, Object> filter, Integer casamentoId);
 
     @Operation(summary = "Relatório de convites do casamento",
             description = "Gera um relatório sobre os status dos convites do casamento")
@@ -48,7 +48,7 @@ public interface ConviteController {
             @ApiResponse(responseCode = "404", description = "Não encontrou os dados para gerar o relatório",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(@PathVariable Integer casamentoId);
+    ResponseEntity<RelatorioProjection> findRelatorioConviteCasamento(Integer casamentoId);
 
     @Operation(summary = "Cria um convite para um casamento",
             description = "Cria um convite para um casamento já cadastrado")

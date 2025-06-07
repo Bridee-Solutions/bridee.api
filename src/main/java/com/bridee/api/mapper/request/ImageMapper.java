@@ -38,7 +38,7 @@ public interface ImageMapper {
 
     default String buildImagemName(ImageMetadata imageMetadata){
         return "%s_%s_%s.%s".formatted(imageMetadata.getNome(),
-                imageMetadata.getTipo(), imageMetadata.getExtensao(), LocalDateTime.now().toString());
+                imageMetadata.getTipo(), LocalDateTime.now().toString(), imageMetadata.getExtensao());
     }
 
 }

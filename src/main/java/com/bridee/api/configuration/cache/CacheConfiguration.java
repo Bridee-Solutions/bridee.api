@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,6 +26,11 @@ public class CacheConfiguration {
                 .newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(expireTime)));
         return caffeineCacheManager;
+    }
+
+    @Bean
+    public KeyGenerator customKeyGenerator(){
+        return new CustomKeyGenerator();
     }
 
 }

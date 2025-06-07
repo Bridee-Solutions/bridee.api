@@ -19,6 +19,4 @@ public class OrcamentoFornecedorRequestDto {
     @NotNull
     @Positive
     private Integer fornecedorId;
-
-    private Integer casalId;
 }

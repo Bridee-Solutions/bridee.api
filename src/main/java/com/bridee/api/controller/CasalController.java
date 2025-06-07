@@ -80,7 +80,7 @@ public interface CasalController {
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class))),
     }
     )
-    ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id);
+    ResponseEntity<CasalResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, Integer id);
 
     @Operation(summary = "Atualiza o orcamento de um casal",
             description = "Atualiza o orcamento de um casal pelo id")
