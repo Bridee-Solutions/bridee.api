@@ -94,4 +94,9 @@ jobs:
           -e REGISTRATION_SUCCESS_REDIRECT_URI=$REGISTRATION_REDIRECT_URL/login \
           -e REGISTRATION_FAIL_REDIRECT_URI=$REGISTRATION_REDIRECT_URL/reenviar-email \
           -e HTTPONLY_COOKIE_DOMAIN=${{secrets.DOMAIN}} \
+          -e AWS_BUCKET_NAME=${{secrets.BUCKET_NAME}} \
+          -e AWS_ACCESS_KEY=${{secrets.AWS_ACCESS_KEY}} \
+          -e AWS_SECRET_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}} \
+          -e AWS_SESSION_TOKEN=${{secrets.AWS_SESSION_TOKEN}} \
+          -e AWS_REGION=${{secrets.AWS_REGION}} \
           $REGISTRY/bridee-api:latest
