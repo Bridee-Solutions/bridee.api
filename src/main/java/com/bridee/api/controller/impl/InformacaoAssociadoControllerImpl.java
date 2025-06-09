@@ -35,8 +35,8 @@ public class InformacaoAssociadoControllerImpl {
     private final JsonConverter jsonConverter;
 
     
-    @PostMapping(value = "/perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<InformacaoAssociadoResponseDto> save(@AdvisorIdentifier Integer assessorId,
+    @PostMapping(value = "/perfil/{assessorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<InformacaoAssociadoResponseDto> save(@PathVariable Integer assessorId,
                                                                @RequestParam("json") String informacaoAssociadoDto,
                                                                @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,
                                                                @RequestPart("imagemSecundaria") MultipartFile imagemSecundaria,
