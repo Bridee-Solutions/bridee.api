@@ -98,6 +98,11 @@ public class DashboardService {
                 .stream()
                 .filter(tarefa -> tarefa.getStatus().equals(TarefaStatusEnum.CONCLUIDO))
                 .count();
+        Integer totalTarefasAtrasadas = (int) tarefasCasal.stream()
+                .filter(tarefa -> tarefa.getDataLimite().isBefore(LocalDate.now()) &&
+                        !tarefa.getStatus().equals(TarefaStatusEnum.CONCLUIDO))
+                .count();
+
         tarefasCasal.sort(Comparator.comparing(Tarefa::getId));
         List<TarefaResponseDto> last3Tarefas = tarefasCasal
                 .stream()
@@ -111,6 +116,7 @@ public class DashboardService {
                 .totalConcluidos(totalTarefasCompletas)
                 .totalItens(totalTarefas)
                 .ultimasTarefas(last3Tarefas)
+                .totalAtrasadas(totalTarefasAtrasadas)
                 .build();
     }
 

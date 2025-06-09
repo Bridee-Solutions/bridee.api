@@ -51,6 +51,7 @@ public class DashboardResponseDto {
         private List<TarefaResponseDto> ultimasTarefas;
         private Integer totalItens;
         private Integer totalConcluidos;
+        private Integer totalAtrasadas;
     }
 
     @Data
