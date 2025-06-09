@@ -78,11 +78,12 @@ public class ConviteControllerImpl implements ConviteController {
     }
 
     @PostMapping
-    public ResponseEntity<ConvitesResponseDto> save(@RequestBody @Valid ConviteRequestDto requestDto){
+    public ResponseEntity<ConvitesResponseDto> save(@WeddingIdentifier Integer casamentoId,
+                                                    @RequestBody @Valid ConviteRequestDto requestDto){
         log.info("CONVITE: salvando convite de titular {}, para o casamento {}",
-                requestDto.getTelefoneTitular(), requestDto.getCasamentoId());
+                requestDto.getTelefoneTitular(), casamentoId);
         Convite convite = requestMapper.toEntity(requestDto);
-        convite = conviteService.save(convite, requestDto.getCasamentoId(), requestDto.getTelefoneTitular());
+        convite = conviteService.save(convite, casamentoId, requestDto.getTelefoneTitular());
         ConvitesResponseDto convitesResponseDto = responseMapper.toDomain(convite);
         return ResponseEntity.created(UriUtils.uriBuilder(convitesResponseDto.getId())).body(convitesResponseDto);
     }

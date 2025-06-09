@@ -59,7 +59,8 @@ public interface ConviteController {
             @ApiResponse(responseCode = "404", description = "Titular do convite não encontrado",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<ConvitesResponseDto> save(@RequestBody @Valid ConviteRequestDto requestDto);
+    ResponseEntity<ConvitesResponseDto> save(Integer casamentoId,
+                                             @RequestBody @Valid ConviteRequestDto requestDto);
 
     @Operation(summary = "Atualiza um convite",
             description = "Atualiza um convite pelo id")
