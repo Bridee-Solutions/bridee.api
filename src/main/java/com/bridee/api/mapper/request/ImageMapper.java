@@ -30,7 +30,7 @@ public interface ImageMapper {
                 .id(imageMetadata.getId())
                 .nome(buildImagemName(imageMetadata))
                 .url(imageMetadata.getUrl())
-                .tipo(imageMetadata.getTipo().getValue())
+                .tipo(imageMetadata.getTipo())
                 .extensao(imageMetadata.getExtensao())
                 .dataCriacao(LocalDateTime.now())
                 .build();
