@@ -85,7 +85,7 @@ public class ImagemCasalService {
     }
 
     private void validateFavoriteImage(Integer casalId, ImageMetadata metadata){
-        if(!metadata.getTipo().equals(ImagemCasalEnum.FAVORITO.getValue())){
+        if(!metadata.getTipo().equals(ImagemCasalEnum.FAVORITO.name())){
             throw new BadRequestEntityException("Tipo da imagem não é válido");
         }
         if(repository.existsByUrlAndCasalId(casalId, metadata.getUrl())){
