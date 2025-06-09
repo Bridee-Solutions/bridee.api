@@ -40,7 +40,7 @@ public class AwsS3Storage implements BlobStorageStrategy {
 
     public String downloadFile(String objectName){
         try{
-            URL s3Object = s3Client.getUrl(config.name(), objectName);
+            URL s3Object = s3Client.getUrl(config.name(), "assessoria_imagem.png");
             return s3Object.toString();
         }catch (Exception e){
             logger.error("Houve um erro ao tentar realizar o download do arquivo {}, com o seguinte erro {}", objectName, e.getMessage());
