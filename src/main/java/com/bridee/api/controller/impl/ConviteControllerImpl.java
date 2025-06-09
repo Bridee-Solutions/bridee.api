@@ -6,6 +6,7 @@ import com.bridee.api.dto.request.ConviteRequestDto;
 import com.bridee.api.dto.response.ConviteResponseDto;
 import com.bridee.api.dto.response.ConviteResumoResponseDto;
 import com.bridee.api.dto.response.ConvitesResponseDto;
+import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Convite;
 import com.bridee.api.mapper.request.ConviteRequestMapper;
 import com.bridee.api.mapper.response.ConviteResponseMapper;
@@ -83,16 +84,23 @@ public class ConviteControllerImpl implements ConviteController {
         log.info("CONVITE: salvando convite de titular {}, para o casamento {}",
                 requestDto.getTelefoneTitular(), casamentoId);
         Convite convite = requestMapper.toEntity(requestDto);
+        convite.setCasamento(Casamento.builder()
+                        .id(casamentoId)
+                        .build());
         convite = conviteService.save(convite, casamentoId, requestDto.getTelefoneTitular());
         ConvitesResponseDto convitesResponseDto = responseMapper.toDomain(convite);
         return ResponseEntity.created(UriUtils.uriBuilder(convitesResponseDto.getId())).body(convitesResponseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ConviteResponseDto> update(@RequestBody @Valid ConviteRequestDto requestDto,
+    public ResponseEntity<ConviteResponseDto> update(@WeddingIdentifier Integer casamentoId,
+                                                     @RequestBody @Valid ConviteRequestDto requestDto,
                                                      @PathVariable Integer id){
         log.info("CONVITE: atualizando convite de id {}", id);
         Convite convite = requestMapper.toEntity(requestDto);
+        convite.setCasamento(Casamento.builder()
+                .id(casamentoId)
+                .build());
         convite = conviteService.update(convite, requestDto.getTelefoneTitular(), id);
         ConviteResponseDto responseDto = responseMapper.toConviteResponse(convite);
         responseDto.setTelefoneTitular(requestDto.getTelefoneTitular());

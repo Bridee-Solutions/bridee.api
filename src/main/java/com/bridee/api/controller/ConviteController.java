@@ -69,8 +69,9 @@ public interface ConviteController {
             @ApiResponse(responseCode = "404", description = "Convite não encontrado",
                     content = @Content(schema =  @Schema(implementation = ErrorResponseDto.class)))
     })
-    ResponseEntity<ConviteResponseDto> update(@RequestBody @Valid ConviteRequestDto requestDto,
-                                                     @PathVariable Integer id);
+    ResponseEntity<ConviteResponseDto> update(Integer casamentoId,
+                                              @RequestBody @Valid ConviteRequestDto requestDto,
+                                              @PathVariable Integer id);
     @Operation(summary = "Deleta um convite",
             description = "Deleta um convite pelo id")
     @ApiResponses(value = {
