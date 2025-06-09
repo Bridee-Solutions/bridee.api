@@ -56,7 +56,7 @@ public class ConvidadoControllerImpl implements ConvidadoController {
         return ResponseEntity.created(UriUtils.uriBuilder(convidadoResponseDto.getId())).body(convidadoResponseDto);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(value = "/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<ConvidadoResponseDto> update(@PathVariable Integer id,
                                                        @RequestBody JsonMergePatch jsonMergePatch) {
         log.info("CONVIDADO: persistindo as informações do convidado de id {}", id);

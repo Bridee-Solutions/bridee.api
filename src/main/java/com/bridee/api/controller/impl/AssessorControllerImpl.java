@@ -130,7 +130,7 @@ public class AssessorControllerImpl implements AssessorController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(value = "/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<AssessorResponseDto> update(@RequestBody JsonMergePatch jsonMergePatch, @PathVariable Integer id){
         log.info("ASSESSOR: validando as informações do assessor com id: {}", id);
         Assessor assessor = patchHelper.mergePatch(jsonMergePatch, new Assessor(), Assessor.class);
