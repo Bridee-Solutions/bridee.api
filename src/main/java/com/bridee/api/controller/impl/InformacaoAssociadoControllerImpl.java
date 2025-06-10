@@ -10,7 +10,6 @@ import com.bridee.api.service.InformacaoAssociadoService;
 import com.bridee.api.utils.JsonConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +35,7 @@ public class InformacaoAssociadoControllerImpl {
 
     
     @PostMapping(value = "/perfil/{assessorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<InformacaoAssociadoResponseDto> save(@PathVariable Integer assessorId,
+    public ResponseEntity<InformacaoAssociadoResponseDto> save(@AdvisorIdentifier Integer assessorId,
                                                                @RequestParam("json") String informacaoAssociadoDto,
                                                                @RequestPart("imagemPrincipal") MultipartFile imagemPrincipal,
                                                                @RequestPart("imagemSecundaria") MultipartFile imagemSecundaria,
