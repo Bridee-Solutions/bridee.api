@@ -2,14 +2,12 @@ package com.bridee.api.service;
 
 import com.bridee.api.dto.response.ImagemResponseDto;
 import com.bridee.api.entity.ImagemAssociado;
-import com.bridee.api.entity.InformacaoAssociado;
 import com.bridee.api.entity.enums.TipoImagemAssociadoEnum;
-import com.bridee.api.projection.associado.ImagemAssociadoProjection;
+import com.bridee.api.repository.projection.associado.ImagemAssociadoProjection;
 import com.bridee.api.repository.ImagemAssociadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -30,12 +28,12 @@ public class ImagemAssociadoService {
         if (Objects.isNull(imagemPrincipal)){
             return null;
         }
-        byte[] imagem = imagemService.downloadImage(imagemPrincipal.getNome());
-        if (Objects.isNull(imagem)){
-            return null;
-        }
-        String data = Base64.getEncoder().encodeToString(imagem);
+        String data = downloadImage(imagemPrincipal);
         return new ImagemResponseDto(imagemPrincipal.getId(), data);
+    }
+
+    private String downloadImage(ImagemAssociadoProjection imagemPrincipal){
+        return imagemService.downloadImage(imagemPrincipal.getNome());
     }
 
     public List<ImagemResponseDto> findImagensSecundarias(Integer id) {
@@ -43,14 +41,11 @@ public class ImagemAssociadoService {
         if (Objects.isNull(nomeImagensSecundarias) || nomeImagensSecundarias.isEmpty()){
             return null;
         }
-        return nomeImagensSecundarias.stream().map(imagem -> {
-            String data = "";
-            byte[] image = imagemService.downloadImage(imagem.getNome());
-            if (Objects.nonNull(image)){
-                data = Base64.getEncoder()
-                        .encodeToString(image);
-            }
-            return new ImagemResponseDto(imagem.getId(), data);
-        }).toList();
+        return nomeImagensSecundarias.stream().map(this::buildImagemSecundaria).toList();
+    }
+
+    private ImagemResponseDto buildImagemSecundaria(ImagemAssociadoProjection imagem){
+        String data = imagemService.downloadImage(imagem.getNome());
+        return new ImagemResponseDto(imagem.getId(), data);
     }
 }

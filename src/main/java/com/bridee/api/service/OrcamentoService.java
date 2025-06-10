@@ -4,7 +4,6 @@ import com.bridee.api.dto.request.OrcamentoCasalRequestDto;
 import com.bridee.api.dto.request.SolicitacaoOrcamentoRequestDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.entity.Casal;
-import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.Custo;
 import com.bridee.api.entity.ItemOrcamento;
 import com.bridee.api.entity.OrcamentoFornecedor;
@@ -12,14 +11,13 @@ import com.bridee.api.exception.CsvDownloadErro;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.request.FornecedorOrcamentoRequestMapper;
 import com.bridee.api.mapper.request.ItemOrcamentoRequestMapper;
-import com.bridee.api.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.CasalRepository;
-import com.bridee.api.repository.CasamentoRepository;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import com.bridee.api.utils.CsvUtils;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -32,6 +30,7 @@ import java.util.Objects;
 public class OrcamentoService {
 
     private final AssessorRepository assessorRepository;
+    private final CasalService casalService;
     private final CasalRepository casalRepository;
     private final ItemOrcamentoRequestMapper itemOrcamentoRequestMapper;
     private final ItemOrcamentoService itemOrcamentoService;
@@ -39,32 +38,16 @@ public class OrcamentoService {
     private final FornecedorOrcamentoRequestMapper orcamentoRequestMapper;
     private final OrcamentoFornecedorService orcamentoFornecedorService;
     private final SubcategoriaServicoService subcategoriaServicoService;
-    private final CasamentoRepository casamentoRepository;
 
-    @Transactional
-    public OrcamentoProjection findCasamentoOrcamento(Integer casamentoId){
-        Integer casalId = extractCasalId(casamentoId);
-        orcamentoFornecedorService.findByCasalId(casalId);
-        subcategoriaServicoService.findAll();
-        itemOrcamentoService.findAllByCasalId(casalId);
-        return casalRepository.findOrcamentoByCasalId(casalId);
-    }
-
-    public Integer extractCasalId(Integer casamentoId){
-        Casamento casamento = casamentoRepository.findById(casamentoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Casamento não encontrado"));
-        Casal casal = casamento.getCasal();
-        Integer casalId = Objects.nonNull(casal) ? casal.getId() : null;
-        if (Objects.isNull(casalId)){
-            throw new ResourceNotFoundException("Casal não encontrado!");
-        }
-        return casalId;
+    @Transactional(readOnly = true)
+    public OrcamentoProjection findCasalOrcamento(Integer casalId){
+        return casalService.findOrcamentoById(casalId);
     }
 
     @Transactional
     public Casal saveOrcamentoCasal(OrcamentoCasalRequestDto orcamentoCasalRequestDto){
-
-        Casal casal = casalRepository.findById(orcamentoCasalRequestDto.getCasalId()).orElseThrow(() -> new ResourceNotFoundException("Casal não encontrado!"));
+        Integer casalId = orcamentoCasalRequestDto.getCasalId();
+        Casal casal = casalService.findById(casalId);
         List<ItemOrcamento> itens = itemOrcamentoRequestMapper.toEntity(orcamentoCasalRequestDto.getItemOrcamentos());
         List<OrcamentoFornecedor> orcamentoFornecedores = orcamentoRequestMapper.toEntity(orcamentoCasalRequestDto.getOrcamentoFornecedores());
 
@@ -123,32 +106,37 @@ public class OrcamentoService {
     }
 
     @Transactional
-    public BigDecimal calculateTotalOrcamento(Casal casal){
-
-        if (Objects.isNull(casal)){
+    public BigDecimal calculateTotalOrcamento(Integer casalId){
+        if (Objects.isNull(casalId)){
             throw new ResourceNotFoundException("Não foi possível calcular o orcamento de um casal não cadastrado");
         }
-        List<ItemOrcamento> itensOrcamento = casal.getItemOrcamentos();
-        List<OrcamentoFornecedor> orcamentoFornecedores = casal.getOrcamentoFornecedores();
 
-        Double valorTotalItens = itensOrcamento.stream().mapToDouble(item -> item.getCustos().stream()
-                .mapToDouble(custo -> Double.parseDouble(custo.getPrecoAtual().toString())).sum()).sum();
-
-        Double valorTotalFornecedores = orcamentoFornecedores.stream()
-                .mapToDouble(orcamento -> Double.parseDouble(orcamento.getPreco().toString())).sum();
-
-        BigDecimal totalItens = new BigDecimal(valorTotalItens);
-        BigDecimal totalFornecedores = new BigDecimal(valorTotalFornecedores);
+        BigDecimal totalItens = calculateTotalItens(casalId);
+        BigDecimal totalFornecedores = calculateTotalFornecedores(casalId);
         return totalItens.add(totalFornecedores);
+    }
+
+    private  BigDecimal calculateTotalItens(Integer casalId){
+        List<ItemOrcamento> itensOrcamento = itemOrcamentoService.findAllByCasalId(casalId);
+        double valorTotalItens = itensOrcamento.stream().mapToDouble(item -> item.getCustos().stream()
+                .mapToDouble(custo -> Double.parseDouble(custo.getPrecoAtual().toString())).sum()).sum();
+        return new BigDecimal(valorTotalItens);
+    }
+
+    private BigDecimal calculateTotalFornecedores(Integer casalId){
+        List<OrcamentoFornecedor> orcamentoFornecedores = orcamentoFornecedorService.findByCasalId(casalId);
+        double valorTotalFornecedores = orcamentoFornecedores.stream()
+                .mapToDouble(orcamento -> Double.parseDouble(orcamento.getPreco().toString())).sum();
+        return new BigDecimal(valorTotalFornecedores);
     }
 
     public byte[] generateCsvFile(Integer id) {
 
-        OrcamentoProjection orcamentoProjection = findCasamentoOrcamento(id);
+        OrcamentoProjection orcamentoProjection = findCasalOrcamento(id);
 
         byte[] csv = null;
         try {
-            csv = CsvUtils.createResumeCostsCsv(orcamentoProjection);
+            csv = CsvUtils.createResumeCostsCsv(orcamentoProjection, id);
         } catch (IOException e) {
             throw new CsvDownloadErro("Não foi possível gerar o arquivo csv para o casal %d".formatted(id));
         }

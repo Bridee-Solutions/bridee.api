@@ -12,113 +12,155 @@ import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Mesa;
 import com.bridee.api.entity.Tarefa;
 import com.bridee.api.entity.enums.TarefaStatusEnum;
+import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.mapper.response.AssessorResponseMapper;
 import com.bridee.api.mapper.response.CasalResponseMapper;
 import com.bridee.api.mapper.response.FornecedorOrcamentoResponseMapper;
 import com.bridee.api.mapper.response.TarefaResponseMapper;
-import jakarta.transaction.Transactional;
+import com.bridee.api.repository.projection.orcamento.OrcamentoProjection;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class DashboardService {
 
     private final OrcamentoService orcamentoService;
-    private final OrcamentoFornecedorService orcamentoFornecedorService;
     private final CasamentoService casamentoService;
     private final ConvidadoService convidadoService;
     private final MesaService mesaService;
     private final TarefaService tarefaService;
-    private final ItemOrcamentoService itemOrcamentoService;
-    private final SubcategoriaServicoService subcategoriaServicoService;
     private final PedidoAssessoriaService pedidoAssessoriaService;
     private final ImagemCasalService imagemCasalService;
     private final FornecedorOrcamentoResponseMapper fornecedorOrcamentoResponseMapper;
     private final AssessorResponseMapper assessorResponseMapper;
     private final TarefaResponseMapper tarefaResponseMapper;
     private final CasalResponseMapper casalResponseMapper;
+    private final SubcategoriaServicoService subcategoriaServicoService;
+    private final OrcamentoFornecedorService orcamentoFornecedorService;
 
-
-    //TODO: validar se o usuário realizando a requisição é o casal ou um adm.
-    //TODO: otimizar a comunicação com o banco e refatorar o código.
+    @Transactional(readOnly = true)
     public DashboardResponseDto buildDashboard(Integer casamentoId){
         Casamento casamento = casamentoService.findById(casamentoId);
         Casal casal = casamento.getCasal();
-        CasalResponseDto casalResponseDto =  casalResponseMapper.toDomain(casal);
-        PedidoAssessoria pedidoAssessoria = pedidoAssessoriaService.findPedidoAssessorado(casamentoId);
-        Assessor assessor = Objects.nonNull(pedidoAssessoria) ? pedidoAssessoria.getAssessor() : null;
-
-        itemOrcamentoService.findAllByCasalId(casal.getId());
-        orcamentoFornecedorService.findByCasalId(casal.getId());
         subcategoriaServicoService.findAll();
-        BigDecimal orcamentoTotal = casal.getOrcamentoTotal();
-        BigDecimal totalGasto = orcamentoService.calculateTotalOrcamento(casal);
-        var orcamentoFornecedoresProjections = orcamentoFornecedorService.findAllOrcamentoFornecedorByCasalId(casal.getId());
-        var orcamentoFornecedores = fornecedorOrcamentoResponseMapper.fromProjection(orcamentoFornecedoresProjections);
+        orcamentoFornecedorService.findByCasalId(casal.getId());
 
-        AssessorResponseDto assessorResponseDto = assessorResponseMapper.toDomain(assessor);
-        List<Mesa> mesasCasamento = mesaService.findAllByCasamentoId(casamentoId);
-        Integer totalAssentos = mesasCasamento.size();
-        List<Convidado> convidadosCasamento = convidadoService.findByCasamentoIdAndNome(casamentoId, null);
-        Optional<List<Convidado>> convidadosWithMesaOpt = convidadoService.convidadosWithMesa(mesasCasamento);
-        List<Convidado> convidadosWithMesa = new ArrayList<>();
-        if (convidadosWithMesaOpt.isPresent()){
-            convidadosWithMesa = convidadosWithMesaOpt.get();
+        OrcamentoProjection orcamentoProjection = orcamentoService.findCasalOrcamento(casal.getId());
+        if(Objects.isNull(orcamentoProjection)){
+            throw new ResourceNotFoundException("Orcamento não encontrado");
         }
-        String totalConvidados = casamento.getTamanhoCasamento();
-        LocalDate dataCasamento = casamento.getDataFim();
-        String local = casamento.getLocal();
-
-        List<Tarefa> tarefasCasal = tarefaService.findAllByCasalId(casal.getId());
-
-        Integer totalTarefas = tarefasCasal.size();
-        Integer totalTarefasCompletas = (int) tarefasCasal.stream().filter(tarefa -> tarefa.getStatus().equals(TarefaStatusEnum.CONCLUIDO)).count();
-        Comparator<Tarefa> tarefaComparator = Comparator.comparing(Tarefa::getId);
-        tarefasCasal.sort(tarefaComparator::compare);
-        List<TarefaResponseDto> last3Tarefas = tarefasCasal.stream().map(tarefaResponseMapper::toDomain).limit(3).toList();
-
-        BigDecimal precoAssessor = Objects.nonNull(pedidoAssessoria) ? pedidoAssessoria.getPreco() : null;
-        String casalImage = imagemCasalService.casalImage64Encoded(casal.getId());
+        var orcamentoFornecedores = fornecedorOrcamentoResponseMapper.fromProjection(orcamentoProjection.getOrcamentoFornecedores());
 
         return DashboardResponseDto.builder()
-                .assentosResumo(DashboardResponseDto.DashboardAssentos.builder()
-                        .convidadosSentados(convidadosWithMesa.size())
-                        .totalMesas(totalAssentos)
-                        .totalConvidados(convidadosCasamento.size())
-                        .build())
-                .tarefas(DashboardResponseDto.DashboardTarefa.builder()
-                        .totalConcluidos(totalTarefasCompletas)
-                        .totalItens(totalTarefas)
-                        .ultimasTarefas(last3Tarefas)
-                        .build())
-                .casamentoInfo(DashboardResponseDto.DashboardCasamento.builder()
-                        .local(local)
-                        .dataCasamento(dataCasamento)
-                        .quantidadeConvidados(totalConvidados)
-                        .casal(casalResponseDto)
-                        .image(casalImage)
-                        .build())
-                .assessorResponseDto(DashboardResponseDto.DashboardAssessor.builder()
-                        .assessor(assessorResponseDto)
-                        .preco(precoAssessor)
-                        .build())
+                .assentosResumo(buildDashboardAssentos(casamentoId))
+                .tarefas(buildDashboardTarefas(casal.getId()))
+                .casamentoInfo(buildDashboardCasamento(casamento, casal))
+                .assessorResponseDto(buildDashboardAssessor(casamentoId))
                 .orcamentoFornecedorResponse(orcamentoFornecedores)
-                .orcamento(DashboardResponseDto.DashboardOrcamento.builder()
-                        .orcamentoGasto(totalGasto)
-                        .orcamentoTotal(orcamentoTotal)
-                        .build())
+                .orcamento(buildDashboardOrcamento(orcamentoProjection))
                 .build();
     }
 
+    private DashboardResponseDto.DashboardAssentos buildDashboardAssentos(Integer casamentoId){
+        log.info("DASHBOARD: construindo as informações de assentos do casamento {}", casamentoId);
+
+        List<Mesa> mesasCasamento = mesaService.findAllByCasamentoId(casamentoId);
+        Integer totalAssentos = mesasCasamento.size();
+        List<Convidado> convidadosCasamento = convidadoService.findByCasamentoIdAndNome(casamentoId, null);
+        List<Convidado> convidadosWithMesa = convidadoService.convidadosWithMesa(mesasCasamento);
+        log.debug("DASHBOARD: total de assentos {}, total de convidados {}, total de convidados com mesa {}",
+                totalAssentos, convidadosCasamento, convidadosWithMesa);
+
+        return DashboardResponseDto.DashboardAssentos.builder()
+                .convidadosSentados(convidadosWithMesa.size())
+                .totalMesas(totalAssentos)
+                .totalConvidados(convidadosCasamento.size())
+                .build();
+    }
+
+    private DashboardResponseDto.DashboardTarefa buildDashboardTarefas(Integer casalId){
+        log.info("DASHBOARD: construindo as informações das tarefas do casal {}", casalId);
+
+        List<Tarefa> tarefasCasal = tarefaService.findAllByCasalId(casalId);
+        Integer totalTarefas = tarefasCasal.size();
+        Integer totalTarefasCompletas = (int) tarefasCasal
+                .stream()
+                .filter(tarefa -> tarefa.getStatus().equals(TarefaStatusEnum.CONCLUIDO))
+                .count();
+        Integer totalTarefasAtrasadas = (int) tarefasCasal.stream()
+                .filter(tarefa -> tarefa.getDataLimite().isBefore(LocalDate.now()) &&
+                        !tarefa.getStatus().equals(TarefaStatusEnum.CONCLUIDO))
+                .count();
+
+        tarefasCasal.sort(Comparator.comparing(Tarefa::getId));
+        List<TarefaResponseDto> last3Tarefas = tarefasCasal
+                .stream()
+                .map(tarefaResponseMapper::toDomain)
+                .limit(3)
+                .toList();
+
+        log.debug("DASHBOARD: total de tarefas {}, total de tarefas completas {}",
+                totalTarefas, totalTarefasCompletas);
+        return DashboardResponseDto.DashboardTarefa.builder()
+                .totalConcluidos(totalTarefasCompletas)
+                .totalItens(totalTarefas)
+                .ultimasTarefas(last3Tarefas)
+                .totalAtrasadas(totalTarefasAtrasadas)
+                .build();
+    }
+
+    private DashboardResponseDto.DashboardCasamento buildDashboardCasamento(Casamento casamento, Casal casal){
+        log.info("DASHBOARD: construindo informações do casamento");
+
+        CasalResponseDto casalResponseDto =  casalResponseMapper.toDomain(casal);
+        String totalConvidados = casamento.getTamanhoCasamento();
+        LocalDate dataCasamento = casamento.getDataFim();
+        String local = casamento.getLocal();
+        String casalImage = imagemCasalService.getCasalImage(casal.getId());
+
+        log.debug("DASHBOARD: total convidados {}, dataCasamento {}, local {}, para o casamento {}",
+                totalConvidados, dataCasamento, local, casamento.getId());
+
+        return DashboardResponseDto.DashboardCasamento.builder()
+                .local(local)
+                .dataCasamento(dataCasamento)
+                .quantidadeConvidados(totalConvidados)
+                .casal(casalResponseDto)
+                .image(casalImage)
+                .build();
+    }
+
+    private DashboardResponseDto.DashboardAssessor buildDashboardAssessor(Integer casamentoId){
+        log.info("DASHBOARD: construindo as informações de assessor.");
+        PedidoAssessoria pedidoAssessoria = pedidoAssessoriaService.findPedidoAssessorado(casamentoId);
+        BigDecimal precoAssessor = Objects.nonNull(pedidoAssessoria) ? pedidoAssessoria.getPreco() : null;
+        Assessor assessor = Objects.nonNull(pedidoAssessoria) ? pedidoAssessoria.getAssessor() : null;
+        AssessorResponseDto assessorResponseDto = assessorResponseMapper.toDomain(assessor);
+
+        return DashboardResponseDto.DashboardAssessor.builder()
+                .assessor(assessorResponseDto)
+                .preco(precoAssessor)
+                .build();
+    }
+
+    private DashboardResponseDto.DashboardOrcamento buildDashboardOrcamento(OrcamentoProjection orcamento){
+        log.info("DASHBOARD: construindo as informações do orçamento, total gasto {}, orcamento total {}",
+                orcamento.getOrcamentoGasto(), orcamento.getOrcamentoTotal());
+        return DashboardResponseDto.DashboardOrcamento.builder()
+                .orcamentoGasto(orcamento.getOrcamentoGasto())
+                .orcamentoTotal(orcamento.getOrcamentoTotal())
+                .build();
+    }
 
 }

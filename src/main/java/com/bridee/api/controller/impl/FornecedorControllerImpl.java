@@ -6,13 +6,13 @@ import com.bridee.api.dto.response.FornecedorResponseDto;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.mapper.request.FornecedorRequestMapper;
 import com.bridee.api.mapper.response.FornecedorResponseMapper;
-import com.bridee.api.projection.associado.AssociadoGeralResponseDto;
-import com.bridee.api.projection.associado.AssociadoResponseDto;
-import com.bridee.api.projection.associado.AssociadoResponseProjection;
+import com.bridee.api.repository.projection.associado.AssociadoGeralResponseDto;
+import com.bridee.api.repository.projection.associado.AssociadoResponseDto;
 import com.bridee.api.service.FornecedorService;
 import com.bridee.api.utils.UriUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/fornecedores")
 @RequiredArgsConstructor
@@ -37,42 +38,51 @@ public class FornecedorControllerImpl implements FornecedorController {
 
     @GetMapping
     public ResponseEntity<Page<FornecedorResponseDto>> findAll(Pageable pageable){
+        log.info("FORNECEDOR: buscando todas as informações de assessor");
         return ResponseEntity.ok(responseMapper.toDomain(fornecedorService.findAll(pageable)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<FornecedorResponseDto> findById(@PathVariable Integer id){
+        log.info("FORNECEDOR: buscando as informações do fornecedor de id {}", id);
         return ResponseEntity.ok(responseMapper.toDomain(fornecedorService.findById(id)));
     }
 
     @GetMapping("/details/categoria/{categoriaId}")
-    public ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId,
+    public ResponseEntity<Page<FornecedorResponseDto>> findFornecedorDetailsByCategoria(@PathVariable Integer categoriaId,
                                                                                        @RequestParam(defaultValue = "") String nome,
                                                                                        Pageable pageable){
-        return ResponseEntity.ok(fornecedorService.findFornecedorDetailsByCategoria(categoriaId, nome, pageable));
+        log.info("FORNECEDOR: buscando os detalhes dos fornecedores pela categoria: {}", categoriaId);
+        Page<Fornecedor> result = fornecedorService.findFornecedoresByCategoriaAndNome(categoriaId, nome, pageable);
+        Page<FornecedorResponseDto> response = responseMapper.toDomain(result);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/details/subcategoria/{subcategoriaId}")
-    public ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetails(@PathVariable Integer subcategoriaId, Pageable pageable){
-        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(subcategoriaId, pageable));
+    public ResponseEntity<Page<AssociadoResponseDto>> findFornecedorDetails(@PathVariable Integer subcategoriaId,
+                                                                            @RequestParam(defaultValue = "") String nome,
+                                                                            Pageable pageable){
+        log.info("FORNECEDOR: buscando os detalhes dos fornecedores pela subcategoria: {}", subcategoriaId);
+        return ResponseEntity.ok(fornecedorService.findFornecedorDetails(nome, subcategoriaId, pageable));
     }
 
     @GetMapping("/information/{id}")
     public ResponseEntity<AssociadoGeralResponseDto> findFornecedorInformation(@PathVariable Integer id){
+        log.info("FORNECEDOR: buscando as informações do fornecedor: {}", id);
         return ResponseEntity.ok(fornecedorService.findFornecedorInformations(id));
     }
 
     @PostMapping
     public ResponseEntity<FornecedorResponseDto> save(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto){
-        Fornecedor fornecedor = fornecedorService
-                .save(requestMapper.toEntity(fornecedorRequestDto));
-        FornecedorResponseDto responseDto = responseMapper
-                .toDomain(fornecedor);
+        log.info("FORNECEDOR: persistindo as informações do fornecedor {}", fornecedorRequestDto.getEmail());
+        Fornecedor fornecedor = fornecedorService.save(requestMapper.toEntity(fornecedorRequestDto));
+        FornecedorResponseDto responseDto = responseMapper.toDomain(fornecedor);
         return ResponseEntity.created(UriUtils.uriBuilder(responseDto)).body(responseDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<FornecedorResponseDto> update(@RequestBody @Valid FornecedorRequestDto fornecedorRequestDto, @PathVariable Integer id){
+        log.info("FORNECEDOR: atualizando as informações do fornecedor: {}", id);
         Fornecedor fornecedor = fornecedorService.update(requestMapper.toEntity(fornecedorRequestDto), id);
         FornecedorResponseDto responseDto = responseMapper.toDomain(fornecedor);
         return ResponseEntity.ok(responseDto);
@@ -80,6 +90,7 @@ public class FornecedorControllerImpl implements FornecedorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
+        log.info("FORNECEDOR: deletando fornecedor de id: {}", id);
         fornecedorService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

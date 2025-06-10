@@ -1,5 +1,6 @@
 package com.bridee.api.controller.impl;
 
+import com.bridee.api.aop.WeddingIdentifier;
 import com.bridee.api.controller.MesaController;
 import com.bridee.api.dto.request.MesaRequestDto;
 import com.bridee.api.dto.response.ConvidadoResponseDto;
@@ -14,6 +15,7 @@ import com.bridee.api.service.MesaService;
 import com.bridee.api.utils.PageUtils;
 import com.bridee.api.utils.UriUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/mesas")
 @RequiredArgsConstructor
@@ -41,18 +44,19 @@ public class MesaControllerImpl implements MesaController {
     private final MesaRequestMapper mesaRequestMapper;
     private final MesaResponseMapper mesaResponseMapper;
 
-    @GetMapping("/casamento/{casamentoId}")
-    public ResponseEntity<Page<MesaResponseDto>> findAll(@PathVariable Integer casamentoId, Pageable pageable){
-
+    @GetMapping
+    public ResponseEntity<Page<MesaResponseDto>> findAll(@WeddingIdentifier Integer casamentoId, Pageable pageable){
+        log.info("MESA: buscando todas as mesas de um casamento");
         List<Mesa> mesasCasamento = mesaService.findAllByCasamentoId(casamentoId);
         Page<MesaResponseDto> mesaResponse = mesaResponseMapper.toDomainPage(mesasCasamento, pageable);
 
         return ResponseEntity.ok(mesaResponse);
     }
 
-    @GetMapping("/casamento/{casamentoId}/convidados-livres")
+    @GetMapping("/convidados-livres")
     public ResponseEntity<Page<ConvidadoResponseDto>> findConvidadosWithoutMesa(@RequestParam Map<String, Object> params,
-                                                                                @PathVariable Integer casamentoId){
+                                                                                @WeddingIdentifier Integer casamentoId){
+        log.info("MESA: buscando todos os casamentos todos os convidados sem uma mesa vinculada, para o casamento {}", casamentoId);
         List<Mesa> mesas = mesaService.findAllByCasamentoId(casamentoId);
         Pageable pageRequest = PageUtils.buildPageable(params);
         String nome = (String) params.get("nome");
@@ -60,9 +64,9 @@ public class MesaControllerImpl implements MesaController {
         return ResponseEntity.ok(convidadoResponseMapper.toDomainPage(convidadosWithoutMesa, pageRequest));
     }
 
-    @PostMapping("/casamento/{casamentoId}")
+    @PostMapping
     public ResponseEntity<MesaResponseDto> save(@RequestBody MesaRequestDto requestDto,
-                                                @PathVariable Integer casamentoId){
+                                                @WeddingIdentifier Integer casamentoId){
         Mesa mesa = mesaRequestMapper.toEntity(requestDto);
         mesa = mesaService.save(mesa, casamentoId);
         MesaResponseDto responseDto = mesaResponseMapper.toDomain(mesa);
@@ -72,6 +76,7 @@ public class MesaControllerImpl implements MesaController {
     @PutMapping("/casamento/{id}")
     public ResponseEntity<MesaResponseDto> update(@RequestBody MesaRequestDto requestDto,
                                                   @PathVariable Integer id){
+        log.info("MESA: atualizando informações da mesa de id {}", id);
         Mesa mesa = mesaRequestMapper.toEntity(requestDto);
         mesa = mesaService.update(mesa, id);
         return ResponseEntity.ok(mesaResponseMapper.toDomain(mesa));
@@ -79,6 +84,7 @@ public class MesaControllerImpl implements MesaController {
 
     @DeleteMapping("/casamento/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Integer id){
+        log.info("MESA: deletando mesa de id {}", id);
         mesaService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,10 +1,9 @@
 package com.bridee.api.repository;
 
+import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.entity.OrcamentoFornecedor;
-import com.bridee.api.projection.orcamento.fornecedor.FornecedorProjection;
-import com.bridee.api.projection.orcamento.fornecedor.FornecedorBaseProjection;
-import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorBaseProjection;
-import com.bridee.api.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorProjection;
+import com.bridee.api.repository.projection.orcamento.fornecedor.FornecedorBaseProjection;
+import com.bridee.api.repository.projection.orcamento.orcamentofornecedor.OrcamentoFornecedorBaseProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +16,7 @@ public interface OrcamentoFornecedorRepository extends JpaRepository<OrcamentoFo
     @Query("""
             SELECT of FROM OrcamentoFornecedor of WHERE of.casal.id = :casalId
             """)
-    List<OrcamentoFornecedorProjection> findAllByCasalId(Integer casalId);
+    List<OrcamentoFornecedor> findAllByCasalId(Integer casalId);
 
     @Query("""
             SELECT of FROM OrcamentoFornecedor of WHERE of.casal.id = :casalId
@@ -27,7 +26,7 @@ public interface OrcamentoFornecedorRepository extends JpaRepository<OrcamentoFo
     @Query("""
             SELECT of.fornecedor FROM OrcamentoFornecedor of WHERE of.casal.id = :casalId
             """)
-    List<FornecedorProjection> findAllFornecedoresByCasalId(Integer casalId);
+    List<Fornecedor> findAllFornecedoresByCasalId(Integer casalId);
 
     @Query("""
             SELECT of.fornecedor FROM OrcamentoFornecedor of WHERE of.casal.id = :casalId

@@ -8,23 +8,22 @@ import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 
 public class PedidoAssessoriaFilter {
 
     public static Specification<PedidoAssessoria> findByDate(Integer ano){
         return (root, query, criteriaBuilder) -> {
             Join<PedidoAssessoria, Casamento> casamentoJoin = root.join("casamento");
-            DataFilterDto dateFilter = buildFilterDate(ano);
+            DateFilterDto dateFilter = buildFilterDate(ano);
             return criteriaBuilder.between(casamentoJoin.get("dataFim"),
                     dateFilter.getDataInicio(), dateFilter.getDataFim());
         };
     }
 
-    private static DataFilterDto buildFilterDate(Integer ano) {
+    private static DateFilterDto buildFilterDate(Integer ano) {
         LocalDate initialFilterDate = LocalDate.of(ano, 1, 1);
         LocalDate finalFilterDate = LocalDate.of(ano, 12, 31);
-        return new DataFilterDto(initialFilterDate, finalFilterDate);
+        return new DateFilterDto(initialFilterDate, finalFilterDate);
     }
 
     public static Specification<PedidoAssessoria> findByAssessorId(Integer assessorId){

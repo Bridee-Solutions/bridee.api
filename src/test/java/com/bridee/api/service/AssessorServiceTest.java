@@ -5,12 +5,13 @@ import com.bridee.api.dto.response.ValidateAssessorFieldsResponseDto;
 import com.bridee.api.entity.Assessor;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapper;
 import com.bridee.api.mapper.response.AssociadoGeralResponseMapperImpl;
-import com.bridee.api.projection.associado.AssociadoResponseDto;
-import com.bridee.api.projection.associado.AssociadoResponseProjection;
+import com.bridee.api.repository.projection.associado.AssociadoResponseDto;
+import com.bridee.api.repository.projection.associado.AssociadoResponseProjection;
 import com.bridee.api.repository.AssessorRepository;
 import com.bridee.api.repository.RoleRepository;
 import com.bridee.api.repository.UsuarioRoleRepository;
 import com.bridee.api.util.PageUtilsTest;
+import com.bridee.api.utils.PatchHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,12 +51,14 @@ public class AssessorServiceTest {
     private AssociadoGeralResponseMapper geralResponseMapper;
     @Mock
     private InformacaoAssociadoService informacaoAssociadoService;
+    @Mock
+    private PatchHelper patchHelper;
 
     @BeforeEach
     void setUp(){
         assessorService = new AssessorService(assessorRepository, usuarioRoleRepository, roleRepository,
                 passwordEncoder, emailService, imagemService, tipoCasamentoService, formaPagamentoService,
-                geralResponseMapper, informacaoAssociadoService);
+                geralResponseMapper, informacaoAssociadoService, patchHelper);
         geralResponseMapper = new AssociadoGeralResponseMapperImpl();
     }
 

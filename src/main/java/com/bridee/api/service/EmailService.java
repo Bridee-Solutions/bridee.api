@@ -14,17 +14,17 @@ import com.bridee.api.entity.enums.email.template.EmailTemplate;
 import com.bridee.api.pattern.strategy.message.impl.EmailSender;
 import com.bridee.api.utils.AzureBlobStorageProperties;
 import com.bridee.api.utils.EmailTemplateBuilder;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@Slf4j
 public class EmailService {
 
     @Value("${email.register.url}")
@@ -34,27 +34,28 @@ public class EmailService {
     private final VerificationTokenService verificationTokenService;
     private final AssessorService assessorService;
     private final OrcamentoService orcamentoService;
+    private final UsuarioService usuarioService;
 
-    public EmailService(AzureBlobStorageProperties azureBlobStorageProperties, EmailSender emailSender, VerificationTokenService verificationTokenService, @Lazy AssessorService assessorService, OrcamentoService orcamentoService) {
+    public EmailService(AzureBlobStorageProperties azureBlobStorageProperties, EmailSender emailSender,
+                        VerificationTokenService verificationTokenService, @Lazy AssessorService assessorService,
+                        @Lazy OrcamentoService orcamentoService, UsuarioService usuarioService) {
         this.azureBlobStorageProperties = azureBlobStorageProperties;
         this.emailSender = emailSender;
         this.verificationTokenService = verificationTokenService;
         this.assessorService = assessorService;
         this.orcamentoService = orcamentoService;
+        this.usuarioService = usuarioService;
     }
 
-    public String sendEmail(EmailDto emailDto){
-            return emailSender.sendMessage(emailDto);
+    public void sendEmail(EmailDto emailDto){
+        emailSender.sendMessage(emailDto);
     }
 
-    public void sendRegistrationEmail(Usuario usuario){
-
-        if (Objects.isNull(usuario)){
-            throw new IllegalArgumentException("Usuario não encontrado!");
-        }
-
+    public void sendRegistrationEmail(String email){
+        Usuario usuario = usuarioService.findByEmail(email);
         var verificationToken = verificationTokenService.generateVerificationToken(usuario);
 
+        log.info("EMAIL: envio de e-mail de registro");
         CompletableFuture.runAsync(() -> {
             var emailFields = buildEmailRegistrationFields(usuario, verificationToken);
 

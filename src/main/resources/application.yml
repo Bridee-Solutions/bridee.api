@@ -2,9 +2,17 @@ server:
   servlet:
     context-path: /api
 
+cloud:
+  provider: AWS
+
 spring:
   jpa:
     show-sql: true
+    properties:
+      hibernate:
+        order_updates: true
+        jdbc:
+          batch_size: 5
   application:
     name: bridee-api
   datasource:
@@ -19,10 +27,14 @@ spring:
 
 services:
   bridee:
+    function:
+      storage-function:
+        url: ${BRIDEE_STORAGE_FUNCTION_URL:http://localhost:7000}
+        api-key: ${BRIDEE_STORAGE_FUNCTION_API-KEY:"DEFAULT"}
     email:
       host: ${BRIDEE_EMAIL_HOST:smtp.gmail.com}
-      user: ${BRIDEE_EMAIL_USERNAME:""}
-      password: ${BRIDEE_EMAIL_PASSWORD:""}
+      user: ${BRIDEE_EMAIL_USERNAME:brideesolutions@gmail.com}
+      password: ${BRIDEE_EMAIL_PASSWORD:qruj vlul gxai yxnw}
     whatsapp:
       inviteUrl: ${BRIDEE_INVITE_URL:http://localhost:8080}
       url: ${WHATSAPP_API_URL:https://app.whatsgw.com.br/api/WhatsGw}
@@ -38,7 +50,7 @@ jwt:
 
 email:
   register:
-    url: ${EMAIL_REGISTER_URL:http://localhost:8080/usuarios/ativar-conta}
+    url: ${EMAIL_REGISTER_URL:http://localhost:8080/api/usuarios/ativar-conta}
 
 registration:
   success:
@@ -54,6 +66,17 @@ azure:
   blob-storage:
     connection-string: ${AZURE_DATASTORAGE_CONNECTION_STRING:""}
 
+bucket:
+  name: ${AWS_BUCKET_NAME:""}
+  accessKey: ${AWS_ACCESS_KEY:""}
+  secretKey: ${AWS_SECRET_KEY:""}
+  sessionToken: ${AWS_SESSION_TOKEN:""}
+  region: ${AWS_REGION:""}
+
 httpOnly:
   cookie:
     host: ${HTTPONLY_COOKIE_DOMAIN:localhost}
+
+cache:
+  manager:
+    expireMinutes: ${CACHE_EXPIRE_MINUTES:20}

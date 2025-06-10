@@ -1,4 +1,20 @@
 services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - 'MYSQL_URL=jdbc:mysql://database:3306/bridee'
+      - 'MYSQL_USERNAME=bridee'
+      - 'MYSQL_PASSWORD=bridee'
+    ports:
+      - "8080:8080"
+    networks:
+      - bridee
+
   database:
     image: 'mysql:8.4'
     environment:
@@ -8,3 +24,13 @@ services:
       - 'MYSQL_PASSWORD=bridee'
     ports:
       - '3307:3306'
+    healthcheck:
+      test: "mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD"
+      timeout: 20s
+      retries: 10
+    networks:
+      - bridee
+
+networks:
+  bridee:
+    driver: bridge

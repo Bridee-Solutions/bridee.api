@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.bridee.api.entity.FormaPagamento;
 import com.bridee.api.entity.FormaPagamentoAssociado;
 import com.bridee.api.entity.InformacaoAssociado;
-import com.bridee.api.entity.TipoCasamentoAssociado;
 import com.bridee.api.repository.FormaPagamentoAssociadoRepository;
 import com.bridee.api.repository.FormaPagamentoRepository;
 
@@ -20,50 +19,7 @@ public class FormaPagamentoAssociadoService {
     
     private final FormaPagamentoAssociadoRepository repository;
     
-    private final FormaPagamentoRepository formaPagamentoRepository; 
-    
-    public List<FormaPagamentoAssociado> update(List<Integer> formaPagamentoAssociado, InformacaoAssociado associado){
-        List<FormaPagamentoAssociado> registrosExistentes = repository.findAllByInformacaoAssociadoId(associado.getId());
-        
-        
-        List<Integer> idsExistentes = registrosExistentes.stream()
-        .map(registro -> registro.getFormaPagamento().getId())
-        .toList();
-        
-        List<FormaPagamentoAssociado> registrosParaDeletar = registrosExistentes.stream()
-        .filter(registro -> !formaPagamentoAssociado.contains(registro.getFormaPagamento().getId()))
-        .toList();
-        
-        registrosParaDeletar.forEach(registro -> repository.deleteById(registro.getId()));
-        
-        List<Integer> idsParaInserir = formaPagamentoAssociado.stream()
-        .filter(id -> !idsExistentes.contains(id))
-        .toList();
-        
-        List<FormaPagamentoAssociado> registrosParaInserir = idsParaInserir.stream()
-        .map(id -> {
-            FormaPagamento formaPagamento = formaPagamentoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("FormaPagamento não encontrado para ID: " + id));
-            
-            FormaPagamentoAssociado novoRegistro = new FormaPagamentoAssociado();
-            novoRegistro.setInformacaoAssociado(associado);
-            novoRegistro.setFormaPagamento(formaPagamento);;
-            return novoRegistro;
-        })
-        .toList();
-        
-        repository.saveAll(registrosParaInserir);
-        
-        return repository.findAllByInformacaoAssociadoId(associado.getId());
-    }
-    
     public List<FormaPagamento> findAllByInformacaoAssociadoId(InformacaoAssociado associado) {
-        List<FormaPagamentoAssociado> formaPagamentoAssociados = repository.findAllByInformacaoAssociadoId(associado.getId());
-        
-        List<Integer> formaPagamentoIds = formaPagamentoAssociados.stream()
-        .map(formaPagamentoAssociado -> formaPagamentoAssociado.getFormaPagamento().getId())
-        .toList();
-        
-        return formaPagamentoRepository.findAllById(formaPagamentoIds);
+        return repository.findAllFormaPagamentoByInformacaoAssociadoId(associado.getId());
     }
 }

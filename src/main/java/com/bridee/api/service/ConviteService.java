@@ -8,7 +8,6 @@ import com.bridee.api.entity.Casamento;
 import com.bridee.api.entity.CategoriaConvidado;
 import com.bridee.api.entity.Convidado;
 import com.bridee.api.entity.Convite;
-import com.bridee.api.entity.enums.CategoriaConvidadoEnum;
 import com.bridee.api.entity.enums.TipoConvidado;
 import com.bridee.api.exception.BadRequestEntityException;
 import com.bridee.api.exception.ResourceAlreadyExists;
@@ -18,18 +17,16 @@ import com.bridee.api.mapper.response.CategoriaConvidadoResponseMapper;
 import com.bridee.api.mapper.response.ConviteResponseMapper;
 import com.bridee.api.pattern.observer.dto.ConviteTopicDto;
 import com.bridee.api.pattern.observer.impl.ConviteTopic;
-import com.bridee.api.projection.convite.CategoriaConvidadoProjection;
-import com.bridee.api.projection.convite.ConviteResumoProjection;
-import com.bridee.api.projection.orcamento.RelatorioProjection;
+import com.bridee.api.repository.projection.convite.ConviteResumoProjection;
+import com.bridee.api.repository.projection.orcamento.RelatorioProjection;
 import com.bridee.api.repository.ConvidadoRepository;
 import com.bridee.api.repository.ConviteRepository;
 import com.bridee.api.repository.specification.ConviteFilter;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConviteService {
@@ -54,7 +52,7 @@ public class ConviteService {
     public List<Convite> findAllByCasamentoId(Map<String, Object> filter, Integer casamentoId){
         casamentoService.existsById(casamentoId);
         filter.put("casamentoId", casamentoId);
-
+        log.debug("CONVITE: buscando os convites do casamento {} filtrados por {}", casamentoId, filter.keySet());
         ConviteFilter spec = new ConviteFilter();
         spec.fillSpecification(filter);
 
@@ -62,35 +60,36 @@ public class ConviteService {
     }
 
     public void sendConvidadosConvites(ConviteMessageDto conviteMessageDto){
-
         Casamento casamento = casamentoService.findById(conviteMessageDto.getCasamentoId());
         Casal casal = casamento.getCasal();
         Convite convite = findById(conviteMessageDto.getConviteId());
         List<Convidado> convidados = convidadoService.findAllByIds(conviteMessageDto.getConvidadosIds());
 
-        validateCasalCasamento(casamento, casal);
         validateConviteCasamento(casamento, convite);
         validateConvidadosConvite(convite, convidados);
 
         List<ConviteTopicDto> convidadosTopics = convidados.stream()
                 .map(convidado -> conviteMessageMapper.toTopicDto(convite, casal, convidado)).toList();
         conviteTopic.postMessage(convidadosTopics);
+        updateConvidadosStatus(convite, convidados);
+    }
+
+    private void updateConvidadosStatus(Convite convite, List<Convidado> confirmatedGuests){
+        List<Convidado> allInvites = convidadoService.findAllByConviteId(convite.getId());
+        allInvites.stream()
+                .filter(invite -> !confirmatedGuests.contains(invite))
+                .forEach(invite -> invite.setStatus("RECUSADO"));
+        convidadoService.saveAll(allInvites);
     }
 
     @Transactional
     public Convite save(Convite convite, Integer casamentoId, String telefoneTitular){
-
         if (repository.existsByNomeAndCasamentoId(convite.getNome(), casamentoId)){
+            log.error("CONVITE: convite já cadastrado para esse convite");
             throw new ResourceAlreadyExists("Convite já cadastrado para esse casamento.");
         }
 
-        Optional<Convidado> optionalConvidado = convite.getConvidados().stream()
-                .filter(convidado -> convidado.getTelefone().equals(telefoneTitular)).findFirst();
-        convite.getConvidados().forEach(convidado -> convidado.setTipo(TipoConvidado.NAO_TITULAR));
-        if (optionalConvidado.isEmpty()){
-            throw new ResourceNotFoundException("Titular não foi adicionado para o convite!");
-        }
-        optionalConvidado.get().setTipo(TipoConvidado.TITULAR);
+        definirConviteTitular(convite, telefoneTitular, casamentoId);
 
         convite.setPin(generatePinCode(casamentoId));
         List<Convidado> savedGuests = convidadoService.saveAll(convite.getConvidados());
@@ -100,20 +99,34 @@ public class ConviteService {
         return convite;
     }
 
+    private void definirConviteTitular(Convite convite, String telefoneTitular, Integer casamentoId) {
+        Optional<Convidado> optionalConvidado = convite.getConvidados().stream()
+                .filter(convidado -> convidado.getTelefone().equals(telefoneTitular))
+                .findFirst();
+
+        convite.getConvidados().forEach(convidado -> convidado.setTipo(TipoConvidado.NAO_TITULAR));
+        if (optionalConvidado.isEmpty()){
+            log.error("CONVITE: titular não cadastrado para o convite do casamento {}", casamentoId);
+            throw new ResourceNotFoundException("Titular não foi adicionado para o convite!");
+        }
+        optionalConvidado.get().setTipo(TipoConvidado.TITULAR);
+    }
+
     @Transactional
     public Convite update(Convite convite, String telefoneTitular,Integer id){
         if (!repository.existsById(id)){
+            log.error("CONVITE: convite não encontrado com id {}", id);
             throw new ResourceNotFoundException("Convite não encontrado!");
         }
-        Convidado titular = findTitularByConviteId(id);
-        titular.setTelefone(telefoneTitular);
-        convidadoRepository.save(titular);
+        updateTitularTelefone(id, telefoneTitular);
         convite.setId(id);
         return repository.save(convite);
     }
 
-    private Convidado findTitularByConviteId(Integer conviteId) {
-        return repository.findTitularConvite(conviteId, TipoConvidado.TITULAR);
+    private void updateTitularTelefone(Integer conviteId, String telefoneTitular) {
+        Convidado titular = repository.findTitularConvite(conviteId, TipoConvidado.TITULAR);
+        titular.setTelefone(telefoneTitular);
+        convidadoRepository.save(titular);
     }
 
     @Transactional
@@ -131,6 +144,7 @@ public class ConviteService {
     public RelatorioProjection gerarRelatorioCasamento(Integer casamentoId) {
         RelatorioProjection projection = repository.gerarRelatorio(casamentoId);
         if (Objects.isNull(projection)){
+            log.error("CONVITE: Não há dados para gerar o relátorio do casal");
             throw new ResourceNotFoundException("Não há dados para gerar o relátorio do casal");
         }
         return projection;
@@ -141,9 +155,7 @@ public class ConviteService {
         List<CategoriaConvidado> categoriaConvidados = categoriaConvidadoService.findAll();
         List<CategoriaConvidadoResumoDto> categoriasResumo = generateCategoriaResumo(categoriaConvidados, casamentoId);
         categoriasResumo = categoriasResumo.stream().filter(Objects::nonNull).toList();
-        ConviteResumoResponseDto resumo = conviteResponseMapper.fromProjection(conviteResumoProjection);
-        resumo.setResumoCategorias(categoriasResumo);
-        return resumo;
+        return conviteResponseMapper.fromProjection(conviteResumoProjection, categoriasResumo);
     }
 
     private List<CategoriaConvidadoResumoDto> generateCategoriaResumo(List<CategoriaConvidado> categoriaConvidado, Integer casamentoId){
@@ -158,19 +170,14 @@ public class ConviteService {
         String pinCode = RandomStringUtils.randomNumeric(6);
         List<String> allCasamentoPin = repository.findAllPinByCasamentoId(casamentoId);
         while(allCasamentoPin.contains(pinCode)){
-            pinCode = RandomStringUtils.randomNumeric(6);;
+            pinCode = RandomStringUtils.randomNumeric(6);
         }
         return pinCode;
     }
 
-    private void validateCasalCasamento(Casamento casamento, Casal casal){
-        if(!casamento.getCasal().equals(casal)){
-            throw new BadRequestEntityException("Casal não associado ao casamento especificado");
-        }
-    }
-
     private void validateConviteCasamento(Casamento casamento, Convite convite){
         if (!convite.getCasamento().equals(casamento)) {
+            log.error("CONVITE: convite de id {}, não pertence ao casamento {}", convite.getId(), casamento.getId());
             throw new BadRequestEntityException("Convite não pertence ao casamento especificado");
         }
     }
@@ -179,11 +186,13 @@ public class ConviteService {
         HashSet<Convidado> convidadosConvite = new HashSet<>(convite.getConvidados());
 
         if (convidados.isEmpty() || convidadosConvite.isEmpty()){
+            log.error("CONVITE: não foi encontrado nenhum dos convidados informados no convite de id {}", convite.getId());
             throw new ResourceNotFoundException("Não foi encontrado nenhum dos convidados informados para o convite de id %d"
                     .formatted(convite.getId()));
         }
 
         if (!convidadosConvite.containsAll(convidados)){
+            log.error("CONVITE: Um ou mais convidados não associados ao convite de id {}", convite.getId());
             throw new BadRequestEntityException("Um ou mais convidados não associados ao convite.");
         }
 
@@ -192,5 +201,10 @@ public class ConviteService {
     public void deleteAllWeddingInvites(Integer casamentoId) {
         List<Convite> convites = repository.findAllByCasamentoId(casamentoId);
         repository.deleteAll(convites);
+    }
+
+    public Convite findByPin(Integer pin) {
+        return repository.findByPin(pin)
+                .orElseThrow(() -> new ResourceNotFoundException("Convite não encontrado"));
     }
 }

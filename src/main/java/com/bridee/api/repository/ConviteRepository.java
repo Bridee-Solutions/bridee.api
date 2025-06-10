@@ -5,15 +5,15 @@ import com.bridee.api.entity.Convite;
 
 import com.bridee.api.entity.enums.CategoriaConvidadoEnum;
 import com.bridee.api.entity.enums.TipoConvidado;
-import com.bridee.api.projection.convite.CategoriaConvidadoProjection;
-import com.bridee.api.projection.convite.ConviteResumoProjection;
-import com.bridee.api.projection.orcamento.RelatorioProjection;
+import com.bridee.api.repository.projection.convite.CategoriaConvidadoProjection;
+import com.bridee.api.repository.projection.convite.ConviteResumoProjection;
+import com.bridee.api.repository.projection.orcamento.RelatorioProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-
+import java.util.Optional;
 
 public interface ConviteRepository extends JpaRepository<Convite, Integer>, JpaSpecificationExecutor<Convite> {
 
@@ -56,5 +56,10 @@ public interface ConviteRepository extends JpaRepository<Convite, Integer>, JpaS
             (SELECT COUNT(co) FROM Convidado co WHERE co.categoriaConvidado.nome = :categoriaConvidado AND co.convite.id = c.id) as total
             FROM Convite c WHERE c.casamento.id = :casamentoId
             """)
-    CategoriaConvidadoProjection resumoCategoriaInvite(Integer casamentoId, CategoriaConvidadoEnum categoriaConvidado);
+    List<CategoriaConvidadoProjection> resumoCategoriaInvite(Integer casamentoId, CategoriaConvidadoEnum categoriaConvidado);
+
+    @Query("""
+            SELECT c FROM Convite c JOIN FETCH c.convidados WHERE c.pin = :pin
+            """)
+    Optional<Convite> findByPin(Integer pin);
 }

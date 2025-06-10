@@ -5,20 +5,24 @@ import com.bridee.api.entity.Casal;
 import com.bridee.api.entity.Fornecedor;
 import com.bridee.api.entity.OrcamentoFornecedor;
 import com.bridee.api.mapper.BaseMapper;
+import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface OrcamentoFornecedorRequestMapper extends BaseMapper<OrcamentoFornecedorRequestDto, OrcamentoFornecedor> {
 
-    default List<OrcamentoFornecedor> toEntity(List<OrcamentoFornecedorRequestDto> domain, Casal casal){
+    default List<OrcamentoFornecedor> toEntity(List<OrcamentoFornecedorRequestDto> domain, Integer casalId){
         if (domain == null){
             return null;
         }
+
+        Casal casal = new Casal(casalId);
         return domain.stream().map(orcamento -> {
             return OrcamentoFornecedor.builder()
                     .id(orcamento.getId())
@@ -29,11 +33,12 @@ public interface OrcamentoFornecedorRequestMapper extends BaseMapper<OrcamentoFo
         }).toList();
     };
 
-    default OrcamentoFornecedor toEntity(OrcamentoFornecedorRequestDto domain, Casal casal){
+    default OrcamentoFornecedor toEntity(OrcamentoFornecedorRequestDto domain, Integer casalId){
         if (domain == null){
             return null;
         }
 
+        Casal casal = new Casal(casalId);
         return OrcamentoFornecedor.builder()
                     .id(domain.getId())
                     .preco(domain.getPreco())
@@ -43,10 +48,12 @@ public interface OrcamentoFornecedorRequestMapper extends BaseMapper<OrcamentoFo
     };
 
     default Fornecedor generateFornecedor(Integer fornecedorId){
+        if(Objects.isNull(fornecedorId)){
+            return null;
+        }
         return Fornecedor.builder()
                 .id(fornecedorId)
                 .build();
     }
-
 
 }

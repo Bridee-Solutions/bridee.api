@@ -17,10 +17,6 @@ public class ItemOrcamentoRequestDto {
     @NotBlank
     @Schema(description = "Tipo do item", example = "Joia")
     private String tipo;
-    @Positive
-    @NotNull
-    @Schema(description = "Id do casal", example = "2")
-    private Integer casamentoId;
     @NotNull
     @Schema(description = "Custos do item")
     private List<@NotNull CustoItemOrcamentoRequestDto> custos;

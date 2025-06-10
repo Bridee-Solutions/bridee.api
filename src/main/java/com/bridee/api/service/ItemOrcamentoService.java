@@ -6,15 +6,16 @@ import com.bridee.api.exception.ResourceAlreadyExists;
 import com.bridee.api.exception.ResourceNotFoundException;
 import com.bridee.api.exception.UnprocessableEntityException;
 import com.bridee.api.mapper.response.ItemOrcamentoResponseMapper;
-import com.bridee.api.projection.orcamento.ItemOrcamentoProjection;
 import com.bridee.api.repository.ItemOrcamentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -24,16 +25,20 @@ public class ItemOrcamentoService {
     private final CustoService custoService;
     private final ItemOrcamentoResponseMapper responseMapper;
 
-    public List<ItemOrcamentoProjection> findAllByCasalId(Integer casalId){
+    public List<ItemOrcamento> findAllByCasalId(Integer casalId){
         return repository.findAllByCasalId(casalId);
     }
 
     public ItemOrcamento save(ItemOrcamento itemOrcamento){
         Integer casalId = itemOrcamento.getCasal().getId();
         String tipo = itemOrcamento.getTipo();
+
+        log.info("ITEM ORCAMENTO: salvando item orcamento do tipo {} para o casal {}", itemOrcamento.getTipo(), casalId);
         if (repository.existsByTipoAndCasalId(tipo, casalId)){
+            log.error("ITEM ORCAMENTO: item orçamento com tipo {} já existe para o casal {}", tipo, casalId);
             throw new ResourceAlreadyExists("Item orçamento com tipo %s já existe para o casal de id %d".formatted(tipo, casalId));
         }
+
         return repository.save(itemOrcamento);
     }
 
@@ -64,7 +69,7 @@ public class ItemOrcamentoService {
     private List<Integer> itensOrcamentoToBeRemoved(List<ItemOrcamento> itensOrcamento){
         Integer casalId = itensOrcamento.get(0).getCasal().getId();
 
-        List<ItemOrcamento> allItemOrcamento = responseMapper.fromProjection(repository.findAllByCasalId(casalId));
+        List<ItemOrcamento> allItemOrcamento = findAllByCasalId(casalId);
         List<Integer> itemOrcamentoIds = itensOrcamento.stream().map(ItemOrcamento::getId).toList();
         List<Integer> allItemOrcamentoIds = allItemOrcamento.stream().map(ItemOrcamento::getId).toList();
 
@@ -73,6 +78,7 @@ public class ItemOrcamentoService {
 
     private void addNewItemOrcamento(ItemOrcamento item){
         List<Custo> custosItem = item.getCustos();
+        log.info("ITEM ORCAMENTO: Item orcamento de tipo {}, tem {} custos", item, custosItem.size());
         if (Objects.isNull(item.getId())){
             item = save(item);
         }
@@ -99,16 +105,19 @@ public class ItemOrcamentoService {
 
     private void removeInactivesCustos(List<Custo> custos) {
         if (custos.isEmpty()){
-            throw new UnprocessableEntityException("Custos não encontrados!");
+            log.error("ITEM ORCAMENTO: nenhum custo relacionado ao item orcamento");
+            return;
         }
-        Integer itemOrcamentoId = custos.get(0).getId();
+
+        Integer itemOrcamentoId = custos.get(0).getItemOrcamento().getId();
         List<Custo> allCustos = custoService.findAllByItemOrcamentoId(itemOrcamentoId);
         List<Integer> custosToBeDeleted = inactivesCustosIds(allCustos, custos);
+
+        log.info("ITEM ORCAMENTO: removendo {} custos inativos", custosToBeDeleted.size());
         custoService.deleteAllByIds(custosToBeDeleted);
     }
 
     private List<Integer> inactivesCustosIds(List<Custo> allCustos, List<Custo> custos){
-
         List<Integer> allCustosIds = allCustos.stream().map(Custo::getId).toList();
         List<Integer> custosIds = custos.stream().map(Custo::getId).toList();
 

@@ -21,9 +21,5 @@ public class InformacaoAssociadoResponseDto {
     private Integer assessorId;
     private String cidade;
     private String bairro;
-    private List<FormaPagamento> formasPagamento;
-    private List<TipoCasamento> tiposCasamento;
-    private List<TipoCerimonia> tiposCerimonia;
-    private ImagemResponseDto imagemPrimaria;
-    private List<ImagemResponseDto> imagensSecundarias;
+    private InformacaoAssociadoDetalhes detalhes;
 }

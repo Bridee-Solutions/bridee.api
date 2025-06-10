@@ -1,6 +1,5 @@
 package com.bridee.api.dto.response;
 
-import com.bridee.api.entity.SubcategoriaServico;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

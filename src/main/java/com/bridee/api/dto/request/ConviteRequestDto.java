@@ -20,10 +20,6 @@ public class ConviteRequestDto {
     private String nome;
     @Schema(description = "Telefone do titular", example = "55119770531")
     private String telefoneTitular;
-    @Positive
-    @NotNull
-    @Schema(description = "Id do casamento", example = "1")
-    private Integer casamentoId;
     private Integer pin;
     @Schema(description = "Informações dos convidados a serem associados a um convite")
     private List<ConvidadoRequestDto> convidados = new ArrayList<>();

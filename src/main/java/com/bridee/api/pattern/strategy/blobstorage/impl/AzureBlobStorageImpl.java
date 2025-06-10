@@ -1,78 +1,45 @@
 package com.bridee.api.pattern.strategy.blobstorage.impl;
 
-import com.azure.storage.blob.BlobClient;
-import com.azure.storage.blob.BlobServiceClient;
-import com.azure.storage.blob.BlobServiceClientBuilder;
-import com.azure.storage.blob.models.BlobProperties;
-import com.bridee.api.exception.ResourceNotFoundException;
-import com.bridee.api.exception.UnprocessableEntityException;
+import com.bridee.api.client.AzureStorageFunctionClient;
+import com.bridee.api.client.dto.request.FileRequest;
 import com.bridee.api.pattern.strategy.blobstorage.BlobStorageStrategy;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Objects;
+import java.util.Base64;
 
 @Component
+@RequiredArgsConstructor
 public class AzureBlobStorageImpl implements BlobStorageStrategy {
 
-    @Value("${azure.blob-storage.connection-string}")
-    private String azureConnectionString;
+    @Value("${services.bridee.function.storage-function.api-key}")
+    private String storageFunctionApiKey;
 
-    @Value("${spring.cloud.azure.storage.blob.container-name}")
-    private String azureContainerName;
-
-    private BlobServiceClient blobServiceClient;
-
-    @PostConstruct
-    public void init(){
-        this.blobServiceClient = new BlobServiceClientBuilder().connectionString(azureConnectionString).buildClient();
-    }
+    private final AzureStorageFunctionClient azureFunctionClient;
 
     @Override
-    public byte[] downloadFile(String filename) {
-        byte[] binaries = null;
-        if (Objects.isNull(filename)){
-            return null;
-        }
-        BlobClient blobClient = blobServiceClient.getBlobContainerClient(azureContainerName).getBlobClient(filename);
-        try{
-            binaries = blobClient.downloadContent().toBytes();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return binaries;
-    }
-
-    @Override
-    public void uploadFile(MultipartFile multipartFile) {
-        String blobFilename = multipartFile.getOriginalFilename();
-        BlobClient blobClient = blobServiceClient.getBlobContainerClient(azureContainerName).getBlobClient(blobFilename);
-
-        try {
-            blobClient.upload(multipartFile.getInputStream(), multipartFile.getSize(), true);
-        } catch (IOException e) {
-            throw new UnprocessableEntityException("Não foi possível realizar o upload da imagem.");
-        }
+    public String downloadFile(String filename) {
+        FileRequest fileRequest = new FileRequest(filename);
+        ResponseEntity<String> downloadResponse = azureFunctionClient.downloadFile(fileRequest, storageFunctionApiKey);
+        return downloadResponse.getBody();
     }
 
     @Override
     public void uploadFile(MultipartFile multipartFile, String filename) {
+        FileRequest fileRequest = new FileRequest(filename, toBase64(multipartFile));
+        azureFunctionClient.uploadFile(fileRequest, storageFunctionApiKey);
+    }
 
-        BlobClient blobClient = blobServiceClient.getBlobContainerClient(azureContainerName).getBlobClient(filename);
-        try {
-            blobClient.upload(multipartFile.getInputStream(), multipartFile.getSize(), true);
-        } catch (IOException e) {
-            throw new UnprocessableEntityException("Não foi possível realizar o upload da imagem.");
+    private String toBase64(MultipartFile multipartFile){
+        try{
+            return Base64.getEncoder().encodeToString(multipartFile.getInputStream().readAllBytes());
+        }catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
     }
 
 }

@@ -7,6 +7,7 @@ import com.bridee.api.utils.EmailProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import java.util.Properties;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class EmailSender implements MessageStrategy<String, EmailDto> {
@@ -33,10 +35,11 @@ public class EmailSender implements MessageStrategy<String, EmailDto> {
             mimeMessageHelper.setFrom(emailProperties.getHost());
             mimeMessageHelper.setSubject(email.getSubject());
             mimeMessageHelper.setText(email.getMessage(), email.isHTML());
+            javaMailSender().send(mimeMessage);
         }catch (MessagingException e){
+            log.error("Houve um erro ao realizar o envio do email: {}", e.getMessage());
             throw new SendEmailException();
         }
-        javaMailSender().send(mimeMessage);
         return "Email enviado com sucesso";
     }
 
