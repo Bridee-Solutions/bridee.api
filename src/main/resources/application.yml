@@ -24,6 +24,12 @@ spring:
       storage:
         blob:
           container-name: ${AZURE_DATASTORAGE_CONTAINER_NAME:""}
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY:""}
+        secret-key: ${AWS_SECRET_KEY:""}
+      sns:
+        region: ${AWS_REGION}
 
 services:
   bridee:
