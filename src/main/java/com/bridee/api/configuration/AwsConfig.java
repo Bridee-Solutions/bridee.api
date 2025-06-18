@@ -24,15 +24,15 @@ public class AwsConfig {
         return AmazonS3ClientBuilder
                 .standard()
                 .withCredentials(credentialsProvider)
-                .withRegion(config.region())
+                .withRegion(config.s3().region())
                 .build();
     }
 
     private AWSCredentials credentials(){
         return new BasicSessionCredentials(
-                config.accessKey(),
-                config.secretKey(),
-                config.sessionToken()
+                config.s3().accessKey(),
+                config.s3().secretKey(),
+                config.s3().sessionToken()
         );
     }
 }

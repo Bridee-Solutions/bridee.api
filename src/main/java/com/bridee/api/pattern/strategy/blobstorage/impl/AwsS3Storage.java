@@ -30,7 +30,7 @@ public class AwsS3Storage implements BlobStorageStrategy {
         try{
             InputStream inputStream = multipartFile.getInputStream();
             ObjectMetadata metadata = new ObjectMetadata();
-            s3Client.putObject(config.name(), imageName, inputStream, metadata);
+            s3Client.putObject(config.s3().name(), imageName, inputStream, metadata);
         }catch (Exception e){
             logger.error("Houve um erro ao realizar o upload do arquivo {}, com o seguinte erro {}",
                     imageName, e.getMessage());
@@ -40,7 +40,7 @@ public class AwsS3Storage implements BlobStorageStrategy {
 
     public String downloadFile(String objectName){
         try{
-            URL s3Object = s3Client.getUrl(config.name(), objectName);
+            URL s3Object = s3Client.getUrl(config.s3().name(), objectName);
             return s3Object.toString();
         }catch (Exception e){
             logger.error("Houve um erro ao tentar realizar o download do arquivo {}, com o seguinte erro {}", objectName, e.getMessage());

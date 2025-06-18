@@ -72,12 +72,15 @@ azure:
   blob-storage:
     connection-string: ${AZURE_DATASTORAGE_CONNECTION_STRING:""}
 
-bucket:
-  name: ${AWS_BUCKET_NAME:""}
-  accessKey: ${AWS_ACCESS_KEY:""}
-  secretKey: ${AWS_SECRET_KEY:""}
-  sessionToken: ${AWS_SESSION_TOKEN:""}
-  region: ${AWS_REGION:""}
+aws:
+  sns:
+    topicArn: ${AWS_SNS_TOPIC:""}
+  s3:
+    name: ${AWS_BUCKET_NAME:""}
+    accessKey: ${AWS_ACCESS_KEY:""}
+    secretKey: ${AWS_SECRET_KEY:""}
+    sessionToken: ${AWS_SESSION_TOKEN:""}
+    region: ${AWS_REGION:""}
 
 httpOnly:
   cookie:

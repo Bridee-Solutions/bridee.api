@@ -2,12 +2,9 @@ package com.bridee.api.utils;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "bucket")
+@ConfigurationProperties(prefix = "aws")
 public record AwsConfigInfo(
-        String name,
-        String accessKey,
-        String secretKey,
-        String sessionToken,
-        String region
-)
-{}
+        SnsConfig sns,
+        S3Config s3
+) {}
+
