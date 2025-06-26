@@ -1,7 +1,7 @@
 package com.bridee.api.mapper.request;
 
-import com.bridee.api.dto.request.InformacaoAssociadoDto;
 import com.bridee.api.dto.request.ImageMetadata;
+import com.bridee.api.dto.request.InformacaoAssociadoPerfilDto;
 import com.bridee.api.dto.request.InformacaoAssociadoRequestDto;
 import com.bridee.api.entity.FormaPagamento;
 import com.bridee.api.entity.FormaPagamentoAssociado;
@@ -24,7 +24,7 @@ import java.util.Objects;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociadoRequestDto, InformacaoAssociado> {
 
-    default InformacaoAssociado toEntity(InformacaoAssociadoDto domain){
+    default InformacaoAssociado toEntity(InformacaoAssociadoPerfilDto domain){
         if(domain == null){
             return null;
         }
@@ -36,7 +36,7 @@ public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociad
         return informacaoAssociado;
     }
 
-    default List<TipoCasamentoAssociado> convertToTipos(InformacaoAssociadoDto domain){
+    default List<TipoCasamentoAssociado> convertToTipos(InformacaoAssociadoPerfilDto domain){
         List<Integer> tipoCasamentoIds = domain.getTiposCasamento();
         if (tipoCasamentoIds == null){
             return null;
@@ -58,7 +58,7 @@ public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociad
         return tipoCasamentoAssociado;
     }
 
-    default List<FormaPagamentoAssociado> convertToFormaPagamentos(InformacaoAssociadoDto domain){
+    default List<FormaPagamentoAssociado> convertToFormaPagamentos(InformacaoAssociadoPerfilDto domain){
         List<Integer> idsFormaPagamento = domain.getFormasPagamento();
 
         if (idsFormaPagamento == null){
@@ -79,7 +79,7 @@ public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociad
         return formaPagamentoAssociados;
     }
 
-    default List<TipoCerimoniaAssociado> convertToCerimonias(InformacaoAssociadoDto domain){
+    default List<TipoCerimoniaAssociado> convertToCerimonias(InformacaoAssociadoPerfilDto domain){
         List<Integer> tiposCerimoniaId = domain.getTiposCerimonia();
         if (tiposCerimoniaId == null){
             return null;
@@ -98,7 +98,7 @@ public interface InformacaoAssociadoMapper extends BaseMapper<InformacaoAssociad
         return tipoCerimoniasAssociado;
     }
 
-    default List<ImagemAssociado> convertToImage(InformacaoAssociadoDto domain){
+    default List<ImagemAssociado> convertToImage(InformacaoAssociadoPerfilDto domain){
         List<ImageMetadata> imagens = domain.getImagem();
         if (imagens == null){
             return null;
